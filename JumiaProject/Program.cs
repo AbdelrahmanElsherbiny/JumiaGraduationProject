@@ -1,5 +1,7 @@
 using JumiaProject.Context;
+using JumiaProject.Interfaces;
 using JumiaProject.Models;
+using JumiaProject.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,9 +23,16 @@ namespace JumiaProject
             //.AddEntityFrameworkStores<JumiaContext>();
 
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<JumiaContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<ISeller, SellerRepo>();
+            builder.Services.AddScoped<IProduct, ProductRepo>();
+            builder.Services.AddScoped<IOrder, OrderRepo>();
+            builder.Services.AddScoped<IUser, UserRepo>();
+
 
             var app = builder.Build();
 
