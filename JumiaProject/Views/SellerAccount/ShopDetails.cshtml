@@ -1,0 +1,76 @@
+﻿@model SellerShopDetailsViewModel
+@{
+    Layout = "_RegisterSellerLayout";
+    ViewBag.Title = "Enter Shop Dtails";
+}
+
+    <div class="container d-flex justify-content-center align-items-center ">
+        <div class="row  d-flex justify-content-center mt-5">
+            <div class=" col-lg-5  col-md-4 col-sm-8  py-5 d-flex justify-content-center align-items-center">
+            <img src="~/images/signup.svg" alt="" class="w-100">
+            </div>
+            <div class="col-lg-7 col-md-8 col-sm-9  row mt-5 justify-content-center ">
+
+                <div class="px-3 py-2 col-lg-8 col-md-10 col-sm-12">
+                    <div class="d-flex  justify-content-center align-items-center flex-column">
+                        <h2 class="welcome">Shop Information</h2>
+                        <p class="text-muted registerText">Setup your shop by completing the following details</p>
+                        <div class="d-flex justify-content-center align-items-center text-center flex-column w-100 py-4 bg-white">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <form asp-action="ShopDetails" method="post" class=" d-flex justify-content-center align-items-center flex-column w-100 py-1 px-4 bg-white ">
+                                <div class="account-type">
+                                    <label class="option">
+                                    <input asp-for="ShopType" type="radio"  value="Company" />
+                                        <span class="icon">💼</span>
+                                        <span class="text">Company</span>
+                                    </label>
+
+                                    <label class="option">
+                                    <input asp-for="ShopType" type="radio" value="Individual" />
+                                        <span class="icon">👤</span>
+                                        <span class="text">Individual</span>
+                                    </label>
+                                </div>
+                               
+                            <input asp-for="ShopName" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Shop Name*">
+                            <span asp-validation-for="ShopName" class="text-danger"></span>
+                            <select asp-for="ShippingAddress" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Select Shipping Zone*">
+                                    <option value="">Shipping Zone</option>
+                                    <option value="cairo">Cairo</option>
+                                    <option value="alex">Alex</option>
+                                    <option value="gharbia">Al Gharbia</option>
+                                    <option value="behera">Al Behira</option>
+                                    <option value="daqahlia">Al Daqhlia</option>
+                                    <option value="mansoura">MansourA</option>
+                                </select>
+                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                                <select asp-for="AboutUs" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="How did you hear about us?*">
+                                    <option value="">How do you hear about jumia?</option>
+                                    <option value="refferal">Refferal</option>
+                                    <option value="google">Google</option>
+                                    <option value="social Media">Social Media</option>
+                                    <option value="pPress/Article">Press/Article</option>
+                                    <option value="jumia Website">Jumia Website</option>
+                                    <option value="exhibition">Exhibition</option>
+                                    <option value="other">Other</option>
+
+                                </select>
+                                <span asp-validation-for="AboutUs" class="text-danger"></span>
+                               
+                                <div class="d-flex align-items-baseline mt-4">
+                                <input asp-for="IsPolicyAccepted" type="checkbox" class="me-2 check-btn" value="true">
+                                <span asp-validation-for="IsPolicyAccepted" class="text-danger"></span>
+                                    <p class="confirm-msg text-start">I here by confirm that i have read and agree to the jumia seller contract, jumia codes, policies and guidelines and Privacy Notice and Cookie Notice referenced there in</p>
+                                </div>
+                                <button class=" mynew-btn continue1-btn border border-0 w-100 mt-3 mb-0 rounded fw-bold" type="submit">Next</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div> 
+
+
+
