@@ -101,6 +101,7 @@ namespace JumiaProject.Controllers
         [HttpGet]
         public IActionResult VerifyCode()
         {
+            ViewBag.UserEmail = registerVM.Email;
             return View();
         }
 
