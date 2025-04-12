@@ -27,7 +27,7 @@ namespace JumiaProject.ViewModels
     public class SellerEmailViewModel()
     {
         [Required]
-        [RegularExpression(@"[a-z_0-9]{6,15}@gmail.com", ErrorMessage = "Invalid Email Format")]
+        [RegularExpression(@"[a-z_0-9]{6,20}(@gmail.com|@jumia.com)", ErrorMessage = "Invalid Email Format")]
         public string Email { get; set; }
     }
     public class SellerCodeViewModel()

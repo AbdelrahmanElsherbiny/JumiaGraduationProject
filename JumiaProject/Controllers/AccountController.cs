@@ -91,34 +91,51 @@ namespace JumiaProject.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async  Task<ActionResult> Password(UserPasswordLoginViewModel model)
+        public async Task<ActionResult> Password(UserPasswordLoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                //Login
-                if (model.Password == "Password@123")
-                {
-                    return RedirectToAction("Index","Home");
-                }
                 ApplicationUser userModel = await userManager.FindByEmailAsync(loginVM.Email);
-                bool found = await userManager.CheckPasswordAsync(userModel, model.Password);
-                if (found) 
-                { 
-                
-                }
-                if (found)
+
+                if (userModel == null)
                 {
-                    await signInManager.SignInAsync(userModel, true);
-                    return RedirectToAction("Index", "Home");
-                }
-                ModelState.AddModelError("", "Incorrect login password!");
+
+                    ModelState.AddModelError("", "User not found.");
                     return View(model);
+                }
+                if (loginVM.Email == "adminadmin@gmail.com")
+                {
+                    bool found = await userManager.CheckPasswordAsync(userModel, model.Password);
+
+                    if (found)
+                    {
+                        await signInManager.SignInAsync(userModel, true);
+                        return RedirectToAction("Privacy", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Incorrect password!");
+                    }
+                }
+                else
+                {
+                    bool found = await userManager.CheckPasswordAsync(userModel, model.Password);
+
+                    if (found)
+                    {
+                        await signInManager.SignInAsync(userModel, false);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Incorrect password!");
+                    }
+                }
             }
-        
-            ModelState.AddModelError("", "Incorrect password!");
+
             return View(model);
         }
-    
+
         private string GenerateVerificationCode()
         {
             Random random = new Random();

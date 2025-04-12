@@ -21,7 +21,7 @@
                             <span asp-validation-for="Code" class="text-danger"></span>
                                 <button class=" mynew-btn continue1-btn border border-0 w-100 mt-3 mb-0 rounded fw-bold" type="submit">Verify</button>
                             </form>
-                        <form  method="post" asp-action="ResendCode" class=" d-flex justify-content-center align-items-center flex-column w-100 py-1 px-4 bg-white ">
+                        <form method="post" asp-action="ResendCode" asp-controller="SellerAccount" asp-route-email="@ViewBag.UserEmail" class=" d-flex justify-content-center align-items-center flex-column w-100 py-1 px-4 bg-white ">
                             <input type="hidden" name="email" value="@ViewBag.UserEmail" />
                                 <button class=" mynew-btn  bg-transparent my-color border border-1 w-100 my-1 rounded fw-bold" type="submit">Resend Code</button>
                             </form>

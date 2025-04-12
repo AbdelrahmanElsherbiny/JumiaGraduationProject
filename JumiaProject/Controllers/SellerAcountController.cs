@@ -179,7 +179,7 @@ namespace JumiaProject.Controllers
                     var userModel = new ApplicationUser
                     {
                         Email = registerVM.Email,
-                        UserName = registerVM.Email,
+                        UserName = registerVM.Email.Split("@")[0],
                         PhoneNumber = registerVM.Phone,
                         Seller = new Seller
                         {
