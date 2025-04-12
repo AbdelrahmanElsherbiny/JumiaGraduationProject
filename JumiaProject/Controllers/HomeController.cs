@@ -1,26 +1,24 @@
 using System.Diagnostics;
+using JumiaProject.Interfaces;
 using JumiaProject.Models;
+using JumiaProject.Repositories;
+using JumiaProject.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JumiaProject.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHome home;
+        public HomeController(IHome home)
         {
-            _logger = logger;
+            this.home = home;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            HomeVM homeVM = home.GetData();
+            return View(homeVM);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

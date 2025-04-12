@@ -1,0 +1,55 @@
+﻿<div class="flash-sale col-12">
+    <img src="/images/home/flash-sale.png" class="col-10"/>
+</div>
+
+@* <div class="sell d-flex col-12"> *@
+@*     <div class="col-3"> *@
+@*         <a class="sell-on-jumia">Sell on jumia</a> *@
+@*     </div> *@
+@*     <div class="col-3">  *@
+@*          <img class="jumia-logo" src="~/images/home/logo.png" />  *@
+@*     </div> *@
+@* </div> *@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-0">
+    <div class="container col-12">
+        <!-- logo -->
+        <a class="navbar-brand col-2 d-flex" href="/">
+            <img src="~/images/home/logo.png" alt="Jumia" class="jumia-logo">
+        </a>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- search -->
+            <form action="@Url.Action("Search", "Home")" method="get" class="d-flex mx-3 flex-grow-1">
+                <div class="input-group">
+                    <input type="text" name="query" class="form-control" placeholder="🔍 Search products">
+                    <div>
+                        <button class="search" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- icons -->
+            <ul class="navbar-nav">
+                <li class="nav-item mx-2">
+                    <a class="nav-link hover-orange" href="/Account">
+                        <i class="far fa-user fa-lg"></i>
+                        <span class="nav d-none d-lg-inline">Account</span>
+                    </a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link hover-orange" href="/Cart">
+                        <i class="far fa-question-circle fa-lg"></i>
+                        <span class="nav d-none d-lg-inline">Help</span>
+                    </a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link hover-orange" href="/Cart">
+                        <i class="fas fa-shopping-cart fa-lg" style="fill: #313133; -webkit-text-stroke: 1px black;"></i>
+                        <span class="d-none d-lg-inline">Cart</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

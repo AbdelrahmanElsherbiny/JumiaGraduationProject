@@ -1,0 +1,57 @@
+﻿.flash-sale {
+    display: flex;
+    justify-content: center;
+    background: #e60400;
+    height: 3em;
+}
+.search {
+    background-color: #f68b1e;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 0 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .search:hover {
+        background-color: #e07d1a;
+    }
+
+.form-control {
+    border-radius: 8px;
+}
+
+.nav-link{
+    font-weight: 500;
+}
+
+.hover-orange:hover
+ {
+    color: #f68b1e !important;
+}
+
+
+.jumia-logo{
+    height: 3em;
+}
+
+.navbar-brand{
+    justify-content: end;
+}
+.sell {
+    background-color: #f1f1f2;
+    height: 2em;
+    display: flex;
+    justify-content: center;
+}
+.sell-on-jumia {
+    color: #f68b1e;
+    font-size: .75rem;
+   
+    text-decoration: none;
+    display: inline-block;
+}
