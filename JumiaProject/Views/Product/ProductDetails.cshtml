@@ -1,0 +1,148 @@
+﻿@model JumiaProject.Models.Product
+
+<div class="container mt-4">
+    <!-- Product Details Section -->
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-md-6">
+            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var image in Model.ProductImages)
+                    {
+                        <div class="carousel-item @(Model.ProductImages.First() == image ? "active" : "")">
+                            <img src="@image.ImageUrl" class="d-block w-100" alt="@Model.Name">
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <h2 class="mb-3">@Model.Name</h2>
+            <div class="d-flex align-items-center mb-3">
+                <div class="ratings">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <i class="bi @(i <= 3 ? "bi-star-fill" : "bi-star")" style="color: #ffd700;"></i>
+                    }
+                </div>
+                <span class="ms-2">(@Model.Reviews Reviews)</span>
+            </div>
+            <h3 class="text-primary mb-3">$@Model.Price</h3>
+            <p class="mb-4">@Model.Description</p>
+
+            <!-- Add to Cart Section -->
+            <div class="d-flex align-items-center mb-4">
+                <input type="number" class="form-control w-25 me-3" value="1" min="1" id="quantity">
+                <button class="btn btn-primary" onclick="addToCart(@Model.ProductId)">Add to Cart</button>
+            </div>
+
+            <!-- Product Specifications -->
+            <div class="specifications mt-4">
+                <h4>Specifications</h4>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Category:</td>
+                            <td>@Model.Category</td>
+                        </tr>
+                        <tr>
+                            <td>Brand:</td>
+                            <td>@Model.Brand</td>
+                        </tr>
+                        <tr>
+                            <td>Stock:</td>
+                            <td>@Model.Stock items</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Customer Reviews</h3>
+
+            <!-- Add Review Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Write a Review</h5>
+                    <form asp-action="AddComment" method="post">
+                        <input type="hidden" name="productId" value="@Model.ProductId" />
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <select name="rating" class="form-select w-25">
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Review</label>
+                            <textarea name="comment" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Existing Reviews -->
+            @foreach (var comment in ViewBag.Comments)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-subtitle mb-2 text-muted">@comment.UserName</h6>
+                            <div class="ratings">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi @(i <= comment.Rating ? "bi-star-fill" : "bi-star")" style="color: #ffd700;"></i>
+                                }
+                            </div>
+                        </div>
+                        <p class="card-text">@comment.Comment</p>
+                        <small class="text-muted">Posted on @comment.CreatedDate.ToString("MMM dd, yyyy")</small>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function addToCart(productId) {
+            const quantity = document.getElementById('quantity').value;
+            fetch(`/Cart/AddToCart?productId=${productId}&quantity=${quantity}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product added to cart successfully!');
+                } else {
+                    alert('Failed to add product to cart.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding to cart.');
+            });
+        }
+    </script>
+}

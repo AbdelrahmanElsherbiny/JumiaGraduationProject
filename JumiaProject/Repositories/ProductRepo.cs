@@ -1,6 +1,7 @@
 ﻿using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
 {
@@ -23,10 +24,6 @@ namespace JumiaProject.Repositories
         public Product GetProductByName(string name)
         {
             return Context.Products.FirstOrDefault(p => p.Name == name);
-        }
-        public Product GetProductById(int id)
-        {
-            return Context.Products.FirstOrDefault(p => p.ProductId == id);
         }
         public bool AddProduct(Product product)
         {
@@ -76,6 +73,27 @@ namespace JumiaProject.Repositories
         public List<Product> GetProductsByCategory(string category)
         {
             return Context.Products.Where(p => p.Category.CategoryName == category).ToList();
+        }
+        public ProductDetails GetProductById(int productId)
+        {
+            return Context.Products
+                .Where(p => p.ProductId == productId)
+                .Select(p => new ProductDetails
+                {
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    Discount = p.Discount,
+                    SKU = p.SKU, 
+                    Code = p.Code
+                })
+                .FirstOrDefault();
+        }
+
+        Product IProduct.GetProductById(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
