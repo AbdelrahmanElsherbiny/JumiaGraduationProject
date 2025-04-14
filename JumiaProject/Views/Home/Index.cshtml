@@ -1,8 +1,119 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿ @model HomeVM
+<div class="slider-container d-flex justify-content-between mt-3 col-12">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+	<div class="category-names col-2">
+		<ul class="list-group">
+			@foreach (CategoryVM category in Model.Categories)
+			{
+				<li class="list-group-item">
+					<a class="d-block text-dark text-decoration-none text-decoration-none hover-orange" href="@Url.Action("ByCategory", "Home", new { id = category.CategoryId })">@category.CategoryName</a>
+				</li>
+			}
+		</ul>
+	</div>
+
+
+	<div class="slider-section col-8">
+		<div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+			<div class="carousel-inner">
+				@foreach (var item in Model.SliderItems)
+				{
+					<div class="carousel-item @((item == Model.SliderItems.First()) ? "active" : "")">
+						<img src="@Url.Content(item.ImgURL)" class="d-block w-100">
+					</div>
+				}
+			</div>
+			<div class="position-absolute bottom-0 end-0 mb-3 me-3">
+				<a href="" class="buy_now">Buy Now</a>
+			</div>
+
+		</div>
+	</div>
+
+
+	<div class="category-sidebar col-2 shadow-sm d-flex">
+		<div class="bg-white col-12 join-container">
+			<div class="sidebar-section mb-3">
+				<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Join Jumia</a>
+				<p class="small text-muted">as a Sales Consultant</p>
+			</div>
+
+			<div class="sidebar-section mb-3">
+				<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Sell on jumia</a>
+				<p class="small text-muted">And Grow Your Business</p>
+			</div>
+
+			<div class="sidebar-section mb-3">
+				<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Warranty</a>
+				<p class="small text-muted">On Your Purchases</p>
+			</div>
+		</div>
+		<div class="sidebar-section mb-3 pt-2">
+			<img src="/images/home/buy-now.png" class="col-12" style="14.5em"/>
+		</div>
+	</div>
 </div>
+
+
+<div class="main_category">
+	<div id="categoryScroll" class="col-12">
+		@foreach (var category in Model.Categories)
+		{
+			<div class="card col-2">
+				<img src="@Url.Content("~/" + category.ImageUrl)" class="card-img-top" alt="@category.CategoryName">
+				<div class="card-body">
+					<span class="card-text">@category.CategoryName</span>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+
+<div class="product-by-category">
+	<div class="mt-5">
+		<div class="d-flex flex-column">
+			@for(int i = 0; i < 3; i++)
+			{
+				<div class="card-product text-center" style="min-width: 250px;">
+						 <div class="card-body-product d-flex  justify-content-between">
+							 <div>
+								<span class="card-title ">@Model.Categories[i].CategoryName</span>
+							 </div>
+							 <div>
+								<a href="@Url.Action("Category", "Products", new { id = Model.Categories[i].CategoryId })" class="see-all">See All</a>
+							 </div>
+						</div> 
+						<div class="d-flex flex-row p-3">
+							@foreach (ProductVM product in Model.Products)
+							{
+								if (Model.Categories[i].CategoryId == product.CategoryId)
+								{
+									<a href="" class="text-decoration-none">
+										<div class="col-2">
+											<div class="card h-100 product-card">
+												<img src="/images/home/buy-now.png" class="col-12" style="14.5em" />
+												<h7 class="card-title">@product.Name</h7>
+												<p class="card-text text-muted">@product.Description</p>
+												<p>@product.Price  </p>
+											</div>
+										</div>
+									</a>
+								}
+							}
+						</div>
+				</div>
+				<br />
+				<br />
+			}
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+

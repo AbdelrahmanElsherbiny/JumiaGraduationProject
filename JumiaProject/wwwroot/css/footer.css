@@ -1,0 +1,79 @@
+﻿.footer-bottom {
+    color: #f1f1f2;
+    background: #626161;
+}
+
+.header-text {
+    font: bold;
+    font-size: small;
+}
+
+.footer-top {
+    background: #313133;
+    color: white;
+    height: 12em;
+    justify-content: center;
+    font-size: .8em;
+    padding: 1em;
+}
+
+.img-container {
+    height: 13em;
+}
+
+    .img-container img {
+        width: 9em;
+        height: 2em;
+    }
+
+.footer-title {
+    font-weight: 700;
+}
+
+.subscribe-text {
+    font-size: .9em;
+    text-decoration: none;
+    color: white;
+    font-weight: 100;
+}
+
+input[type=email] {
+    border-radius: 4px;
+    padding: .7em;
+}
+
+    input[type=email]:focus, input[type=email]:focus-visible, input[type=email]:focus-within {
+        border: 3px solid orange;
+    }
+
+    .subscribe-btn {
+        background: #313133;
+        color: white;
+        border: 1px solid white;
+        border-radius: .3em;
+        margin-left: .5em;
+    }
+
+    .subscribe-btn:hover {
+        color: orange;
+        border-color: orange;
+    }
+
+.jumia-star {
+    width: 3em;
+    height: 3em;
+    border-radius: .3em;
+}
+
+.jumia-star-container{
+    padding-left: 8em;
+}
+
+.app-store:hover, .google-play:hover{
+    color: orange;
+}
+.list-unstyled {
+    font-weight: 400;
+    text-decoration: none;
+    color: white;
+}

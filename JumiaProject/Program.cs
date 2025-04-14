@@ -31,6 +31,8 @@ namespace JumiaProject
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ISeller, SellerRepo>();
+            builder.Services.AddScoped<IHome, HomeRepo>();
+            builder.Services.AddScoped<ICategory, CategoryRepo>();
             builder.Services.AddScoped<IProduct, ProductRepo>();
             builder.Services.AddScoped<IOrder, OrderRepo>();
             builder.Services.AddScoped<IUser, UserRepo>();

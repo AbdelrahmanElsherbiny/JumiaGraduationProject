@@ -59,9 +59,9 @@ namespace JumiaProject.Repositories
             Context.SaveChanges();
             return true;
         }
-        public List<Product> GetProductsByCategory(string category)
+        public List<Product> GetProductsByCategory(int id)
         {
-            return Context.Products.Where(p => p.Category.CategoryName == category).ToList();
+            return Context.Products.Where(p => p.Category.CategoryId == id).ToList();
         }
         public List<Product> SearchProducts(string searchTerm, string statusFilter, int pageNum)
         {

@@ -10,7 +10,7 @@ namespace JumiaProject.Interfaces
         public void UnVerifyProduct(int id);
         public Product GetProductByName(string name);
         public Product GetProductById(int id);
-        public List<Product> GetProductsByCategory(string category);
+        public List<Product> GetProductsByCategory(int id);
         public bool AddProduct(Product product);
         public bool UpdateProduct(Product product);
         public void DeleteProduct(int id);
