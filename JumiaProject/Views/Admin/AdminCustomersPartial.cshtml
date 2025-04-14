@@ -1,0 +1,454 @@
+﻿@model List<ApplicationUser>
+
+<style>
+    /* Premium Customers Dashboard Styles */
+    .customers-dashboard {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid #eaeaea;
+        transition: all 0.3s ease;
+    }
+
+        .customers-dashboard:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+    .customers-header {
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .customers-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        letter-spacing: -0.5px;
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .customers-title i {
+            color: #f68b1e;
+            font-size: 1.5rem;
+        }
+
+    .customers-search-container {
+        position: relative;
+        margin-bottom: 2rem;
+        max-width: 450px;
+    }
+
+        .customers-search-container i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+    #CustomersSearch {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border-radius: 8px;
+        border: 1px solid #eaeaea;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background-color: #f9f9f9;
+    }
+
+        #CustomersSearch:focus {
+            border-color: #f68b1e;
+            box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.2);
+            background-color: white;
+            outline: none;
+        }
+
+    .customers-table-container {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+    }
+
+    .customers-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+
+        .customers-table thead th {
+            background-color: #f68b1e;
+            color: white;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+            border: none;
+            position: relative;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .customers-table thead th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 60%;
+                width: 1px;
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+        .customers-table tbody tr {
+            transition: all 0.25s ease;
+        }
+
+            .customers-table tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+            .customers-table tbody tr:hover {
+                background-color: #fff3e8;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+
+        .customers-table td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+            color: #2a2a2a;
+            font-size: 0.95rem;
+        }
+
+    /* Action buttons */
+    .btn-customer-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        margin: 0.25rem;
+    }
+
+    .btn-block {
+        background-color: #dc3545;
+        color: white;
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+    }
+
+        .btn-block:hover {
+            background-color: #c82333;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+    .btn-view {
+        background-color: #f68b1e;
+        color: white;
+        box-shadow: 0 2px 6px rgba(246, 139, 30, 0.3);
+    }
+
+        .btn-view:hover {
+            background-color: #e07d1a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(246, 139, 30, 0.4);
+        }
+
+    /* No results message */
+    .no-results-container {
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .no-results-icon {
+        font-size: 3.5rem;
+        color: #f68b1e;
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+    }
+
+    .no-results-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Pagination */
+    .customers-pagination {
+        margin-top: 2.5rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+        .customers-pagination .page-item {
+            margin: 0;
+        }
+
+        .customers-pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px !important;
+            color: #2a2a2a;
+            border: 1px solid #eaeaea;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+            .customers-pagination .page-link:hover {
+                background-color: #fff3e8;
+                color: #f68b1e;
+                border-color: #fff3e8;
+                transform: translateY(-2px);
+            }
+
+        .customers-pagination .page-item.active .page-link {
+            background-color: #f68b1e;
+            border-color: #f68b1e;
+            color: white;
+            box-shadow: 0 4px 8px rgba(246, 139, 30, 0.3);
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .customers-dashboard {
+            padding: 1.5rem;
+        }
+
+        .customers-title {
+            font-size: 1.5rem;
+        }
+
+        .customers-table thead {
+            display: none;
+        }
+
+        .customers-table tbody tr {
+            display: block;
+            margin-bottom: 1.5rem;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+            .customers-table tbody tr:hover {
+                transform: none;
+            }
+
+        .customers-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+            .customers-table td:last-child {
+                border-bottom: none;
+                justify-content: center;
+                padding-top: 1rem;
+            }
+
+            .customers-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #2a2a2a;
+                margin-right: 1rem;
+                flex: 1;
+            }
+
+            .customers-table td > *:last-child {
+                flex: 2;
+                text-align: right;
+            }
+
+        .btn-customer-action {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .customers-dashboard {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .customers-title {
+            font-size: 1.3rem;
+        }
+
+        .no-results-icon {
+            font-size: 2.5rem;
+        }
+
+        .no-results-title {
+            font-size: 1.2rem;
+        }
+
+        .customers-pagination .page-link {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+        }
+
+        .customers-title {
+            position: relative;
+            display: inline-block;
+        }
+
+            .customers-title::after {
+                content: '';
+                position: absolute;
+                bottom: -12px;
+                left: 0;
+                width: 60px;
+                height: 4px;
+                background: #f68b1e;
+                border-radius: 2px;
+            }
+    }
+</style>
+
+<div class="customers-dashboard">
+    <div class="customers-header">
+        <h2 class="customers-title" style="position: relative; display: inline-block;">
+            <i class="bi bi-people-fill"></i> Customers Management
+            <span style="position: absolute; bottom: -12px; left: 0; width: 60px; height: 4px; background: #f68b1e; border-radius: 2px;"></span>
+        </h2>
+    </div>
+
+    <!-- Search Section -->
+    <div class="customers-search-container">
+        <i class="bi bi-search"></i>
+        <input type="text" id="CustomersSearch" class="form-control w-100"
+               placeholder="Search customers by name, email or phone number..."
+               value="@ViewBag.SearchTerm"
+               onkeyup="handleSearch('Customers')">
+    </div>
+
+    <!-- Customers Table -->
+    <div class="customers-table-container">
+        <table class="customers-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="accountTable">
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (var user in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">@user.Id</td>
+                            <td data-label="Name">@user.UserName</td>
+                            <td data-label="Email">@user.Email</td>
+                            <td data-label="Phone">@(user.PhoneNumber ?? "N/A")</td>
+                            <td data-label="Actions">
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <a class="btn-customer-action btn-block"
+                                       onclick="return confirm('Are you sure you want to block this customer?');"
+                                       asp-action="DeleteCustomer"
+                                       asp-controller="Admin"
+                                       asp-route-id="@user.Id"
+                                       asp-route-pageNum="@ViewBag.CurrentPage">
+                                        <i class="bi bi-x"></i> Block
+                                    </a>
+                                    <a class="btn-customer-action btn-view"
+                                       asp-action="CustomerDetails"
+                                       asp-controller="Admin"
+                                       asp-route-id="@user.Id"
+                                       asp-route-pageNum="@ViewBag.CurrentPage">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="no-results-container">
+                                <div class="no-results-icon">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <h5 class="no-results-title">No Customers Found</h5>
+                                <p class="text-muted">Try adjusting your search criteria</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="customers-pagination">
+            <nav aria-label="Customers pagination">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= ViewBag.TotalPagesCount; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="javascript:void(0);"
+                               onclick="loadContent('Customers', @i, '@ViewBag.SearchTerm')">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<script>
+    // Add interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add data-labels for responsive table
+        const cells = document.querySelectorAll('#accountTable td');
+        const headers = document.querySelectorAll('.customers-table thead th');
+
+        cells.forEach((cell, index) => {
+            const headerIndex = index % headers.length;
+            if (headers[headerIndex]) {
+                cell.setAttribute('data-label', headers[headerIndex].textContent);
+            }
+        });
+    });
+</script>

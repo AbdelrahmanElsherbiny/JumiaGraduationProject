@@ -1,0 +1,286 @@
+﻿@model ApplicationUser
+@{
+    Layout = null;
+    ViewData["Title"] = "Customer Details";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="~/css/AdminUserDetails.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container py-4">
+        <!-- Header with Back Button -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 style="position: relative; display: inline-block;">
+                <i class="bi bi-person"></i> Customer Details
+                <span style="position: absolute; bottom: -8px; left: 0; width: 60px; height: 4px; background: var(--jumia-orange); border-radius: 2px;"></span>
+            </h2>
+            <a asp-action="Index" asp-controller="Admin" asp-route-sectionName="Customers" asp-route-pageNum="@ViewBag.CurrentPage" class="btn-back text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Customers
+            </a>
+        </div>
+
+        <div class="customer-container">
+            <!-- Header with external status badge -->
+            <div class="customer-header">
+                <div>
+                    <h3 class="customer-title">@Model.UserName</h3>
+                    <div class="text-white small">Customer ID: @Model.Id</div>
+                </div>
+            </div>
+
+            <div class="p-4">
+                <!-- Basic Information Card -->
+                <div class="section-card">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="info-table">
+                                <tr>
+                                    <td class="info-label" width="40%">Email:</td>
+                                    <td>@Model.Email</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Phone:</td>
+                                    <td>@(Model.PhoneNumber ?? "Not provided")</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Email Confirmed:</td>
+                                    <td>@(Model.EmailConfirmed ? "Yes" : "No")</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="info-table">
+                                <tr>
+                                    <td class="info-label" width="40%">Orders:</td>
+                                    <td>@Model.Orders.Count</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Reviews:</td>
+                                    <td>@Model.Reviews.Count</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Addresses:</td>
+                                    <td>@Model.Addresses.Count</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if (!Model.IsDeleted)
+                    {
+                        <div class="d-flex justify-content-end mt-3">
+                            <a class="btn btn-danger"
+                               asp-action="DeleteCustomer"
+                               asp-controller="Admin"
+                               asp-route-id="@Model.Id"
+                               asp-route-pageNum="@ViewBag.CurrentPage"
+                               onclick="return confirm('Are you sure you want to block this customer?');">
+                                <i class="bi bi-person-x"></i> Block Customer
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="section-card">
+                    <h5 class="section-title">
+                        <i class="bi bi-chat-square-text"></i> Customer Reviews (@Model.Reviews.Count)
+                    </h5>
+
+                    <div id="reviewsPreview">
+                        @if (Model.Reviews.Any())
+                        {
+                            foreach (var review in Model.Reviews.Take(5))
+                            {
+                                <div class="card review-card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0">@review.Product.Name</h6>
+                                            <div class="text-warning">
+                                                @for (int i = 0; i < review.Rating; i++)
+                                                {
+                                                    <i class="bi bi-star-fill"></i>
+                                                }
+                                                @for (int i = review.Rating; i < 5; i++)
+                                                {
+                                                    <i class="bi bi-star"></i>
+                                                }
+                                            </div>
+                                        </div>
+                                        <p class="mb-2">@review.Comment</p>
+                                        <small class="text-muted">@review.CreatedAt?.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.Reviews.Count > 5)
+                            {
+                                <div class="text-center mt-3">
+                                    <a href="#" id="viewAllReviews" class="review-toggle-link">
+                                        View all @Model.Reviews.Count reviews <i class="bi bi-chevron-down"></i>
+                                    </a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mb-0">This customer hasn't posted any reviews yet.</div>
+                        }
+                    </div>
+
+                    <div id="allReviews" style="display: none;">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <div class="card review-card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">@review.Product.Name</h6>
+                                        <div class="text-warning">
+                                            @for (int i = 0; i < review.Rating; i++)
+                                            {
+                                                <i class="bi bi-star-fill"></i>
+                                            }
+                                            @for (int i = review.Rating; i < 5; i++)
+                                            {
+                                                <i class="bi bi-star"></i>
+                                            }
+                                        </div>
+                                    </div>
+                                    <p class="mb-2">@review.Comment</p>
+                                    <small class="text-muted">@review.CreatedAt?.ToString("MMM dd, yyyy")</small>
+                                </div>
+                            </div>
+                        }
+                        <div class="text-center mt-3">
+                            <a href="#" id="hideAllReviews" class="review-toggle-link">
+                                <i class="bi bi-chevron-up me-1"></i>
+                                Show less
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div class="section-card">
+                    <h5 class="section-title">
+                        <i class="bi bi-cart"></i> Recent Orders (@Model.Orders.Count)
+                    </h5>
+
+                    @if (Model.Orders.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Items</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in Model.Orders.OrderByDescending(o => o.OrderDate).Take(5))
+                                    {
+                                        <tr class="order-row">
+                                            <td>#@order.OrderId</td>
+                                            <td>@order.OrderDate?.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                @if (order.OrderStatus == "Processing")
+                                                {
+                                                    <span class="badge bg-warning">Processing</span>
+                                                }
+                                                else if (order.OrderStatus == "Shipped")
+                                                {
+                                                    <span class="badge bg-primary">Shipped</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">Delivered</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column">
+                                                    @foreach (var item in order.OrderItems.Take(3))
+                                                    {
+                                                        <div class="mb-1">
+                                                            <small>@item.Quantity x @item.Product.Name</small>
+                                                        </div>
+                                                    }
+                                                    @if (order.OrderItems.Count > 3)
+                                                    {
+                                                        <small class="text-muted">+ @(order.OrderItems.Count - 3) more items</small>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>@order.TotalAmount.ToString("C")</td>
+                                        </tr>
+                                        <!-- Shipping Address -->
+                                        <tr>
+                                            <td colspan="5" class="small text-muted">
+                                                <strong>Shipped to:</strong>
+                                                @order.Address.Street, @order.Address.City, @order.Address.Country
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (Model.Orders.Count > 5)
+                        {
+                            <div class="text-center mt-3">
+                                <a asp-action="CustomerOrders" asp-controller="Admin"
+                                   asp-route-userId="@Model.Id" class="review-toggle-link">
+                                    View all @Model.Orders.Count orders
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info mb-0">This customer hasn't placed any orders yet.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewAllReviews = document.getElementById('viewAllReviews');
+            const hideAllReviews = document.getElementById('hideAllReviews');
+            const reviewsPreview = document.getElementById('reviewsPreview');
+            const allReviews = document.getElementById('allReviews');
+
+            if (viewAllReviews) {
+                viewAllReviews.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    reviewsPreview.style.display = 'none';
+                    allReviews.style.display = 'block';
+                });
+            }
+
+            if (hideAllReviews) {
+                hideAllReviews.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    allReviews.style.display = 'none';
+                    reviewsPreview.style.display = 'block';
+                    // Scroll back to reviews section
+                    document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

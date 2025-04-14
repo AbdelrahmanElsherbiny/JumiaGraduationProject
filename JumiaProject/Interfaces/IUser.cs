@@ -10,5 +10,7 @@ namespace JumiaProject.Interfaces
         public bool AddUser(ApplicationUser user);
         public bool UpdateUser(ApplicationUser user);
         public bool DeleteUser(string id);
+        public Task<List<ApplicationUser>> SearchCustomers(string searchTerm, int pageNum);
+        public Task<int> GetFilteredCustomersCount(string searchTerm);
     }
 }

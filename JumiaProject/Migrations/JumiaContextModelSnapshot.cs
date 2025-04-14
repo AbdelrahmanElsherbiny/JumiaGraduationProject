@@ -17,7 +17,7 @@ namespace JumiaProject.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -62,7 +62,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ApplicationUser", b =>
@@ -160,7 +160,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("BrandId")
                         .HasName("PK__Brands__DAD4F05EEE70BA77");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Cart", b =>
@@ -216,7 +216,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Category", b =>
@@ -256,7 +256,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.CategorySize", b =>
@@ -280,7 +280,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("CategorySizes");
+                    b.ToTable("CategorySizes", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Coupon", b =>
@@ -331,7 +331,7 @@ namespace JumiaProject.Migrations
                     b.HasIndex(new[] { "Code" }, "UQ__Coupons__A25C5AA712C28F2F")
                         .IsUnique();
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Order", b =>
@@ -380,7 +380,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.OrderItem", b =>
@@ -413,7 +413,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Payment", b =>
@@ -453,7 +453,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Product", b =>
@@ -540,7 +540,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ProductImage", b =>
@@ -570,7 +570,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ProductVariant", b =>
@@ -602,7 +602,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Review", b =>
@@ -638,7 +638,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Seller", b =>
@@ -671,7 +671,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("SellerId")
                         .HasName("PK__Sellers__7FE3DB814B950AF1");
 
-                    b.ToTable("Sellers");
+                    b.ToTable("Sellers", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ShippingMethod", b =>
@@ -699,7 +699,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("ShippingMethodId")
                         .HasName("PK__Shipping__0C7833A4E70B06C7");
 
-                    b.ToTable("ShippingMethods");
+                    b.ToTable("ShippingMethods", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ShippingTracking", b =>
@@ -758,7 +758,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("SizeId")
                         .HasName("PK__Sizes__83BD097A2E47F4BF");
 
-                    b.ToTable("Sizes");
+                    b.ToTable("Sizes", (string)null);
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Wishlist", b =>
@@ -783,7 +783,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
