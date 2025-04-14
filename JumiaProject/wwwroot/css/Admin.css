@@ -1,0 +1,126 @@
+﻿:root {
+    --jumia-orange: #f68b1e;
+    --jumia-orange-light: #fef6ef;
+    --jumia-dark: #2d2d2d;
+    --jumia-gray: #f5f5f5;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--jumia-gray);
+    overflow-x: hidden;
+}
+
+/* Hamburger Button */
+#hamburgerBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    background: var(--jumia-orange);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* Sidebar */
+#sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+    #sidebar.show {
+        left: 0;
+    }
+
+/* Main Content */
+#main-content {
+    margin-left: 0;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+}
+
+#sidebar.show + #main-content {
+    margin-left: 250px;
+}
+
+/* Sidebar Content Styles */
+.navbar-logo {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+    .navbar-logo img {
+        height: 40px;
+    }
+
+.nav-category {
+    color: #888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 15px 20px 5px;
+    margin-top: 10px;
+}
+
+.nav-link {
+    color: var(--jumia-dark);
+    padding: 12px 20px;
+    margin: 2px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+    .nav-link i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+        color: var(--jumia-orange);
+        width: 24px;
+        text-align: center;
+    }
+
+    .nav-link:hover, .nav-item.active .nav-link {
+        background-color: var(--jumia-orange-light);
+        color: var(--jumia-orange);
+    }
+
+        .nav-link:hover i, .nav-item.active .nav-link i {
+            color: var(--jumia-orange);
+        }
+
+/* Close Button */
+.sidebar-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--jumia-dark);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    #sidebar.show + #main-content {
+        margin-left: 0;
+    }
+}

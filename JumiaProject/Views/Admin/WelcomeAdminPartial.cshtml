@@ -1,0 +1,199 @@
+﻿<div class="welcome-admin-container">
+    <div class="welcome-card">
+        <div class="welcome-content">
+            <div class="welcome-text">
+                <h1>Welcome Back</h1>
+                <p class="subtitle">Jumia Marketplace Dashboard</p>
+                <div class="admin-stats">
+                    <div class="stat-item orange">
+                        <div class="stat-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Products</span>
+                        </div>
+                    </div>
+                    <div class="stat-item green">
+                        <div class="stat-icon">
+                            <i class="bi bi-cart-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Orders</span>
+                        </div>
+                    </div>
+                    <div class="stat-item blue">
+                        <div class="stat-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Customers</span>
+                        </div>
+                    </div>
+                    <div class="stat-item gray">
+                        <div class="stat-icon">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Sellers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-image">
+                <img src="~/images/jumia.jpeg" alt="Jumia Admin Illustration" class="admin-illustration">
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .welcome-admin-container {
+        margin: 2rem 0;
+    }
+
+    .welcome-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+        border: 1px solid #eee;
+        overflow: hidden;
+    }
+
+    .welcome-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2.5rem;
+        gap: 2rem;
+    }
+
+    .welcome-text {
+        flex: 1;
+    }
+
+        .welcome-text h1 {
+            color: #222;
+            font-size: 2.4rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+        }
+
+        .welcome-text .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+    .admin-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 10px;
+        background: #f9f9f9;
+        transition: 0.3s ease;
+        min-width: 150px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+        .stat-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+        }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        color: white;
+    }
+
+    .orange .stat-icon {
+        background-color: #f68b1e;
+    }
+
+    .green .stat-icon {
+        background-color: #28a745;
+    }
+
+    .blue .stat-icon {
+        background-color: #0d6efd;
+    }
+
+    .gray .stat-icon {
+        background-color: #6c757d;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .welcome-image {
+        width: 40%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .admin-illustration {
+        max-width: 100%;
+        height: auto;
+        max-height: 240px;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Responsive */
+    @@media (max-width: 992px) {
+        .welcome-content
+
+    {
+        flex-direction: column;
+        padding: 2rem;
+    }
+
+    .welcome-image {
+        width: 100%;
+    }
+
+    .welcome-text {
+        text-align: center;
+    }
+
+    .admin-stats {
+        justify-content: center;
+    }
+
+    }
+
+    @@media (max-width: 576px) {
+        .welcome-text h1
+
+    {
+        font-size: 1.8rem;
+    }
+
+    .stat-item {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+    }
+
+    }
+</style>

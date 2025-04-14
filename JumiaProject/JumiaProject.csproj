@@ -8,17 +8,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\ProfileViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Order\Details.cshtml" />
+    <Content Remove="Views\Product\Details.cshtml" />
+    <Content Remove="wwwroot\css\AdminProduct.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="ViewModels\" />
+    <Folder Include="Views\Order\" />
+    <Folder Include="Views\Product\" />
+    <Folder Include="Views\User\" />
   </ItemGroup>
 
 </Project>

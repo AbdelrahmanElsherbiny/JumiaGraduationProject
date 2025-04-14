@@ -1,0 +1,571 @@
+﻿@model List<Order>
+
+<style>
+    /* Premium Jumia-inspired theme */
+    :root {
+        --jumia-orange: #f68b1e;
+        --jumia-orange-light: #fff3e8;
+        --jumia-orange-dark: #e07d1a;
+        --jumia-dark: #2a2a2a;
+        --jumia-light: #f9f9f9;
+        --jumia-border: #eaeaea;
+        --jumia-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Premium container styling */
+    .orders-dashboard {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: var(--jumia-shadow);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--jumia-border);
+        transition: all 0.3s ease;
+    }
+
+        .orders-dashboard:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+    /* Premium header styling */
+    .dashboard-header {
+        border-bottom: 1px solid var(--jumia-border);
+        padding-bottom: 1.25rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dashboard-title {
+        color: var(--jumia-dark);
+        font-weight: 700;
+        font-size: 1.75rem;
+        letter-spacing: -0.5px;
+        margin: 0;
+        position: relative;
+        display: inline-block;
+    }
+
+        .dashboard-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--jumia-orange);
+            border-radius: 2px;
+        }
+
+    /* Premium controls section */
+    .dashboard-controls {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .jumia-orange-icon {
+        color: #f68b1e; /* Jumia's brand orange */
+    }
+
+    .search-container {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+        .search-container i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+    #OrdersSearch {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border-radius: 8px;
+        border: 1px solid var(--jumia-border);
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background-color: var(--jumia-light);
+    }
+
+        #OrdersSearch:focus {
+            border-color: var(--jumia-orange);
+            box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.2);
+            background-color: white;
+            outline: none;
+        }
+
+    .filter-container {
+        position: relative;
+    }
+
+    #OrdersStatusFilter {
+        appearance: none;
+        padding: 0.75rem 3rem 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--jumia-border);
+        font-size: 0.95rem;
+        background-color: var(--jumia-light);
+        cursor: pointer;
+        transition: all 0.3s;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 12px;
+    }
+
+        #OrdersStatusFilter:focus {
+            border-color: var(--jumia-orange);
+            box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.2);
+            background-color: white;
+            outline: none;
+        }
+
+    /* Premium table styling */
+    .table-container {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--jumia-border);
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+
+        .orders-table thead th {
+            background-color: var(--jumia-orange);
+            color: white;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+            border: none;
+            position: relative;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .orders-table thead th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 60%;
+                width: 1px;
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+        .orders-table tbody tr {
+            transition: all 0.25s ease;
+        }
+
+            .orders-table tbody tr:nth-child(even) {
+                background-color: var(--jumia-light);
+            }
+
+            .orders-table tbody tr:hover {
+                background-color: var(--jumia-orange-light);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+
+        .orders-table td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+            border-top: 1px solid var(--jumia-border);
+            color: var(--jumia-dark);
+            font-size: 0.95rem;
+        }
+
+    /* Premium status badges */
+    .status-badge {
+        padding: 0.5em 1em;
+        font-weight: 600;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .status-badge i {
+            font-size: 0.7rem;
+        }
+
+    .status-processing {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+    }
+
+    .status-shipped {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+    }
+
+    .status-delivered {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+    }
+
+    /* Premium action buttons */
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .view-btn {
+        background-color: var(--jumia-orange);
+        color: white;
+        box-shadow: 0 2px 6px rgba(246, 139, 30, 0.3);
+    }
+
+        .view-btn:hover {
+            background-color: var(--jumia-orange-dark);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(246, 139, 30, 0.4);
+        }
+
+    /* Premium no results message */
+    .no-results-container {
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: var(--jumia-light);
+        border-radius: 8px;
+    }
+
+    .no-results-icon {
+        font-size: 3.5rem;
+        color: var(--jumia-orange);
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+    }
+
+    .no-results-title {
+        color: var(--jumia-dark);
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-results-subtitle {
+        color: #777;
+        font-size: 1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Premium pagination */
+    .dashboard-pagination {
+        margin-top: 2.5rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .page-item {
+        margin: 0;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px !important;
+        color: var(--jumia-dark);
+        border: 1px solid var(--jumia-border);
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+        .page-link:hover {
+            background-color: var(--jumia-orange-light);
+            color: var(--jumia-orange);
+            border-color: var(--jumia-orange-light);
+            transform: translateY(-2px);
+        }
+
+    .page-item.active .page-link {
+        background-color: var(--jumia-orange);
+        border-color: var(--jumia-orange);
+        color: white;
+        box-shadow: 0 4px 8px rgba(246, 139, 30, 0.3);
+    }
+
+    /* Premium responsive adjustments */
+    @@media (max-width: 992px) {
+        .dashboard-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .search-container {
+            max-width: 100%;
+        }
+    }
+
+    @@media (max-width: 1200px) {
+        .orders-dashboard {
+            padding: 1.5rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+        }
+
+        .orders-table thead {
+            display: none;
+        }
+
+        .orders-table tbody tr {
+            display: block;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--jumia-border);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+            .orders-table tbody tr:hover {
+                transform: none;
+            }
+
+        .orders-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+            .orders-table td:last-child {
+                border-bottom: none;
+                justify-content: center;
+                padding-top: 1rem;
+            }
+
+            .orders-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--jumia-dark);
+                margin-right: 1rem;
+                flex: 1;
+            }
+
+            .orders-table td > *:last-child {
+                flex: 2;
+                text-align: right;
+            }
+
+            .orders-table td:last-child > * {
+                width: 100%;
+            }
+    }
+
+    @@media (max-width: 576px) {
+        .orders-dashboard {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .dashboard-title {
+            font-size: 1.3rem;
+        }
+
+        .no-results-icon {
+            font-size: 2.5rem;
+        }
+
+        .no-results-title {
+            font-size: 1.2rem;
+        }
+
+        .page-link {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="orders-dashboard">
+    <div class="dashboard-header">
+        <h2 class="dashboard-title"><i class="bi bi-bag jumia-orange-icon"></i> Orders Dashboard</h2>
+    </div>
+
+    <!-- Premium search and filter section -->
+    <div class="dashboard-controls">
+        <div class="search-container">
+            <i class="bi bi-search"></i>
+            <input type="text" id="OrdersSearch" class="form-control" placeholder="Search orders by customer, ID..."
+                   value="@ViewBag.SearchTerm"
+                   onkeyup="handleSearch('Orders')">
+        </div>
+        <div class="filter-container">
+            <select id="OrdersStatusFilter" class="form-select" onchange="handleStatusFilterChange('Orders')">
+                <option value="all" selected="@(ViewBag.StatusFilter == "all")">All</option>
+                <option value="Processing" selected="@(ViewBag.StatusFilter == "Processing")">Processing</option>
+                <option value="Shipped" selected="@(ViewBag.StatusFilter == "Shipped")">Shipped</option>
+                <option value="Delivered" selected="@(ViewBag.StatusFilter == "Delivered")">Delivered</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Premium orders table -->
+    <div class="table-container">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="orderTable">
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td data-label="Order ID">#@order.OrderId</td>
+                            <td data-label="Customer">
+                                <div class="d-flex align-items-center">
+                                    <div class="ms-2">
+                                        <div class="fw-semibold">@order.User.UserName</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="Total">@order.TotalAmount.ToString("C")</td>
+                            <td data-label="Date">@order.OrderDate?.ToString("MMM dd, yyyy")</td>
+                            <td data-label="Location">
+                                <div class="text-truncate" style="max-width: 150px;" title="@order.Address.Country, @order.Address.City, @order.Address.Street">
+                                    @order.Address.Country, @order.Address.City
+                                </div>
+                            </td>
+                            <td data-label="Status">
+                                @if (order.OrderStatus == "Processing")
+                                {
+                                    <span class="status-badge status-processing">
+                                        <i class="bi bi-hourglass-split"></i> Processing
+                                    </span>
+                                }
+                                else if (order.OrderStatus == "Shipped")
+                                {
+                                    <span class="status-badge status-shipped">
+                                        <i class="bi bi-truck"></i> Shipped
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-delivered">
+                                        <i class="bi bi-check-circle"></i> Delivered
+                                    </span>
+                                }
+                            </td>
+                            <td data-label="Actions">
+                                <a class="action-btn view-btn" asp-action="OrderDetails" asp-controller="Admin" asp-route-id="@order.OrderId" asp-route-pageNum="@ViewBag.currentPage">
+                                    <i class="bi bi-eye-fill"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="no-results-container">
+                                <div class="no-results-icon">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                                <h5 class="no-results-title">No Orders Found</h5>
+                                <p class="no-results-subtitle">
+                                    We couldn't find any orders matching your criteria. Try adjusting your search or filter settings.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Premium pagination -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="dashboard-pagination">
+            <nav aria-label="Orders pagination">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= ViewBag.TotalPagesCount; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="javascript:void(0);"
+                               onclick="loadContent('Orders', @i, '@ViewBag.SearchTerm', '@ViewBag.StatusFilter')">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<script>
+    // Add interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add data-labels for responsive table
+        const cells = document.querySelectorAll('tbody td');
+        const headers = document.querySelectorAll('thead th');
+
+        cells.forEach((cell, index) => {
+            const headerIndex = index % headers.length;
+            if (headers[headerIndex]) {
+                cell.setAttribute('data-label', headers[headerIndex].textContent);
+            }
+        });
+
+        // Add tooltips to truncated elements
+        const truncatedElements = document.querySelectorAll('.text-truncate');
+        truncatedElements.forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                if (this.offsetWidth < this.scrollWidth) {
+                    this.setAttribute('title', this.textContent);
+                }
+            });
+        });
+    });
+</script>

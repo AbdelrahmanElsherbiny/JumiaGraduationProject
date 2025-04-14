@@ -15,5 +15,6 @@ namespace JumiaProject.Controllers
         {
             return View();
         }
+        
     }
 }

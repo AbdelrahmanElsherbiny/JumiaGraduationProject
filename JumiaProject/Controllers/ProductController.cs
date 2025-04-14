@@ -5,14 +5,10 @@ namespace JumiaProject.Controllers
 {
     public class ProductController : Controller
     {
-        IProduct product;
+        IProduct Product;
         public ProductController(IProduct _product)
         {
-            product = _product;
-        }
-        public IActionResult Index()
-        {
-            return View();
+            Product = _product;
         }
     }
 }

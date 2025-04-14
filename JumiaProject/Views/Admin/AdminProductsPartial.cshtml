@@ -1,0 +1,636 @@
+﻿@model List<Product>
+
+<style>
+    /* Premium Products Dashboard Styles */
+    .products-dashboard {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid #eaeaea;
+        transition: all 0.3s ease;
+    }
+
+        .products-dashboard:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+    .products-header {
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 1.25rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .products-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        letter-spacing: -0.5px;
+        margin: 0;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .products-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: #f68b1e;
+            border-radius: 2px;
+        }
+
+        .products-title i {
+            color: #f68b1e;
+            font-size: 1.5rem;
+        }
+
+    .products-controls {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .products-search-container {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+        .products-search-container i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+    #ProductsSearch {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border-radius: 8px;
+        border: 1px solid #eaeaea;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background-color: #f9f9f9;
+    }
+
+        #ProductsSearch:focus {
+            border-color: #f68b1e;
+            box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.2);
+            background-color: white;
+            outline: none;
+        }
+
+    .products-filter-container {
+        position: relative;
+    }
+
+    #ProductsStatusFilter {
+        appearance: none;
+        padding: 0.75rem 3rem 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: 1px solid #eaeaea;
+        font-size: 0.95rem;
+        background-color: #f9f9f9;
+        cursor: pointer;
+        transition: all 0.3s;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 12px;
+    }
+
+        #ProductsStatusFilter:focus {
+            border-color: #f68b1e;
+            box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.2);
+            background-color: white;
+            outline: none;
+        }
+
+    .products-table-container {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+    }
+
+    .products-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+
+        .products-table thead th {
+            background-color: #f68b1e;
+            color: white;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+            border: none;
+            position: relative;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .products-table thead th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 60%;
+                width: 1px;
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+        .products-table tbody tr {
+            transition: all 0.25s ease;
+        }
+
+            .products-table tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+            .products-table tbody tr:hover {
+                background-color: #fff3e8;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+
+        .products-table td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+            color: #2a2a2a;
+            font-size: 0.95rem;
+        }
+
+    .product-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #eee;
+    }
+
+    /* Status badges */
+    .badge-available {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+        padding: 0.5em 1em;
+        font-weight: 600;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .badge-out-of-stock {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+        padding: 0.5em 1em;
+        font-weight: 600;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Action buttons */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        margin: 0.25rem;
+        white-space: nowrap;
+    }
+
+    .btn-approve {
+        background-color: #28a745;
+        color: white;
+        box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+    }
+
+        .btn-approve:hover {
+            background-color: #218838;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+    .btn-reject {
+        background-color: #dc3545;
+        color: white;
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+    }
+
+        .btn-reject:hover {
+            background-color: #c82333;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+    .btn-view {
+        background-color: #f68b1e;
+        color: white;
+        box-shadow: 0 2px 6px rgba(246, 139, 30, 0.3);
+    }
+
+        .btn-view:hover {
+            background-color: #e07d1a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(246, 139, 30, 0.4);
+        }
+
+    .btn-delete {
+        background-color: #6c757d;
+        color: white;
+        box-shadow: 0 2px 6px rgba(108, 117, 125, 0.3);
+    }
+
+        .btn-delete:hover {
+            background-color: #5a6268;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+        }
+
+    /* No results message */
+    .no-results-container {
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .no-results-icon {
+        font-size: 3.5rem;
+        color: #f68b1e;
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+    }
+
+    .no-results-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-results-subtitle {
+        color: #777;
+        font-size: 1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Pagination */
+    .products-pagination {
+        margin-top: 2.5rem;
+    }
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+        .products-pagination .page-item {
+            margin: 0;
+        }
+
+        .products-pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px !important;
+            color: #2a2a2a;
+            border: 1px solid #eaeaea;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+            .products-pagination .page-link:hover {
+                background-color: #fff3e8;
+                color: #f68b1e;
+                border-color: #fff3e8;
+                transform: translateY(-2px);
+            }
+
+        .products-pagination .page-item.active .page-link {
+            background-color: #f68b1e;
+            border-color: #f68b1e;
+            color: white;
+            box-shadow: 0 4px 8px rgba(246, 139, 30, 0.3);
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .products-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .products-search-container {
+            max-width: 100%;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .products-dashboard {
+            padding: 1.5rem;
+        }
+
+        .products-title {
+            font-size: 1.5rem;
+        }
+
+        .products-table thead {
+            display: none;
+        }
+
+        .products-table tbody tr {
+            display: block;
+            margin-bottom: 1.5rem;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+            .products-table tbody tr:hover {
+                transform: none;
+            }
+
+        .products-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+            .products-table td:last-child {
+                border-bottom: none;
+                justify-content: center;
+                padding-top: 1rem;
+            }
+
+            .products-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #2a2a2a;
+                margin-right: 1rem;
+                flex: 1;
+            }
+
+            .products-table td > *:last-child {
+                flex: 2;
+                text-align: right;
+            }
+
+            .products-table td:last-child > * {
+                width: 100%;
+            }
+
+        .btn-action {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .products-dashboard {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .products-title {
+            font-size: 1.3rem;
+        }
+
+        .no-results-icon {
+            font-size: 2.5rem;
+        }
+
+        .no-results-title {
+            font-size: 1.2rem;
+        }
+
+        .products-pagination .page-link {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="products-dashboard">
+    <div class="products-header">
+        <h2 class="products-title">
+            <i class="bi bi-box-seam"></i>Products Management
+        </h2>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="products-controls">
+        <div class="products-search-container">
+            <i class="bi bi-search"></i>
+            <input type="text" id="ProductsSearch" class="form-control"
+                   placeholder="Search products by name..."
+                   value="@ViewBag.SearchTerm"
+                   onkeyup="handleSearch('Products')">
+        </div>
+        <div class="products-filter-container">
+            <select id="ProductsStatusFilter" class="form-select" onchange="handleStatusFilterChange('Products')">
+                <option value="all" selected="@(ViewBag.StatusFilter == "all")">All</option>
+                <option value="available" selected="@(ViewBag.StatusFilter == "available")">Available</option>
+                <option value="out-of-stock" selected="@(ViewBag.StatusFilter == "out-of-stock")">Out of Stock</option>
+                <option value="pending" selected="@(ViewBag.StatusFilter == "pending")">Pending Approval</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="products-table-container">
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Seller</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productTable">
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">#@p.ProductId</td>
+                            <td data-label="Product">
+                                <div class="fw-semibold">@p.Name</div>
+                                @if (!string.IsNullOrEmpty(p.Description) && p.Description.Length > 30)
+                                {
+                                    <div class="text-muted small mt-1">@p.Description.Substring(0, 30)...</div>
+                                }
+                                else if (!string.IsNullOrEmpty(p.Description))
+                                {
+                                    <div class="text-muted small mt-1">@p.Description</div>
+                                }
+                            </td>
+                            <td data-label="Seller">@(p?.Seller?.StoreName ?? "N/A")</td>
+                            <td data-label="Price">@p.Price.ToString("C")</td>
+                            <td data-label="Stock">
+                                <span class="@(p.Stock > 0 ? "badge-available" : "badge-out-of-stock")">
+                                    <i class="bi @(p.Stock > 0 ? "bi-check-circle" : "bi-exclamation-circle")"></i>
+                                    @p.Stock @(p.Stock > 0 ? "In Stock" : "Out of Stock")
+                                </span>
+                            </td>
+                            <td data-label="Image">
+                                <img src="@Url.Content(p.ProductImages.FirstOrDefault(i => i.IsPrimary == true)?.ImageUrl ?? "/images/default-product.png")"
+                                     alt="Product Image"
+                                     class="product-img">
+                            </td>
+                            <td data-label="Actions">
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    @if (p.IsApprovedFromAdmin == "Pending")
+                                    {
+                                        <a class="btn-action btn-approve"
+                                           asp-route-id="@p.ProductId"
+                                           asp-route-currentPage="@ViewBag.CurrentPage"
+                                           asp-action="VerifyProduct"
+                                           asp-controller="Admin">
+                                            <i class="bi bi-check"></i> Approve
+                                        </a>
+                                        <a class="btn-action btn-reject"
+                                           asp-route-id="@p.ProductId"
+                                           asp-route-currentPage="@ViewBag.CurrentPage"
+                                           asp-action="UnVerifyProduct"
+                                           asp-controller="Admin">
+                                            <i class="bi bi-x-circle"></i> Reject
+                                        </a>
+                                    }
+                                    <a class="btn-action btn-view"
+                                       asp-route-id="@p.ProductId"
+                                       asp-route-currentPage="@ViewBag.CurrentPage"
+                                       asp-action="ProductDetails"
+                                       asp-controller="Admin">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    @if (p.IsApprovedFromAdmin != "Pending")
+                                    {
+                                        <a class="btn-action btn-delete"
+                                           asp-route-id="@p.ProductId"
+                                           asp-route-currentPage="@ViewBag.CurrentPage"
+                                           asp-action="DeleteProduct"
+                                           asp-controller="Admin"
+                                           onclick="return confirm('Are you sure you want to delete this product?');">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="no-results-container">
+                                <div class="no-results-icon">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+                                <h5 class="no-results-title">No Products Found</h5>
+                                <p class="no-results-subtitle">
+                                    We couldn't find any products matching your criteria. Try adjusting your search or filter settings.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="products-pagination">
+            <nav aria-label="Product pagination">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= ViewBag.TotalPagesCount; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="javascript:void(0);"
+                               onclick="loadContent('Products', @i, '@ViewBag.SearchTerm', '@ViewBag.StatusFilter')">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<script>
+    // Add interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add data-labels for responsive table
+        const cells = document.querySelectorAll('#productTable td');
+        const headers = document.querySelectorAll('.products-table thead th');
+
+        cells.forEach((cell, index) => {
+            const headerIndex = index % headers.length;
+            if (headers[headerIndex]) {
+                cell.setAttribute('data-label', headers[headerIndex].textContent);
+            }
+        });
+
+        // Add confirmation for delete actions
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this product?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>
