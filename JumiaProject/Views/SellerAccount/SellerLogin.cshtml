@@ -1,0 +1,31 @@
+﻿@model SellerLoginViewModel;
+@{
+	Layout = "_RegisterSellerLayout";
+	ViewBag.Title = "Seller Login";
+}
+
+    <div class="d-flex  justify-content-center align-items-center flex-column vh-100">
+        <h2 class="mb-5">Vendor Center</h2>
+        <div class="px-3  bg-white shadow">
+            <div class="all-container d-flex  justify-content-center align-items-center flex-column">
+                <h3 class="my-color">Login</h3>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <form method="post" asp-action="SellerLogin" class=" d-flex justify-content-center align-items-center flex-column w-100">
+                    <input  asp-for="Email" class="form-control my-input mt-2 mb-2 p-3 bg-transparent" placeholder="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span><br />
+                    <input   asp-for="Password" class="form-control my-input mt-2 mb-2 p-3 bg-transparent" placeholder="Password" />
+                     <span asp-validation-for="Password" class="text-danger"></span><br />
+                    <div class="d-flex  justify-content-between align-items-center w-100">
+                        <span class="text-muted">   <input type="checkbox" value="true"> Remember Me</span>
+                        <button class="my-btn continue-btn border border-0 w-25 fw-bold" type="submit">Login</button>
+                    </div>
+                </form>
+                <a asp-action="ForgetPassword" asp-controller="SellerAccount" class="p lead text-decoration-none text-end my-color mt-2">Forget Password?</a>
+            </div>
+        </div>
+    <img src="~/images/logo.png" alt="Jumia" class="mt-4" />
+    </div>
+
+
+
+

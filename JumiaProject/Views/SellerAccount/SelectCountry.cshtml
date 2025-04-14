@@ -1,0 +1,48 @@
+﻿@model SellerCountryViewModel
+@{
+    Layout = "_RegisterSellerLayout";
+    ViewBag.Title = "Select Country";
+}
+    <div class="container d-flex justify-content-center align-items-center py-5">
+        <div class="row  d-flex justify-content-center mt-5">
+            <div class="col-lg-5  col-md-4 col-sm-8 py-5 d-flex justify-content-center align-items-center">
+                <img src="~/images/signup.svg" alt="sign up" class="w-100">
+            </div>
+            <div class="col-lg-7 col-md-8 col-sm-9  row justify-content-center">
+                <div class="px-3 py-2 col-lg-8 col-md-10 col-sm-12">
+                    <div class=" d-flex  justify-content-center align-items-center flex-column">
+                        <h2 class="welcome">Sell on Jumia</h2>
+                        <p class="text-muted registerText">Choose the country of your shop</p>
+                        <div class="d-flex justify-content-center align-items-center text-center flex-column w-100">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <form asp-action="SelectCountry" method="post" class=" d-flex justify-content-center align-items-center flex-column w-100  p-4 bg-white ">
+                                <select  asp-for="Country" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Select Your Country*">
+                                    <option value="">Select Your Country*</option>
+                                    <option value="egypt">Egypt</option>
+                                    <option value="morocco">Morocco</option>
+                                    <option value="ghana">Ghana</option>
+                                    <option value="nigeria">Nigeria</option>
+                                    <option value="sengal">Sengal</option>
+                                    <option value="uganda">Uganda</option>
+                                    <option value="kenya">Kenya</option>
+                                    <option value="ivorycosta">Ivory Costa</option>
+                                </select>
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                                <button class="my-btn continue-btn border border-0 w-100 mt-3 mb-2 rounded fw-bold" type="submit">Next</button>
+                                <label class="text-muted">Only for sellers registered & selling in their own country</label>
+                            </form>
+                            <span class="text-muted p mt-4">OR</span>
+                            <button class="my-btn bg-white text-primary border border-1 border-primary w-100 mt-3 mb-2 rounded" type="submit">Sell Globaly on jumia</button>
+                            <p class="mt-3 text-muted registerText">
+                                Register as a Jumia Global seller and sell your products across Africa.
+                                Know more about Jumia Global at - https://www.jumia-global.com/
+                            </p>
+                            <h6>Already have an account? <a href="" class="terms h6 text-decoration-none"> Sign in</a></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+

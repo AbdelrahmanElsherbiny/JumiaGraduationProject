@@ -16,16 +16,18 @@ namespace JumiaProject
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<JumiaContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseLazyLoadingProxies().UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddRazorPages();
 
-            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-            //.AddEntityFrameworkStores<JumiaContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+            })
+            .AddEntityFrameworkStores<JumiaContext>();
 
+            builder.Services.AddAuthorization();
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<JumiaContext>();
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ISeller, SellerRepo>();
@@ -34,6 +36,10 @@ namespace JumiaProject
             builder.Services.AddScoped<IProduct, ProductRepo>();
             builder.Services.AddScoped<IOrder, OrderRepo>();
             builder.Services.AddScoped<IUser, UserRepo>();
+            builder.Services.AddScoped<IAdmin, AdminRepo>();
+            builder.Services.AddScoped<ICategory, CategoryRepo>();
+            builder.Services.AddScoped<ISize, SizeRepo>();
+            builder.Services.AddScoped<ICategorySize, CategorySizeRepo>();
 
 
             var app = builder.Build();
@@ -58,7 +64,7 @@ namespace JumiaProject
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=admin}/{action=Index}/{id?}")
                 .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();

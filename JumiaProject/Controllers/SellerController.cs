@@ -5,10 +5,10 @@ namespace JumiaProject.Controllers
 {
     public class SellerController : Controller
     {
-        ISeller seller;
+        ISeller Seller;
         public SellerController(ISeller _seller)
         {
-            seller = _seller;
+            Seller = _seller;
         }
         public IActionResult Index()
         {

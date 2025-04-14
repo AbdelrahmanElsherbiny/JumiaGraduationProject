@@ -2,13 +2,14 @@
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
 {
     public class UserRepo:IUser
     {
         JumiaContext Context;
-        private readonly UserManager<ApplicationUser> UserManager;
+        UserManager<ApplicationUser> UserManager;
 
         public UserRepo(JumiaContext context, UserManager<ApplicationUser> _userManager)
         {
@@ -20,10 +21,10 @@ namespace JumiaProject.Repositories
             var users = await UserManager.GetUsersInRoleAsync("Customer");
             return users.Where(u => u.IsDeleted == false).ToList();
         }
-        public async Task<List<ApplicationUser>> GetCustomersPaginated(int page)
+        public async Task<List<ApplicationUser>> GetCustomersPaginated(int pageNum)
         {
             int pageSize = 10;
-            int skip = (page - 1) * pageSize;
+            int skip = (pageNum - 1) * pageSize;
             var users = await UserManager.GetUsersInRoleAsync("Customer");
             return users.Where(u => u.IsDeleted == false).Skip(skip).Take(pageSize).ToList();
         }
@@ -34,49 +35,62 @@ namespace JumiaProject.Repositories
         }
         public bool AddUser(ApplicationUser user)
         {
-            try
-            {
-                Context.Users.Add(user);
-                Context.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            Context.Users.Add(user);
+            Context.SaveChanges();
+            return true;
         }
         public bool UpdateUser(ApplicationUser user)
         {
-            try
+            Context.Users.Update(user);
+            Context.SaveChanges();
+            return true;
+        }
+        public bool DeleteUser(string id)
+        {
+            var user = Context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
             {
+                user.IsDeleted = true;
                 Context.Users.Update(user);
                 Context.SaveChanges();
                 return true;
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            return false;
         }
-        public bool DeleteUser(string id)
+        public async Task<List<ApplicationUser>> SearchCustomers(string searchTerm, int pageNum)
         {
-            try
+            var query = GetAllCustomers().Result.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                var user = Context.Users.FirstOrDefault(u => u.Id == id);
-                if (user != null)
-                {
-                    user.IsDeleted = true;
-                    Context.Users.Update(user);
-                    Context.SaveChanges();
-                    return true;
-                }
-                return false;
+                query = query.Where(u =>
+                    u.UserName.ToLower().Contains(searchTerm.ToLower()) ||
+                    u.Email.ToLower().Contains(searchTerm.ToLower()) ||
+                    (u.PhoneNumber != null && u.PhoneNumber.Contains(searchTerm)));
             }
-            catch (Exception)
-            {
-                return false;
-            }
+
+            return query
+                .OrderBy(u => u.Id)
+                .Skip((pageNum - 1) * 10)
+                .Take(10)
+                .ToList();
         }
+
+        public async Task<int> GetFilteredCustomersCount(string searchTerm)
+        {
+            var query = GetAllCustomers().Result.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(u =>
+                    u.UserName.ToLower().Contains(searchTerm.ToLower()) ||
+                    u.Email.ToLower().Contains(searchTerm.ToLower()) ||
+                    (u.PhoneNumber != null && u.PhoneNumber.Contains(searchTerm)));
+            }
+
+            return query.Count();
+        }
+
 
     }
 }
