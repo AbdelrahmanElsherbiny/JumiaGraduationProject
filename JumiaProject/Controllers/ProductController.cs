@@ -32,21 +32,10 @@ namespace JumiaProject.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error
+          
                 return StatusCode(500, "Internal server error");
             }
         }
-        //public IActionResult ShowProductDetails(int id)
-        //{
-        //    var productDetails = productRepo.GetProductById(id);
-        //    if (productDetails != null)
-        //    {
-        //        return View(productDetails);
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+ 
     }
 }
