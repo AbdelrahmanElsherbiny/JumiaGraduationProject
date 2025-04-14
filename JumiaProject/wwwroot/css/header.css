@@ -1,4 +1,10 @@
-﻿.flash-sale {
+﻿.header {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+}
+
+.flash-sale {
     display: flex;
     justify-content: center;
     background: #e60400;
@@ -33,7 +39,6 @@
  {
     color: #f68b1e !important;
 }
-
 
 .jumia-logo{
     height: 3em;

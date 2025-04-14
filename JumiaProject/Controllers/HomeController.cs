@@ -21,6 +21,13 @@ namespace JumiaProject.Controllers
             return View(homeVM);
         }
 
+        [HttpGet]
+        public HomeVM Search(string searchKey)
+        {
+            return home.Search(searchKey);
+            //return View("_HeaderPartial", products);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

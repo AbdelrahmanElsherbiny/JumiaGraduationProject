@@ -1,6 +1,7 @@
 ﻿using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
 {

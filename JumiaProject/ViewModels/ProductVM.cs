@@ -15,6 +15,6 @@ namespace JumiaProject.ViewModels
         public int Stock { get; set; }
 
         public int CategoryId { get; set; }
-
+        public Decimal? Discount { get; set; }
     }
 }

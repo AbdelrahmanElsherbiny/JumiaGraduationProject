@@ -1,4 +1,5 @@
 ﻿using JumiaProject.Models;
+using JumiaProject.Repositories;
 
 namespace JumiaProject.ViewModels
 {

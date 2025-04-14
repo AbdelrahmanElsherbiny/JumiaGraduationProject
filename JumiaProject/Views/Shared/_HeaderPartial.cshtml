@@ -1,17 +1,19 @@
-﻿<div class="flash-sale col-12">
+﻿@model HomeVM
+<div class="header col-12">
+<div class="flash-sale col-12">
     <img src="/images/home/flash-sale.png" class="col-10"/>
 </div>
 
-@* <div class="sell d-flex col-12"> *@
-@*     <div class="col-3"> *@
-@*         <a class="sell-on-jumia">Sell on jumia</a> *@
-@*     </div> *@
-@*     <div class="col-3">  *@
-@*          <img class="jumia-logo" src="~/images/home/logo.png" />  *@
-@*     </div> *@
-@* </div> *@
+@* <div class="sell d-flex col-12">  *@
+@*      <div class="col-3">  *@
+@*          <a class="sell-on-jumia">Sell on jumia</a>  *@
+@*      </div>  *@
+@*      <div class="col-3">  *@
+@*           <img class="jumia-logo" src="~/images/home/logo.png" />   *@
+@*      </div>  *@
+@* </div>  *@
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-0">
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-0 col-12">
     <div class="container col-12">
         <!-- logo -->
         <a class="navbar-brand col-2 d-flex" href="/">
@@ -20,14 +22,21 @@
 
         <div class="collapse navbar-collapse" id="navbarContent">
             <!-- search -->
-            <form action="@Url.Action("Search", "Home")" method="get" class="d-flex mx-3 flex-grow-1">
-                <div class="input-group">
-                    <input type="text" name="query" class="form-control" placeholder="🔍 Search products">
-                    <div>
-                        <button class="search" type="submit">Search</button>
-                    </div>
+            <div class="d-flex mx-3 flex-grow-1">
+                <div class="input-group"> 
+                  <input type="text" id="search-key" name="query" class="form-control" placeholder="🔍 Search products"> 
+                     <div> 
+                       <button class="search" onclick="search()">Search</button> 
+                     </div> 
                 </div>
-            </form>
+             </div>
+
+            @* <form asp-controller="Home" asp-action="Search">
+            @*     <p> *@
+            @*         <label>Title: <input id="search-key" type="text" name="searchKey"/></label> *@
+            @*         <input type="submit" value="Filter" /> *@
+            @*     </p> *@
+            @* </form> *@
 
             <!-- icons -->
             <ul class="navbar-nav">
@@ -53,3 +62,28 @@
         </div>
     </div>
 </nav>
+</div>
+
+<script>
+    var products;
+    function search(){
+        console.log("search");
+        var searchkey = document.getElementById("search-key").value;
+        $.ajax({
+            type: "get",
+            url: "https://localhost:7257/Home/Search",
+            data: {
+                searchKey: searchkey
+            },
+            dataType: "json",
+            success: function(data){
+               products = data.Products;
+               // if products is null
+            },
+            error: function(err){
+            console.log(err);
+            }
+        })
+
+    }
+</script>
