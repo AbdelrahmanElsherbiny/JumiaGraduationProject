@@ -118,7 +118,7 @@ namespace JumiaProject.Repositories
 
         private List<CategoryVM> GetCategoriesVM()
         {
-            List<Category> categories = category.GetCategories();
+            List<Category> categories = category.GetAllCategories();
             List<CategoryVM> categoriesVM = new List<CategoryVM>();
 
             foreach (Category category in categories)

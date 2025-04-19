@@ -28,7 +28,11 @@ namespace JumiaProject.Repositories
         }
         public List<Order> GetOrdersByUserId(string userId)
         {
-            return Context.Orders.Where(x => x.UserId == userId).ToList();
+            return Context.Orders.Where(x => x.UserId == userId && x.OrderStatus!="Canceled" && x.OrderStatus != "Returned").ToList();
+        }
+        public List<Order> GetCanceledOrdersByUserId(string userId)
+        {
+            return Context.Orders.Where(x => x.UserId == userId && (x.OrderStatus == "Canceled" || x.OrderStatus == "Returned")).ToList();
         }
         public List<Order> SearchOrders(string searchTerm, string statusFilter, int pageNum)
         {

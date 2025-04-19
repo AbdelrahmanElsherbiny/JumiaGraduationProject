@@ -60,7 +60,7 @@
 		@foreach (var category in Model.Categories)
 		{
 			<div class="card col-2">
-				<img src="@Url.Content("~/" + category.ImageUrl)" class="card-img-top" alt="@category.CategoryName">
+				<img src="@Url.Content(category.ImageUrl)" class="card-img-top" alt="@category.CategoryName">
 				<div class="card-body">
 					<span class="card-text">@category.CategoryName</span>
 				</div>

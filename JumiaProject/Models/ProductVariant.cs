@@ -18,4 +18,5 @@ public partial class ProductVariant
     public virtual Product Product { get; set; } = null!;
 
     public virtual Size Size { get; set; } = null!;
+    public virtual Wishlist Wishlist { get; set; } = null!;
 }
