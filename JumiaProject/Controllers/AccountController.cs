@@ -110,7 +110,7 @@ namespace JumiaProject.Controllers
                     if (found)
                     {
                         await signInManager.SignInAsync(userModel, true);
-                        return RedirectToAction("Privacy", "Home");
+                        return RedirectToAction("Index", "Admin");
                     }
                     else
                     {

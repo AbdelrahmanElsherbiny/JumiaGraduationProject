@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "OrderTracking";
+    var list = ViewBag.Order.Payments as List<Payment>;
+    var payment = list.FirstOrDefault();
+    var order = ViewBag.Order as Order;
+    var isDelivered = order.ShippingTrackings.Any(t => t.ShippingStatus.Equals("Delivered", StringComparison.OrdinalIgnoreCase));
+}
+<link rel="stylesheet" href="~/css/OrderTracking.css" />
+<div class="main">
+    <div class="side">
+        <partial name="_SideBarPartial"></partial>
+    </div>
+    <div class="order">
+        <div class="header1">
+            <h1 class="title"><a asp-action="OrderDetails" asp-controller="Profile" asp-route-id="@order.OrderId" class="back-button">←</a>Package History</h1>
+        </div>
+
+        <div class="package-history">
+            <ul class="timeline @(isDelivered ? "delivered" : "")">
+                @foreach (var tracking in order.ShippingTrackings.OrderBy(t => t.LastUpdated).ToList())
+                {
+                    <li class="completed">
+                        <span class="status">@tracking.ShippingStatus</span>
+                        <span class="date">@tracking.LastUpdated?.ToString("dddd, dd-MM")</span>
+                    </li>
+                }
+            </ul>
+
+            @if (order.OrderStatus == "Shipped")
+            {
+                <div class="shipping-message">
+                    It won't be long now! Your item/order has been shipped, and we'll notify you as soon as it's ready for delivery.
+                </div>
+            }
+        </div>
+    </div>
+</div>

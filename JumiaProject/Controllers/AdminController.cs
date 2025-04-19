@@ -30,7 +30,7 @@ namespace JumiaProject.Controllers
             CategorySize = _categorySize;
         }
 
-        public IActionResult Index(string sectionName, int pageNum = 1)
+        public IActionResult Index(string sectionName="", int pageNum = 1)
         {
             ViewBag.currentPage = pageNum;
             return View("Index", sectionName);
