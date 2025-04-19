@@ -1,0 +1,109 @@
+﻿@model BestProductViewModel
+@{
+    ViewData["Title"] = "GetBestSeller";
+}
+
+<div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
+</div>
+<div id="alertMessageFailUpdate" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-xmark text-white mx-2"></i> Fail to update Something went wrong
+</div>
+<div id="alertMessageAddtoCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to cart successfully
+</div>
+<div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
+</div>
+<div class="parentItem m-auto rounded bg-white">
+    <div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+        <h4 class="dark-color m-0">@ViewBag.PageName</h4>
+    </div>
+    <div class="cart-items-container p-2 pb-3 d-flex justify-content-around flex-wrap">
+        @foreach (Product product in @Model.Products)
+        {
+            var variant = product.ProductVariants.FirstOrDefault();
+            bool isInCart = Model.CartItems != null && Model.CartItems.Any(c => c.ProductId == product.ProductId);
+          
+
+                <div class="cartitemlarge bg-white p-2 rounded mb-3 d-flex flex-column justify-content-between">
+                      <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+                    <img src="~/images/best.jpg" alt="" class="">
+                    <p class="m-0 p-0 small14 text-black">@product.Name</p>
+                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+                    @if (product.Discount != 0)
+                    {
+                        <p class="disable-color  m-0 p-0 small14">
+                            <span class="text-decoration-line-through"> EGP @(@product.Price - (@product.Price * @product.Discount))</span>
+                            <span class="item-sale rounded item-position">@product.Discount%</span>
+                        </p> 
+                    }
+                </a>
+            
+                    @if (isInCart) 
+                    {
+                        <div class="cart-item-row d-flex align-items-center justify-content-center mt-2"
+                             data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
+                             data-stock="@variant?.Stock"
+                             data-product-id="product.ProductId">
+
+                            <div class="cart-quantity-controls quantity-controls d-flex px-1 justify-content-end align-items-center mt-4">
+                                <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-5 shadow-sm"
+                                        data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
+                                        data-stock="@variant?.Stock"
+                                        data-product-id="@product.ProductId"
+                                        data-novariantstock="@product.Stock">
+                                    −
+                                </button>
+                                <span class="quantity-display mx-2 dark-color" data-quantity="0">@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId).Quantity</span>
+                                <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-5 shadow-sm"
+                                        data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
+                                        data-stock="@variant?.Stock"
+                                        data-product-id="@product.ProductId"
+                                        data-novariantstock="@product.Stock">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="checkout-btn border border-0 rounded fw-medium w-100 add-to-cart-btn mt-4 cart-btn-best"
+                                data-product-id="@product.ProductId"
+                                data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
+                            Add to Cart
+                        </button>
+                    }
+            </div>
+          
+        }
+    </div>
+</div>
+<!--This is the popup for variant sizes Roma-->
+<div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-2">
+
+            <div class="modal-header border border-0">
+                <h6 class="modal-title dark-color">Please select a variation</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body border border-0">
+                <div id="variantOptions" class="d-flex flex-column gap-2">
+                </div>
+            </div>
+
+            <div class="modal-footer border border-0 d-flex justify-content-between">
+
+                <button class="continue-btn  rounded text-decoration-none text-center fs-6 py-2 " data-bs-dismiss="modal">Continue Shopping</button>
+                <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="Index" asp-controller="Cart">Go to Cart</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+}
+

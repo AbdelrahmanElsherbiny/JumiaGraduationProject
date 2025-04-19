@@ -63,6 +63,10 @@ namespace JumiaProject.Repositories
         {
             return Context.Products.Where(p => p.Category.CategoryId == id).ToList();
         }
+        public List<Product> GetProductsByBrand(int id)
+        {
+            return Context.Products.Where(p => p.BrandId == id).ToList();
+        }
         public List<Product> SearchProducts(string searchTerm, string statusFilter, int pageNum)
         {
             var query = Context.Products.Where(p=>p.IsDeleted == false && p.IsApprovedFromAdmin != "Not Approved").AsQueryable();
@@ -121,6 +125,21 @@ namespace JumiaProject.Repositories
             }
 
             return query.Count();
+        }
+        public  List<Product> Get6BestSeller()
+        {
+            var bestseller = Context.Products.OrderByDescending(p => p.SoldNumber).Take(6).ToList();
+            return bestseller;
+        }
+        public List<Product> GetBestSeller()
+        {
+            var bestseller = Context.Products.OrderByDescending(p => p.SoldNumber).ToList();
+            return bestseller;
+        }
+        public List<Product> GetMostDiscount()
+        {
+            var bestseller = Context.Products.Where(p=>p.Discount!=0).OrderByDescending(p => p.Discount).ToList();
+            return bestseller;
         }
     }
 }

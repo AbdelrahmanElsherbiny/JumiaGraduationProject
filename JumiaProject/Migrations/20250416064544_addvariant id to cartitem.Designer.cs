@@ -4,6 +4,7 @@ using JumiaProject.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JumiaProject.Migrations
 {
     [DbContext(typeof(JumiaContext))]
-    partial class JumiaContextModelSnapshot : ModelSnapshot
+    [Migration("20250416064544_addvariant id to cartitem")]
+    partial class addvariantidtocartitem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -780,9 +783,6 @@ namespace JumiaProject.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariantId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -791,10 +791,6 @@ namespace JumiaProject.Migrations
                         .HasName("PK__Wishlist__233189EB82DB5374");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductVariantId")
-                        .IsUnique()
-                        .HasFilter("[ProductVariantId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -1172,11 +1168,6 @@ namespace JumiaProject.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__Wishlists__Produ__74AE54BC");
 
-                    b.HasOne("JumiaProject.Models.ProductVariant", "ProductVariant")
-                        .WithOne("Wishlist")
-                        .HasForeignKey("JumiaProject.Models.Wishlist", "ProductVariantId")
-                        .HasConstraintName("FK__Wishlist__ProductVariant");
-
                     b.HasOne("JumiaProject.Models.ApplicationUser", "User")
                         .WithMany("WishlistItems")
                         .HasForeignKey("UserId")
@@ -1184,8 +1175,6 @@ namespace JumiaProject.Migrations
                         .HasConstraintName("FK__wishlist__User");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductVariant");
 
                     b.Navigation("User");
                 });
@@ -1304,12 +1293,6 @@ namespace JumiaProject.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Wishlists");
-                });
-
-            modelBuilder.Entity("JumiaProject.Models.ProductVariant", b =>
-                {
-                    b.Navigation("Wishlist")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Seller", b =>

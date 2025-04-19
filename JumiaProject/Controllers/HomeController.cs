@@ -3,14 +3,17 @@ using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.Repositories;
 using JumiaProject.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JumiaProject.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly IHome home;
-        public HomeController(IHome home)
+        readonly ICart cart;
+        readonly UserManager<ApplicationUser> userManager;
+        public HomeController(IHome home, ICart cart, UserManager<ApplicationUser> userManager) : base(cart, userManager)
         {
             this.home = home;
         }
