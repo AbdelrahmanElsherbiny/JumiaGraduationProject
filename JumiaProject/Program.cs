@@ -40,7 +40,9 @@ namespace JumiaProject
             builder.Services.AddScoped<ICategory, CategoryRepo>();
             builder.Services.AddScoped<ISize, SizeRepo>();
             builder.Services.AddScoped<ICategorySize, CategorySizeRepo>();
+            builder.Services.AddScoped<IProfile, ProfileRepo>();
 
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
@@ -64,7 +66,7 @@ namespace JumiaProject
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=admin}/{action=Index}/{id?}")
+                pattern: "{controller=profile}/{action=MyAccount}/{id?}")
                 .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();
