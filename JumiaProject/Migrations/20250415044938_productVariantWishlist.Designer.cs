@@ -4,6 +4,7 @@ using JumiaProject.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JumiaProject.Migrations
 {
     [DbContext(typeof(JumiaContext))]
-    partial class JumiaContextModelSnapshot : ModelSnapshot
+    [Migration("20250415044938_productVariantWishlist")]
+    partial class productVariantWishlist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,17 +215,12 @@ namespace JumiaProject.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VariantId")
-                        .HasColumnType("int");
-
                     b.HasKey("CartItemId")
                         .HasName("PK__CartItem__488B0B0A6F10138F");
 
                     b.HasIndex("CartId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("VariantId");
 
                     b.ToTable("CartItems");
                 });
@@ -970,16 +968,9 @@ namespace JumiaProject.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__CartItems__Produ__71D1E811");
 
-                    b.HasOne("JumiaProject.Models.ProductVariant", "Variant")
-                        .WithMany()
-                        .HasForeignKey("VariantId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-
-                    b.Navigation("Variant");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Category", b =>

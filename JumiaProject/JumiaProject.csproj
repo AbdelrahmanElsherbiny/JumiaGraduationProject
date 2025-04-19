@@ -14,6 +14,7 @@
   <ItemGroup>
     <Content Remove="Views\Order\Details.cshtml" />
     <Content Remove="Views\Product\Details.cshtml" />
+    <Content Remove="Views\Profile\Wishlist.cshtml" />
     <Content Remove="wwwroot\css\AdminProduct.css" />
   </ItemGroup>
 

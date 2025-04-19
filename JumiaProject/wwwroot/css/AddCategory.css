@@ -1,0 +1,188 @@
+﻿.admin-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.jumia-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.jumia-card-header {
+    background-color: #FF6700;
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.jumia-sub-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.jumia-sub-card-header {
+    background-color: #f8f9fa;
+    padding: 0.75rem 1.25rem;
+}
+
+.jumia-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.jumia-input, .jumia-select, .jumia-textarea {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+    .jumia-input:focus, .jumia-select:focus, .jumia-textarea:focus {
+        border-color: #FF6700;
+        box-shadow: 0 0 0 0.25rem rgba(255, 103, 0, 0.15);
+    }
+
+.jumia-upload-container {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.jumia-image-preview {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.jumia-switch .form-check-input:checked {
+    background-color: #FF6700;
+    border-color: #FF6700;
+}
+
+.jumia-btn-primary {
+    background-color: #FF6700;
+    border-color: #FF6700;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+}
+
+    .jumia-btn-primary:hover {
+        background-color: #e55c00;
+        border-color: #e55c00;
+    }
+
+.jumia-btn-secondary {
+    border: 1px solid #FF6700;
+    color: #FF6700;
+    background: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+}
+
+    .jumia-btn-secondary:hover {
+        background-color: #f8f9fa;
+    }
+
+.jumia-btn-outline {
+    border: 1px solid #ddd;
+    color: #333;
+    background: white;
+}
+
+.jumia-btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.jumia-error {
+    font-size: 0.85rem;
+}
+
+/* Improved Size Selector Styles */
+.jumia-size-selector-container {
+    position: relative;
+}
+
+.jumia-multiselect {
+    min-height: 46px;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+    .jumia-multiselect:focus {
+        border-color: #FF6700;
+        box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.15);
+    }
+
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    min-height: 46px;
+    padding: 4px;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #FF6700;
+    box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.15);
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #FF6700;
+    border: 1px solid #e55c00;
+    border-radius: 6px;
+    color: white;
+    padding: 2px 8px;
+    margin: 3px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: white;
+    margin-right: 4px;
+}
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+        color: #f8f9fa;
+    }
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #FF6700;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    margin-top: 6px;
+    padding: 0 8px;
+}
+
+.select2-container .select2-dropdown {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.jumia-size-input-group .input-group-text {
+    border-radius: 0 6px 6px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 0 0.5rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+}

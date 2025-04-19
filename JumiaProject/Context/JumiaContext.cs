@@ -431,6 +431,10 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.ClientSetNull)
                .HasConstraintName("FK__wishlist__User");
+            entity.HasOne(d => d.ProductVariant).WithOne(p => p.Wishlist)
+               .HasForeignKey<Wishlist>(d => d.ProductVariantId)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("FK__Wishlist__ProductVariant");
         });
 
         OnModelCreatingPartial(modelBuilder);
