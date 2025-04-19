@@ -1,4 +1,4 @@
-﻿.scroll-btn,
+﻿/*.scroll-btn,
 .carousel-control-prev,
 .carousel-control-next {
     position: absolute;
@@ -26,7 +26,7 @@
 .carousel:hover .carousel-control-next {
     opacity: 1;
     visibility: visible;
-}
+}*/
 .main_category {
     border-radius: .5em;
     border: 1px solid #8080804a;

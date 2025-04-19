@@ -1,4 +1,4 @@
-﻿@model HomeVM
+﻿@* @model HomeVM *@
 <div class="header col-12">
 <div class="flash-sale col-12">
     <img src="/images/home/flash-sale.png" class="col-10"/>
@@ -52,12 +52,15 @@
                         <span class="nav d-none d-lg-inline">Help</span>
                     </a>
                 </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link hover-orange" href="/Cart">
-                        <i class="fas fa-shopping-cart fa-lg" style="fill: #313133; -webkit-text-stroke: 1px black;"></i>
-                        <span class="d-none d-lg-inline">Cart</span>
-                    </a>
-                </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-orange position-relative" asp-action="index" asp-controller="cart">
+                            <i class="fas fa-shopping-cart fa-lg " style="fill: #313133; -webkit-text-stroke: 1px black;"></i>
+                            @await Html.PartialAsync("_CartCountPartial")
+                            <span class="d-none d-lg-inline">Cart</span>
+                            
+                   </a> 
+                 </li>
+                   
             </ul>
         </div>
     </div>

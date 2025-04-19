@@ -128,6 +128,10 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__CartItems__Produ__71D1E811");
+            entity.HasOne(d => d.Variant)
+                .WithMany()
+                .HasForeignKey(d => d.VariantId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Category>(entity =>
