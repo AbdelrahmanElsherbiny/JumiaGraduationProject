@@ -97,7 +97,6 @@ body {
     justify-content: center;
     gap: 20px;
     margin-top: 115px;
-    padding: 20px;
     min-height: calc(100vh - var(--header-height) - 60px);
 }
 .side {

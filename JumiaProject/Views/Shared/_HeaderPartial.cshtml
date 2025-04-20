@@ -34,8 +34,8 @@
 					<li class="nav-item mx-2">
 						<div class="nav-link">
 							<div class="nav-button">
-								@* @if ((User.Identity.IsAuthenticated)) *@
-								@* { *@
+								@if (!(User.Identity.IsAuthenticated))
+								{
 									<div class="hover-orange">
 										<i class="far fa-user fa-lg"></i>
 										<button class="nav d-none d-lg-inline" onclick="showList()">Account</button>
@@ -46,21 +46,21 @@
 										</div>
 										<div class="icon-list-hover">
 											<i class="fa-regular fa-user"></i>
-											<a href="" class="icon-list">My Account</a>
+											<a href="/Profile/MyAccount" class="icon-list">My Account</a>
 										</div>
 										<div class="icon-list-hover">
-										<i class="fa-solid fa-box"></i>
-											<a href="" class="icon-list">Order</a>
+											<i class="fa-solid fa-box"></i>
+											<a href="/Profile/UserOrders" class="icon-list">Order</a>
 										</div>
 										<div class="icon-list-hover">
 											<i class="fa-regular fa-heart"></i>
-											<a href="" class="icon-list">Wishlist</a>
+											<a href="/Profile/UserWishlist" class="icon-list">Wishlist</a>
 										</div>
 									</div>
 
-								@* } *@
-								@* else *@
-								@* { *@
+								}
+								else
+								{
 									<div class="hover-orange">
 										<i class="far fa-user fa-lg"></i>
 										<button class="nav d-none d-lg-inline" onclick="showList()">Account</button>
@@ -68,94 +68,97 @@
 									<div id="dropdownList" class="list">
 										<div class="icon-list-hover">
 											<i class="fa-regular fa-user"></i>
-											<a href="" class="icon-list">My Account</a>
-										</div> 
+											<a href="/Profile/MyAccount" class="icon-list">My Account</a>
+										</div>
 										<div class="icon-list-hover">
-										<i class="fa-solid fa-box"></i>
-											<a href="" class="icon-list">Order</a> 
-										</div> 
+											<i class="fa-solid fa-box"></i>
+											<a href="/Profile/UserOrders" class="icon-list">Order</a>
+										</div>
 										<div class="icon-list-hover">
-											<i class="fa-regular fa-envelope"></i> 
-											<a href="" class="icon-list">Inbox</a> 
-										</div> 
+											<i class="fa-regular fa-envelope"></i>
+											<a href="" class="icon-list">Inbox</a>
+										</div>
 										<div class="icon-list-hover">
-											<i class="fa-regular fa-heart"></i> 
-											<a href="" class="icon-list">Wishlist</a> 
-										</div> 
+											<i class="fa-regular fa-heart"></i>
+											<a asp-controller="Profile" asp-action="UserWishlist" class="icon-list">Wishlist</a>
+										</div>
 										<div class="icon-list-hover">
-											<i class="fa-regular fa-ticket"></i> 
-											<a href="" class="icon-list">Vouchers</a> 
+											<i class="fa-regular fa-ticket"></i>
+											<a href="" class="icon-list">Vouchers</a>
 										</div>
 
 									</div>
-								@* } *@
-								</div>
+								}
 							</div>
+						</div>
 					</li>
 				</ul>
-						<div class="nav-item mx-2 hover-orange">
-							<div class="hover-orange nav-link" href="">
-								<i class="far fa-question-circle fa-lg"></i>
-								<button class="nav d-none d-lg-inline">Help</button>
-							</div>
-						</div>
-						<div class="nav-item mx-2 hover-orange">
-							<div class="hover-orange nav-link " href="">
-								<i class="fas fa-shopping-cart fa-lg" style="fill: #313133; -webkit-text-stroke: 1px black;"></i>
-								<button class="nav d-none d-lg-inline">Cart</button>
-							</div>
-						</div>
+				<div class="nav-item mx-2 hover-orange">
+					<div class="hover-orange nav-link" href="">
+						<i class="far fa-question-circle fa-lg"></i>
+						<button class="nav d-none d-lg-inline">Help</button>
+					</div>
 				</div>
+				<div class="nav-item mx-2 hover-orange">
+					<a class="nav-link hover-orange position-relative" asp-action="index" asp-controller="cart">
+						<i class="fas fa-shopping-cart fa-lg " style="fill: #313133; -webkit-text-stroke: 1px black;"></i>
+						@await Html.PartialAsync("_CartCountPartial")
+						<span class="d-none d-lg-inline">Cart</span>
+
+					</a>
+				</div>
+
 			</div>
-		</nav>
-	</div>
+		</div>
+	</nav>
+</div>
 
 
-	<script>
+<script>
 
-		var products;
-		function search(){
-			console.log("search");
-		var searchkey = document.getElementById("search-key").value;
-		$.ajax({
-			type: "get",
-		url: "https://localhost:7257/Home/Search",
-		data: {
-			searchKey: searchkey
-				},
-		dataType: "json",
-		success: function(data){
-			products = data.Products;
-				   // if products is null
-				},
-		error: function(err){
-			console.log(err);
-				}
-			})
-
-		}
-
-
-
-		function showList(){
-			document.getElementById("dropdownList").classList.toggle("show");
-		}
-
-		window.onclick = function(event) {
-		  if (!event.target.matches('.nav')) {
-			var dropdowns = document.getElementsByClassName("list");
-		var i;
-		for (i = 0; i < dropdowns.length; i++) {
-			  var openDropdown = dropdowns[i];
-		if (openDropdown.classList.contains('show')) {
-			openDropdown.classList.remove('show');
-			  }
+	var products;
+	function search(){
+		console.log("search");
+	var searchkey = document.getElementById("search-key").value;
+	$.ajax({
+		type: "get",
+	url: "https://localhost:7257/Home/Search",
+	data: {
+		searchKey: searchkey
+			},
+	dataType: "json",
+	success: function(data){
+		products = data.Products;
+			   // if products is null
+			},
+	error: function(err){
+		console.log(err);
 			}
+		})
+
+	}
+
+
+
+	function showList(){
+		document.getElementById("dropdownList").classList.toggle("show");
+	}
+
+	window.onclick = function(event) {
+	  if (!event.target.matches('.nav')) {
+		var dropdowns = document.getElementsByClassName("list");
+	var i;
+	for (i = 0; i < dropdowns.length; i++) {
+		  var openDropdown = dropdowns[i];
+	if (openDropdown.classList.contains('show')) {
+		openDropdown.classList.remove('show');
 		  }
 		}
+	  }
+	}
 
 
-	</script>
+</script>
 
 
 
