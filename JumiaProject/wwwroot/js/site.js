@@ -1,4 +1,27 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
+    $(document).ready(function () {
+        $("#myOwlCarousel").owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: true,
+            dots: false,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 3
+                },
+                1000: {
+                    items: 6
+                }
+            }
+        });
+    });
 
-// Write your JavaScript code.
+function updateCartCount() {
+    $.get("/Cart/GetCartCount", function (data) {
+        $("#cart-count").text(data);
+    });
+}
+setInterval(updateCartCount, 10000);

@@ -1,11 +1,12 @@
-﻿<div class="side-bar">
+﻿<link href="~/css/sideBar.css" rel="stylesheet" />
+<div class="side-bar">
 	<div class="side-line">
 		<i class="side-bar-icon fa-regular fa-user"></i>
 		<a asp-controller="Profile" asp-action="MyAccount" class="side-bar-link">My Jumia Account</a>
 	</div>
-	<div class="side-line">
+	<div class="side-line order-sidebar">
 		<i class="side-bar-icon fa-solid fa-box"></i>
-		<a href="" class="side-bar-link">Order</a>
+		<a asp-action="UserOrders" asp-controller="Profile" class="side-bar-link order-sidebar">Order</a>
 	</div>
 	<div class="side-line">
 		<i class="side-bar-icon side-bar-icon fa-regular fa-envelope"></i>
@@ -19,9 +20,9 @@
 		<i class="side-bar-icon fa-solid fa-ticket"></i>
 		<a href="" class="side-bar-link">vouchers</a>
 	</div>
-	<div class="side-line">
+	<div class="side-line wishlist-sidebar">
 		<i class="side-bar-icon fa-regular fa-heart"></i>
-		<a href="" class="side-bar-link">Wishlist</a>
+		<a asp-action="UserWishlist" asp-controller="Profile" class="side-bar-link wishlist-sidebar">Wishlist</a>
 	</div>
 	<div class="side-line">
 

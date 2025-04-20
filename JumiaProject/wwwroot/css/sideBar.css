@@ -6,7 +6,7 @@
     width: 17em;
 }
 .side-bar-link {
-/*    background-color: white;*/
+    background-color: white;
     text-decoration: none;
     border: none;
     color: #313133;
@@ -22,7 +22,7 @@
 .side-bar-icon {
     padding-right: 1em;
     width: 1.5em;
-    height:1.5em
+    height:1.2em
 }
 .side-line:hover,
 .side-line:hover a{

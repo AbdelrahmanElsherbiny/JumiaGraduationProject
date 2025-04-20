@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "UserOrders";
+}
+<link rel="stylesheet" href="~/css/UserOrders.css" />
+<div class="main">
+    <div class="side">
+            <partial name="_SideBarPartial"></partial>
+    </div>
+    <div class="order">
+        @if (ViewBag.orders.Count > 0)
+        {
+            <h3 class="order-title">Orders</h3>
+            <hr />
+            <div class="buttons">
+                <a asp-action="UserOrders" asp-controller="Profile" class="btn first">ONGOING/DELIVERED (@ViewBag.orders.Count)</a>
+                <a asp-action="CanceledOrders" asp-controller="Profile" class="btn second">CANCELED/RETURNED (@ViewBag.canceledOrders.Count)</a>
+            </div>
+            @foreach (var order in ViewBag.orders as List<Order>)
+            {
+                @foreach(var orderItem in order.OrderItems){
+                    <div class="items">
+                        <div>
+                            <img src="@Url.Content(orderItem.Product.ProductImages.FirstOrDefault(p => p.IsPrimary == true)?.ImageUrl)"
+                                 alt="Product Image"
+                                 class="product-image">
+                        </div>
+
+                        <div class="order-card">
+                            <p class="product-name">@orderItem.Product.Name</p>
+                            <p class="order-number">Order @orderItem.OrderId</p>
+                            <p class="order-date">@order.OrderDate</p>
+                            <p class="order-status status-@orderItem.Order.OrderStatus.ToLower()">
+                                @orderItem.Order.OrderStatus
+                            </p>
+                            <p class="delivary-time">Delivered within @order.ShippingMethod.EstimatedDeliveryTime</p>
+                        </div>
+                        <div class="details">
+                            <a class="btn see-details" asp-action="OrderDetails" asp-controller="Profile" asp-route-Id="@order.OrderId">
+								See Details
+                            </a>
+                        </div>
+                    </div>
+                }
+                
+            }
+        }
+        else
+        {
+            <div class="empty-order">
+                <h3 class="order-title">Order</h3>
+                <hr />
+                <div class="buttons">
+                    <a asp-action="UserOrders" asp-controller="Profile" class="btn first">ONGOING/DELIVERED (@ViewBag.orders.Count)</a>
+                    <a asp-action="CanceledOrders" asp-controller="Profile" class="btn second">CANCELED/RETURNED (@ViewBag.canceledOrders.Count)</a>
+                </div>
+                <div class="empty-content">
+                    <img src="~/images/orders.669c73dc.svg" alt="Empty order" class="empty-image" />
+                    <p class="empty-message">You have placed no orders yet!</p>
+                    <p class="empty-instruction">All your orders will be saved here for you to access their state anytime.</p>
+                    <a asp-action="Index" asp-controller="Home" class="btn-continue-shopping">Continue Shopping</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

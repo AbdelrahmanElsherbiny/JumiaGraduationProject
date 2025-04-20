@@ -18,6 +18,9 @@ namespace JumiaProject.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -62,7 +65,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ApplicationUser", b =>
@@ -160,7 +163,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("BrandId")
                         .HasName("PK__Brands__DAD4F05EEE70BA77");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Cart", b =>
@@ -209,6 +212,9 @@ namespace JumiaProject.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("VariantId")
+                        .HasColumnType("int");
+
                     b.HasKey("CartItemId")
                         .HasName("PK__CartItem__488B0B0A6F10138F");
 
@@ -216,7 +222,9 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.HasIndex("VariantId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Category", b =>
@@ -256,7 +264,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.CategorySize", b =>
@@ -280,7 +288,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("CategorySizes", (string)null);
+                    b.ToTable("CategorySizes");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Coupon", b =>
@@ -331,7 +339,7 @@ namespace JumiaProject.Migrations
                     b.HasIndex(new[] { "Code" }, "UQ__Coupons__A25C5AA712C28F2F")
                         .IsUnique();
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Order", b =>
@@ -380,7 +388,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.OrderItem", b =>
@@ -413,7 +421,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Payment", b =>
@@ -453,7 +461,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Product", b =>
@@ -540,7 +548,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ProductImage", b =>
@@ -570,7 +578,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages", (string)null);
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ProductVariant", b =>
@@ -602,7 +610,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductVariants", (string)null);
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Review", b =>
@@ -638,7 +646,7 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Seller", b =>
@@ -671,7 +679,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("SellerId")
                         .HasName("PK__Sellers__7FE3DB814B950AF1");
 
-                    b.ToTable("Sellers", (string)null);
+                    b.ToTable("Sellers");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ShippingMethod", b =>
@@ -699,7 +707,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("ShippingMethodId")
                         .HasName("PK__Shipping__0C7833A4E70B06C7");
 
-                    b.ToTable("ShippingMethods", (string)null);
+                    b.ToTable("ShippingMethods");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.ShippingTracking", b =>
@@ -758,7 +766,7 @@ namespace JumiaProject.Migrations
                     b.HasKey("SizeId")
                         .HasName("PK__Sizes__83BD097A2E47F4BF");
 
-                    b.ToTable("Sizes", (string)null);
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Wishlist", b =>
@@ -772,6 +780,9 @@ namespace JumiaProject.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProductVariantId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -781,9 +792,13 @@ namespace JumiaProject.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("ProductVariantId")
+                        .IsUnique()
+                        .HasFilter("[ProductVariantId] IS NOT NULL");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -866,12 +881,10 @@ namespace JumiaProject.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -908,12 +921,10 @@ namespace JumiaProject.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -959,9 +970,16 @@ namespace JumiaProject.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__CartItems__Produ__71D1E811");
 
+                    b.HasOne("JumiaProject.Models.ProductVariant", "Variant")
+                        .WithMany()
+                        .HasForeignKey("VariantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
+
+                    b.Navigation("Variant");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Category", b =>
@@ -1154,6 +1172,11 @@ namespace JumiaProject.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__Wishlists__Produ__74AE54BC");
 
+                    b.HasOne("JumiaProject.Models.ProductVariant", "ProductVariant")
+                        .WithOne("Wishlist")
+                        .HasForeignKey("JumiaProject.Models.Wishlist", "ProductVariantId")
+                        .HasConstraintName("FK__Wishlist__ProductVariant");
+
                     b.HasOne("JumiaProject.Models.ApplicationUser", "User")
                         .WithMany("WishlistItems")
                         .HasForeignKey("UserId")
@@ -1161,6 +1184,8 @@ namespace JumiaProject.Migrations
                         .HasConstraintName("FK__wishlist__User");
 
                     b.Navigation("Product");
+
+                    b.Navigation("ProductVariant");
 
                     b.Navigation("User");
                 });
@@ -1279,6 +1304,12 @@ namespace JumiaProject.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Wishlists");
+                });
+
+            modelBuilder.Entity("JumiaProject.Models.ProductVariant", b =>
+                {
+                    b.Navigation("Wishlist")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Seller", b =>
