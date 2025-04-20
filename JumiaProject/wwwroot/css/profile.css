@@ -1,0 +1,122 @@
+﻿.profile-container {
+    background-color: white;
+    border-radius: 7px;
+}
+.profile-header {
+    border-bottom: 1px solid #343a4030;
+    padding: 8px 16px 8px 16px;
+    background-color: white;
+}
+.text-header {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #313133;
+}
+.header-box{
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #313133;
+}
+.table-left {
+    border: 1px solid #31313326;
+    border-radius: 5px;
+    margin: 20px 7px 20px 20px;
+    width: 50%;
+    height: 15em;
+}
+.table-right {
+    border: 1.5px solid #31313326;
+    border-radius: 5px;
+    margin: 20px 20px 20px 7px;
+    width: 50%;
+    height: 15em;
+}
+.pen {
+    color: #f68b1e;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.right {
+    display: flex;
+    justify-content: space-between;
+}
+.table-text {
+    padding-top: 1em;
+    color: #313133b5;
+    padding-left: 1em
+}
+.name {
+    padding-left: 1em;
+    padding-top: 1em;
+}
+.contain {
+    padding: .8em 0;
+    width: 50%;
+    position: relative;
+}
+.address-input {
+    padding: 10px;
+    margin:0 1.5em 0 1.5em;
+    width: 90%;
+    border: 1px solid #a3a3a6;
+    border-radius: 4px;
+    color: #313133;
+}
+.address-input-full {
+    padding: 10px;
+    margin: 0 1.5em 0 1.5em;
+    width: 920px;
+    border: 1px solid #a3a3a6;
+    border-radius: 4px;
+    color: #313133
+}
+.save {
+    background-color: #f68b1e;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 0 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+    display: block; 
+    margin-left: auto;
+    padding: 20px;
+}
+.save:hover{
+    background-color: #e07d1a;
+}
+
+.address-lable {
+    position: absolute;
+    top: 10px;
+    left: 40px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px; 
+}
+.first {
+    padding-top: 15px;
+}
+.address-input:focus {
+    border-color: #f68b1e;
+    outline: none;
+}
+.address-input-full:focus {
+    border-color: #f68b1e;
+    outline: none;
+}
+    .address-input:focus + .address-label {
+        color: #f68b1e;
+        font-weight: bold;
+    }
+.text-danger {
+    padding-left: 30px;
+}

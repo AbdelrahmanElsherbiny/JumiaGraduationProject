@@ -1,4 +1,4 @@
-﻿ @model HomeVM
+﻿@model HomeVM
 <div class="slider-container d-flex justify-content-between mt-3 col-12">
 
 	<div class="category-names col-2">
@@ -34,17 +34,26 @@
 	<div class="category-sidebar col-2 shadow-sm d-flex">
 		<div class="bg-white col-12 join-container">
 			<div class="sidebar-section mb-3">
-				<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Join Jumia</a>
+				<div class="d-flex">
+					<img src="images/home/1.png" class="sid-bar-img p-1" />
+					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Join Jumia</a>
+				</div>
 				<p class="small text-muted">as a Sales Consultant</p>
 			</div>
 
 			<div class="sidebar-section mb-3">
-				<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Sell on jumia</a>
+				<div class="d-flex">
+					<img src="images/home/2.png" class="sid-bar-img p-1" />
+					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Sell on jumia</a>
+				</div>
 				<p class="small text-muted">And Grow Your Business</p>
 			</div>
 
 			<div class="sidebar-section mb-3">
-				<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Warranty</a>
+				<div class="d-flex">
+					<img src="images/home/2.png" class="sid-bar-img p-1" />
+					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Warranty</a>
+                </div>
 				<p class="small text-muted">On Your Purchases</p>
 			</div>
 		</div>
@@ -75,7 +84,7 @@
 <div class="product-by-category">
 	<div class="mt-5">
 		<div class="d-flex flex-column">
-			@for(int i = 6; i < 9; i++)
+			@for(int i = 0; i < 3; i++)
 			{
 				<div class="card-product text-center" style="min-width: 250px;">
 						 <div class="card-body-product d-flex  justify-content-between">

@@ -16,6 +16,12 @@ namespace JumiaProject.Repositories
             Context = context;
             UserManager = _userManager;
         }
+        public async Task<ApplicationUser> GetUserById(string id)
+        {
+            return await Context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+
         public async Task<List<ApplicationUser>> GetAllCustomers()
         {
             var users = await UserManager.GetUsersInRoleAsync("Customer");
@@ -28,11 +34,7 @@ namespace JumiaProject.Repositories
             var users = await UserManager.GetUsersInRoleAsync("Customer");
             return users.Where(u => u.IsDeleted == false).Skip(skip).Take(pageSize).ToList();
         }
-        public ApplicationUser GetUserById(string id)
-        {
-            var user = Context.Users.FirstOrDefault(u => u.Id == id);
-            return user;
-        }
+
         public bool AddUser(ApplicationUser user)
         {
             Context.Users.Add(user);

@@ -1,6 +1,8 @@
 ﻿.side-bar {
     background-color: white;
-    border-radius: 5px;
+    margin-right: 1em;
+    margin-left: 2em;
+    border-radius: 7px;
     width: 17em;
 }
 .side-bar-link {
@@ -25,11 +27,13 @@
 .side-line:hover,
 .side-line:hover a{
     background-color: #f1f1f2;
+    font-weight: 600;
 }
 .side-bar-button {
     background-color: white;
     border: none;
     color: #f68b1e;
+    font-weight: 600;
 }
     .side-bar-button:hover {
         background-color: #fcdbb9;
@@ -42,4 +46,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.side-line.active {
+    background-color: #31313338;
+}
+.side-line:not(.active):hover,
+.side-line:not(.active):hover a {
+    background-color: #f1f1f2;
+    font-weight: 600;
 }
