@@ -126,6 +126,8 @@ namespace JumiaProject.Controllers
             ViewBag.wishlistItems = wishlistItems;
             return View();
         }
+
+
         [HttpPost]
         public IActionResult AddToWishlist(int productId, int productVariantId)
         {
@@ -217,6 +219,37 @@ namespace JumiaProject.Controllers
             ViewBag.order = order;
             return View();
         }
+
+
+        [HttpPost]
+        public IActionResult ToggleWishlist(int productId, int? productVariantId)
+        {
+            var userId = UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return Json(new { success = false, loginRequired = true });
+            }
+            var existingWishlistItem = Wishlist.GetWishlistItem(userId, productId, productVariantId);
+
+            if (existingWishlistItem != null)
+            {
+               Wishlist.RemoveFromWishlist(existingWishlistItem.WishlistId);
+                return Json(new { success = true, result = false });
+            }
+            else
+            {
+                var wishlist = new Wishlist
+                {
+                    ProductId = productId,
+                    ProductVariantId = productVariantId,
+                    UserId = userId
+                };
+
+                Wishlist.AddToWishlist(wishlist);
+                return Json(new { success = true, result = true });
+            }
+        }
+
     }
 }
 

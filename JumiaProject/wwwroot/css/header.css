@@ -117,3 +117,75 @@ hover-orange:hover i,
 .list.show {
     display: block;
 }
+.nav-button {
+    display: flex;
+    align-items: center;
+}
+
+    .nav-button .nav {
+        display: inline-block; 
+        margin-left: 10px; 
+    }
+#searchResults {
+    width: 35em;
+    border: none;
+}
+#searchBrandResults {
+    width: 35em;
+    border: none;
+}
+.dropdown-item {
+    color: black;
+}
+    .dropdown-item:hover {
+        background-color: rgb(33 37 41 / 15%);
+    }
+    #searchResults a:focus,
+    #searchResults a:active {
+        color: white;
+        background-color: #f68b1e;
+        text-decoration: none;
+        outline: none;
+    }
+#search-key:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid #f68b1e;
+    caret-color: #f68b1e;
+}
+    
+    /*search*/
+    @media (max-width: 768px) {
+        .search-container {
+        max-width: 100%;
+    }
+
+        .search-container .form-control {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+        }
+
+        .search-container .search {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.9rem;
+        }
+
+    .custom-search-box {
+        width: 90%; 
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .list {
+        width: 100%; 
+        position: relative;
+    }
+
+    .nav-button .nav {
+        display: inline-block; 
+    }
+
+    .nav {
+        display: inline-block !important;
+    }
+}
+

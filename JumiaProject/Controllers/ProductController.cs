@@ -1,13 +1,17 @@
-﻿using JumiaProject.Interfaces;
+﻿using JumiaProject.Context;
+using JumiaProject.Interfaces;
 using JumiaProject.Models;
+using JumiaProject.Repositories;
 using JumiaProject.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Controllers
 {
     public class ProductController : BaseController
     {
+       private readonly JumiaContext _context;
        private readonly IProduct Product;
        private readonly  ICart _cart;
        private readonly  UserManager<ApplicationUser> _userManager;
@@ -42,45 +46,98 @@ namespace JumiaProject.Controllers
         }
 
 
-        public async Task<IActionResult> GetBestSeller()
+        public async Task<IActionResult> GetBestSeller(int pageIndex = 1, int pageSize = 10)
         {
             string userId = _userManager?.GetUserId(User);
-            var bestSellerProducts = Product.GetBestSeller();  
-            var cartItems = await _cart?.GetAllCartItems(userId);
+            var cartItems = new List<CartItem>();
+            if (userId != null)
+            {
+
+                cartItems = await _cart?.GetAllCartItems(userId);
+            }
+            var bestSellerProducts =  Product.GetBestSeller(pageIndex, pageSize);
+
+            int totalItems = Product.GetBestSellerCount();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
             BestProductViewModel data = new BestProductViewModel()
             {
                 Products = bestSellerProducts,
                 CartItems = cartItems,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageIndex,
+                PageSize = pageSize
             };
             ViewBag.PageName = "Best Sellers";
             return View(data);
         }
-        public async Task<IActionResult> GetMostDiscount()
+
+        public async Task<IActionResult> GetMostDiscount(int pageIndex = 1, int pageSize = 10)
         {
             string userId = _userManager?.GetUserId(User);
-            List<Product> mostDiscountProducts = Product.GetMostDiscount();
-            var cartItems = await _cart?.GetAllCartItems(userId);
+            var cartItems = new List<CartItem>();
+            if (userId != null)
+            {
+                cartItems = await _cart?.GetAllCartItems(userId);
+            }
+            int totalItems = Product.GetMostDiscountCount();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            List<Product> mostDiscountProducts = Product.GetMostDiscount(pageIndex, pageSize);
+
             BestProductViewModel data = new BestProductViewModel()
             {
                 Products = mostDiscountProducts,
                 CartItems = cartItems,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageIndex,
+                PageSize = pageSize
             };
             ViewBag.PageName = "Exclusive Offers | Up to 70% off";
-            return View("GetBestSeller",data);
+            return View("GetBestSeller", data);
         }
-
-        public async Task<IActionResult> GetBrandProducts(int id)
+        public async Task<IActionResult> GetBrandProducts(int id,int pageIndex = 1, int pageSize = 10)
         {
             string userId = _userManager?.GetUserId(User);
-            List<Product> mostDiscountProducts = Product.GetProductsByBrand(id);
             var cartItems = await _cart?.GetAllCartItems(userId);
+
+            List<Product> brandProducts = Product.GetProductsByBrand(id,pageIndex,pageSize);
+            int totalItems = Product.GetProductsByBrandCount(id);
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+
             BestProductViewModel data = new BestProductViewModel()
             {
-                Products = mostDiscountProducts,
+                BrandId = id,
+                Products = brandProducts,
                 CartItems = cartItems,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageIndex,
+                PageSize = pageSize
             };
             ViewBag.PageName = "Brand";
             return View("GetBestSeller", data);
+        }
+        [HttpGet]
+        public IActionResult Search(string query)
+        {
+            var results = string.IsNullOrWhiteSpace(query)
+         ? new List<ProductSearchVM>()
+         : Product.SearchProducts(query).Select(p => new ProductSearchVM
+         {
+             ProductId = p.ProductId,
+             Name = p.Name
+         })
+            .ToList();
+            return Json(results);
+        }
+        [HttpGet]
+        public IActionResult IsBrandExist(string brand)
+        {
+            int result = Product.IsExistBrand(brand);
+            return Json(new {result = result});
         }
 
     }
