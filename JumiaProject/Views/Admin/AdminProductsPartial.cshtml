@@ -513,7 +513,7 @@
                                 }
                             </td>
                             <td data-label="Seller">@(p?.Seller?.StoreName ?? "N/A")</td>
-                            <td data-label="Price">@p.Price.ToString("C")</td>
+                            <td data-label="Price">EGP @p.Price.ToString("N2")</td>
                             <td data-label="Stock">
                                 <span class="@(p.Stock > 0 ? "badge-available" : "badge-out-of-stock")">
                                     <i class="bi @(p.Stock > 0 ? "bi-check-circle" : "bi-exclamation-circle")"></i>

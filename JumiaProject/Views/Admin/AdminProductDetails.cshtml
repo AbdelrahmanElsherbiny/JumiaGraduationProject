@@ -84,11 +84,13 @@
                                 <table class="info-table">
                                     <tr>
                                         <td class="info-label">Price</td>
-                                        <td class="info-value">@Model.Price.ToString("C")</td>
+                                        <td class="info-value">EGP @Model.Price.ToString("N2")</td>
                                     </tr>
                                     <tr>
                                         <td class="info-label">Discount</td>
-                                        <td class="info-value">@(Model.Discount?.ToString("C") ?? "N/A")</td>
+                                        <td class="info-value">
+                                            @(Model.Discount > 0 ? (Model.Discount * 100) + " %" : "N/A")
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="info-label">Stock</td>

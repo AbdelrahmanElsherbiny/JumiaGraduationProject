@@ -467,7 +467,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td data-label="Total">@order.TotalAmount.ToString("C")</td>
+                            <td data-label="Total">EGP @order.TotalAmount.ToString("N2")</td>
                             <td data-label="Date">@order.OrderDate?.ToString("MMM dd, yyyy")</td>
                             <td data-label="Location">
                                 <div class="text-truncate" style="max-width: 150px;" title="@order.Address.Country, @order.Address.City, @order.Address.Street">
