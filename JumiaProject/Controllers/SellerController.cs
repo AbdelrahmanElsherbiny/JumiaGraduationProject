@@ -269,11 +269,6 @@ namespace JumiaProject.Controllers
                 }
 
                 Console.WriteLine("Creating product object...");
-                Console.WriteLine($"Name: {model.Name}");
-                Console.WriteLine($"CategoryId: {model.CategoryId}");
-                Console.WriteLine($"BrandId: {model.BrandId}");
-                Console.WriteLine($"Price: {model.Price}");
-                Console.WriteLine($"Stock: {model.Stock}");
 
                 // Create new product
                 var product = new Product
@@ -322,14 +317,14 @@ namespace JumiaProject.Controllers
                     Console.WriteLine("Primary image processed successfully");
                 }
 
-                // Handle additional images
-                if (model.AdditionalImages != null && model.AdditionalImages.Any())
+                // Handle additional images only if they exist and have content
+                if (model.AdditionalImages != null && model.AdditionalImages.Any(img => img.Length > 0))
                 {
                     Console.WriteLine($"Processing {model.AdditionalImages.Count} additional images...");
                     string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, "images", "products");
                     Directory.CreateDirectory(uploadsFolder);
 
-                    foreach (var image in model.AdditionalImages)
+                    foreach (var image in model.AdditionalImages.Where(img => img.Length > 0))
                     {
                         string uniqueFileName = Guid.NewGuid().ToString() + "_" + image.FileName;
                         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -513,6 +508,32 @@ namespace JumiaProject.Controllers
                 }).ToList();
 
             return View("SellerProductDetails", product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteProduct(int id)
+        {
+            try
+            {
+                string sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var product = ProductRepo.GetProductById(id);
+
+                if (product == null || product.SellerId != sellerId)
+                {
+                    return NotFound();
+                }
+
+                ProductRepo.DeleteProduct(id);
+                TempData["SuccessMessage"] = "Product deleted successfully.";
+                return RedirectToAction(nameof(ProductsList));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting product {ProductId}", id);
+                TempData["ErrorMessage"] = "Error deleting product. Please try again.";
+                return RedirectToAction(nameof(ProductsList));
+            }
         }
     }
 }

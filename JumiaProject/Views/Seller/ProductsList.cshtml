@@ -140,11 +140,15 @@
     .table td {
         vertical-align: middle;
         padding: 1rem;
+        text-align: center;
     }
 
     .table th {
         font-weight: 600;
         white-space: nowrap;
+        background-color: #dc8e26;
+        color: white;
+        padding: 1.25rem 1rem;
     }
 
     /* Status icons */
@@ -256,9 +260,71 @@
         margin-bottom: 0.5rem;
         color: #495057;
     }
+
+    /* Pagination enhancements */
+    .pagination {
+        gap: 0.25rem;
+    }
+
+    .page-link {
+        border: 1px solid #e9ecef;
+        color: #6c757d;
+        padding: 0.5rem 0.75rem;
+        min-width: 2.5rem;
+        text-align: center;
+        margin: 0;
+        transition: all 0.2s;
+    }
+
+    .page-link:hover {
+        background-color: #f8f9fa;
+        color: #dc8e26;
+        border-color: #dc8e26;
+    }
+
+    .page-link:focus {
+        box-shadow: none;
+        border-color: #dc8e26;
+    }
+
+    .page-item.active .page-link {
+        background-color: #dc8e26;
+        border-color: #dc8e26;
+        color: white;
+    }
+
+    .page-item.disabled .page-link {
+        background-color: #f8f9fa;
+        border-color: #e9ecef;
+        color: #6c757d;
+        opacity: 0.5;
+    }
+
+    /* Price display */
+    .price-display {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .discounted-price {
+        color: #dc8e26;
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #6c757d;
+        font-size: 0.875em;
+        margin-left: 0.5rem;
+    }
+
+    /* Items per page dropdown fix */
+    .form-select-sm {
+        padding-right: 2rem !important;
+        background-position: right 0.5rem center;
+    }
 </style>
 
-<div class="container-fluid">
+<div class="container-fluid py-4">
     <!-- Header with Search and Filter Controls -->
     <div class="row align-items-center mb-4">
         <div class="col-md-6">
@@ -296,82 +362,75 @@
     <div class="card">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="productsTable">
+                <table class="table table-hover align-middle" id="productsTable">
                     <thead>
                         <tr>
-                            <th class="text-center" style="width: 80px">Image</th>
+                            <th>Image</th>
                             <th>Name</th>
-                            <th>Seller SKU</th>
+                            <th>SKU</th>
+                            <th>Price</th>
+                            <th>Stock</th>
                             <th>Category</th>
-                            <th class="text-end">Price</th>
-                            <th class="text-center" style="width: 100px">Discount</th>
-                            <th class="text-end">Stock</th>
-                            <th class="text-end">Sold</th>
-                            <th class="text-center" style="width: 80px">Visible</th>
-                            <th class="text-end" style="width: 100px">Actions</th>
+                            <th>Status</th>
+                            <th>Discount</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var product in Model)
                         {
-                            <tr data-product-id="@product.ProductId" 
-                                data-original-price="@product.Price.ToString("0.00")"
-                                data-brand-id="@product.BrandId"
-                                data-category-id="@product.CategoryId">
-                                <td class="text-center">
-                                    @if (product.ProductImages != null && product.ProductImages.Any())
+                            <tr data-product-id="@product.ProductId">
+                                <td>
+                                    @if (product.ProductImages.Any(i => i.IsPrimary == true))
                                     {
-                                        <img src="@product.ProductImages.First().ImageUrl" alt="@product.Name" class="product-thumbnail">
+                                        <img src="@product.ProductImages.First(i => i.IsPrimary == true).ImageUrl" 
+                                             alt="@product.Name" class="product-thumbnail">
                                     }
                                     else
                                     {
                                         <div class="no-image-placeholder">
-                                            <i class="bi bi-image"></i>
+                                            <i class="bi bi-image text-muted"></i>
                                         </div>
                                     }
                                 </td>
                                 <td>@product.Name</td>
                                 <td>@product.SKU</td>
-                                <td>@product.Category?.CategoryName</td>
-                                <td class="text-end price-display">$@product.Price.ToString("0.00")</td>
-                                <td class="text-center">
-                                    <label class="switch" title="Toggle Discount">
-                                        <input type="checkbox" class="discount-toggle" 
-                                               @(product.Discount > 0 ? "checked" : "")
-                                               data-discount="@(product.Discount ?? 0)">
-                                        <span class="slider"></span>
-                                    </label>
+                                <td>
+                                    <span class="price-display" 
+                                          data-original-price="@product.Price" 
+                                          data-discount="@product.Discount">
+                                        $@product.Price.ToString("0.00")
+                                    </span>
                                 </td>
-                                <td class="text-end">@product.Stock</td>
-                                <td class="text-end">@product.SoldNumber</td>
-                                <td class="text-center">
+                                <td>@product.Stock</td>
+                                <td>@product.Category?.CategoryName</td>
+                                <td>
                                     @if (product.IsApprovedFromAdmin == "Approved")
                                     {
-                                        <i class="bi bi-check-circle-fill status-icon approved" 
-                                           title="Product is visible to customers"></i>
+                                        <i class="bi bi-check-circle status-icon approved"></i>
                                     }
                                     else
                                     {
-                                        <i class="bi bi-clock-fill status-icon pending" 
-                                           title="Pending approval"></i>
+                                        <i class="bi bi-clock status-icon pending"></i>
                                     }
                                 </td>
-                                <td class="text-end">
+                                <td>
+                                    <label class="switch">
+                                        <input type="checkbox" class="discount-toggle" 
+                                               data-discount="@product.Discount">
+                                        <span class="slider"></span>
+                                    </label>
+                                </td>
+                                <td>
                                     <div class="action-buttons">
                                         <a href="/Seller/ProductDetails/@product.ProductId" 
-                                           class="btn btn-jumia btn-action"
-                                           title="View Details">
-                                            <i class="bi bi-eye"></i>
+                                           class="btn btn-jumia-light btn-action">
+                                            <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button" 
-                                                class="btn btn-danger btn-action delete-product"
-                                                data-id="@product.ProductId"
-                                                data-name="@product.Name"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal"
-                                                title="Delete Product">
+                                        <button type="button" class="btn btn-jumia btn-action"
+                                                onclick="showDeleteModal(@product.ProductId, '@product.Name')">
                                             <i class="bi bi-trash"></i>
-                                        </button>
+                                    </button>
                                     </div>
                                 </td>
                             </tr>
@@ -381,11 +440,15 @@
             </div>
         </div>
 
-        <!-- Table Footer with Pagination -->
+        <!-- Pagination -->
         <div class="card-footer bg-white py-3">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0">Showing <span id="currentStart">1</span> to <span id="currentEnd">10</span> of <span id="totalItems">@Model.Count()</span> products</p>
+                    <p class="mb-0">
+                        Showing <span id="currentStart">1</span> to 
+                        <span id="currentEnd">10</span> of 
+                        <span id="totalItems">@Model.Count()</span> Products
+                    </p>
                 </div>
                 <div class="col-md-6">
                     <div class="d-flex justify-content-end align-items-center">
@@ -398,21 +461,9 @@
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <nav aria-label="Product pagination">
-                            <ul class="pagination mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" aria-label="Previous" id="prevPage">
-                                        <i class="bi bi-chevron-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next" id="nextPage">
-                                        <i class="bi bi-chevron-right"></i>
-                                    </a>
-                                </li>
+                        <nav aria-label="Products pagination">
+                            <ul class="pagination mb-0" id="pagination">
+                                <!-- Pagination will be populated by JavaScript -->
                             </ul>
                         </nav>
                     </div>
@@ -422,313 +473,419 @@
     </div>
 </div>
 
-<!-- Enhanced Filter Modal -->
+<!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="filterModalLabel">
-                    <i class="bi bi-funnel me-2"></i>Filter Products
-                </h5>
+                <h5 class="modal-title" id="filterModalLabel">Filter Products</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="filterForm">
-                    <div class="row">
-                        <!-- Brand Filter -->
-                        <div class="col-md-6">
-                            <div class="filter-group">
-                                <label class="filter-label" for="brandFilter">Brand</label>
-                                <select class="form-select" id="brandFilter">
-                                    <option value="">All Brands</option>
-                                    @foreach (var brand in Model.Select(p => p.Brand).Distinct().OrderBy(b => b.BrandName))
-                                    {
-                                        <option value="@brand.BrandId">@brand.BrandName</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Category Filter -->
-                        <div class="col-md-6">
-                            <div class="filter-group">
-                                <label class="filter-label" for="categoryFilter">Category</label>
-                                <select class="form-select" id="categoryFilter">
-                                    <option value="">All Categories</option>
-                                    @foreach (var category in Model.Select(p => p.Category).Distinct().OrderBy(c => c.CategoryName))
-                                    {
-                                        <option value="@category.CategoryId">@category.CategoryName</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Price Range Filter -->
                     <div class="filter-group">
-                        <label class="filter-label">Price Range</label>
-                        <div class="row mb-3">
+                        <label class="form-label">Price Range</label>
+                        <div class="row align-items-center">
                             <div class="col-5">
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="minPrice" min="0" step="0.01">
+                                    <input type="number" class="form-control" id="minPrice" placeholder="Min" min="0">
                                 </div>
                             </div>
-                            <div class="col-2 text-center d-flex align-items-center justify-content-center">
-                                <span>to</span>
-                            </div>
+                            <div class="col-2 text-center">to</div>
                             <div class="col-5">
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input type="number" class="form-control" id="maxPrice" min="0" step="0.01">
+                                    <input type="number" class="form-control" id="maxPrice" placeholder="Max" min="0">
                                 </div>
                             </div>
                         </div>
-                        <div id="priceRangeSlider"></div>
+                        <div id="priceRangeSlider" class="mt-3"></div>
                     </div>
 
-                    <div class="row">
-                        <!-- Stock Filter -->
-                        <div class="col-md-6">
-                            <div class="filter-group">
-                                <label class="filter-label" for="stockFilter">Stock Status</label>
-                                <select class="form-select" id="stockFilter">
-                                    <option value="">Any</option>
-                                    <option value="in-stock">In Stock</option>
-                                    <option value="low-stock">Low Stock (≤ 10)</option>
-                                    <option value="out-of-stock">Out of Stock</option>
-                                </select>
-                            </div>
-                        </div>
+                    <!-- Stock Filter -->
+                    <div class="filter-group">
+                        <label class="form-label">Stock Status</label>
+                        <select class="form-select" id="stockFilter">
+                            <option value="all">All</option>
+                            <option value="in-stock">In Stock</option>
+                            <option value="low-stock">Low Stock (≤ 10)</option>
+                            <option value="out-of-stock">Out of Stock</option>
+                        </select>
+                    </div>
 
-                        <!-- Approval Status Filter -->
-                        <div class="col-md-6">
-                            <div class="filter-group">
-                                <label class="filter-label" for="approvalFilter">Approval Status</label>
-                                <select class="form-select" id="approvalFilter">
-                                    <option value="">Any</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="pending">Pending</option>
-                                </select>
-                            </div>
-                        </div>
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" id="categoryFilter">
+                            <option value="all">All Categories</option>
+                            @foreach (var category in Model.Select(p => p.Category).Distinct())
+                            {
+                                if (category != null)
+                                {
+                                    <option value="@category.CategoryId">@category.CategoryName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="filter-group">
+                        <label class="form-label">Approval Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="all">All</option>
+                            <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                        </select>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="resetFilters">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
-                </button>
-                <button type="button" class="btn btn-jumia" id="applyFilters">
-                    <i class="bi bi-check2 me-1"></i>Apply Filters
-                </button>
+                <button type="button" class="btn btn-jumia-light" id="resetFilters">Reset</button>
+                <button type="button" class="btn btn-jumia" id="applyFilters">Apply Filters</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <h5 class="modal-title" id="deleteProductModalLabel">Delete Product</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete the product "<span id="deleteProductName"></span>"?</p>
-                <p class="text-danger">This action cannot be undone.</p>
+                <p>Are you sure you want to delete "<span id="deleteProductName"></span>"?</p>
+                <p class="text-muted mb-0">This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="#" id="confirmDelete" class="btn btn-danger">Delete</a>
+                <form id="deleteProductForm" asp-action="DeleteProduct" asp-controller="Seller" method="post">
+                    <input type="hidden" name="id" id="deleteProductId" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Delete Product</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<link rel="stylesheet" href="~/css/products-list.css">
-<script src="~/js/products-list.js"></script>
+<!-- Discount Toggle Modal -->
+<div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="discountModalLabel">Confirm Discount Change</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="discountMessage"></p>
+                <div id="discountDetails" class="mt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Original Price:</span>
+                        <span id="originalPrice" class="fw-bold"></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Discount Rate:</span>
+                        <span id="discountRate" class="fw-bold text-success"></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Final Price:</span>
+                        <span id="finalPrice" class="fw-bold text-jumia"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-jumia" id="confirmDiscount">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Prevent sidebar flicker on page load
-            const sidebarState = localStorage.getItem('sidebarState');
-            if (sidebarState === 'collapsed') {
-                $('#sidebar').addClass('collapsed');
-                $('#wrapper').addClass('collapsed');
-            }
+        // Global variables
+        let currentToggle = null;
+        let discountModal = null;
+        let currentPage = 1;
+        const productsTable = document.getElementById('productsTable');
+        const itemsPerPageSelect = document.getElementById('itemsPerPage');
+        const paginationContainer = document.getElementById('pagination');
+        const currentStartSpan = document.getElementById('currentStart');
+        const currentEndSpan = document.getElementById('currentEnd');
+        const totalItemsSpan = document.getElementById('totalItems');
+        const searchName = document.getElementById('searchName');
+        const searchSKU = document.getElementById('searchSKU');
 
-            // Handle discount toggle
-            $('.discount-toggle').change(function() {
-                const row = $(this).closest('tr');
-                const originalPrice = parseFloat(row.data('original-price'));
-                const discountPercent = parseFloat($(this).data('discount'));
-                const priceDisplay = row.find('.price-display');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modals
+            discountModal = new bootstrap.Modal(document.getElementById('discountModal'));
 
-                if (this.checked && discountPercent > 0) {
-                    // Apply discount
-                    const discountedPrice = originalPrice - (originalPrice * discountPercent / 100);
-                    priceDisplay.text('$' + discountedPrice.toFixed(2));
-                    // Store the discounted price as a data attribute
-                    row.data('current-price', discountedPrice);
-                } else {
-                    // Remove discount
-                    priceDisplay.text('$' + originalPrice.toFixed(2));
-                    // Store the original price as the current price
-                    row.data('current-price', originalPrice);
-                }
-            });
+            // Initialize search functionality
+            initializeSearch();
 
-            // Initialize tooltips
-            $('[title]').tooltip();
+            // Initialize discount toggle functionality
+            initializeDiscountToggles();
 
-            // Handle search functionality
-            $('#searchName, #searchSKU').on('keyup', function() {
-                const nameSearch = $('#searchName').val().toLowerCase();
-                const skuSearch = $('#searchSKU').val().toLowerCase();
+            // Initialize pagination
+            initializePagination();
 
-                $('#productsTable tbody tr').each(function() {
-                    const name = $(this).find('td:eq(1)').text().toLowerCase();
-                    const sku = $(this).find('td:eq(2)').text().toLowerCase();
-
-                    if (name.includes(nameSearch) && sku.includes(skuSearch)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-            // Handle delete confirmation
-            $('.delete-product').click(function() {
-                const productName = $(this).data('name');
-                const productId = $(this).data('id');
-                $('#deleteProductName').text(productName);
-                $('#confirmDelete').attr('href', `/Seller/DeleteProduct/${productId}`);
-            });
-
-            // Initialize price range slider
-            const priceSlider = document.getElementById('priceRangeSlider');
-            const prices = Array.from(document.querySelectorAll('tr[data-original-price]'))
-                               .map(tr => parseFloat(tr.dataset.originalPrice));
-            const minPrice = Math.floor(Math.min(...prices));
-            const maxPrice = Math.ceil(Math.max(...prices));
-
-            noUiSlider.create(priceSlider, {
-                start: [minPrice, maxPrice],
-                connect: true,
-                step: 0.01,
-                range: {
-                    'min': minPrice,
-                    'max': maxPrice
-                },
-                format: {
-                    to: value => parseFloat(value).toFixed(2),
-                    from: value => parseFloat(value)
-                },
-                tooltips: true
-            });
-
-            // Connect price inputs with slider
-            const minPriceInput = document.getElementById('minPrice');
-            const maxPriceInput = document.getElementById('maxPrice');
-
-            minPriceInput.value = minPrice.toFixed(2);
-            maxPriceInput.value = maxPrice.toFixed(2);
-
-            priceSlider.noUiSlider.on('update', function(values, handle) {
-                const value = values[handle];
-                if (handle === 0) {
-                    minPriceInput.value = value;
-                } else {
-                    maxPriceInput.value = value;
-                }
-            });
-
-            minPriceInput.addEventListener('change', function() {
-                priceSlider.noUiSlider.set([this.value, null]);
-            });
-
-            maxPriceInput.addEventListener('change', function() {
-                priceSlider.noUiSlider.set([null, this.value]);
-            });
-
-            // Apply filters
-            $('#applyFilters').click(function() {
-                const filters = {
-                    brand: $('#brandFilter').val(),
-                    category: $('#categoryFilter').val(),
-                    minPrice: parseFloat($('#minPrice').val()),
-                    maxPrice: parseFloat($('#maxPrice').val()),
-                    stock: $('#stockFilter').val(),
-                    approval: $('#approvalFilter').val()
-                };
-
-                $('#productsTable tbody tr').each(function() {
-                    const $row = $(this);
-                    let show = true;
-
-                    // Brand filter
-                    if (filters.brand && $row.data('brand-id').toString() !== filters.brand) {
-                        show = false;
-                    }
-
-                    // Category filter
-                    if (filters.category && $row.data('category-id').toString() !== filters.category) {
-                        show = false;
-                    }
-
-                    // Price filter
-                    const currentPrice = $row.data('current-price') || parseFloat($row.data('original-price'));
-                    if (currentPrice < filters.minPrice || currentPrice > filters.maxPrice) {
-                        show = false;
-                    }
-
-                    // Stock filter
-                    const stock = parseInt($row.find('td:eq(6)').text());
-                    if (filters.stock) {
-                        if (filters.stock === 'out-of-stock' && stock > 0) show = false;
-                        if (filters.stock === 'low-stock' && (stock === 0 || stock > 10)) show = false;
-                        if (filters.stock === 'in-stock' && stock === 0) show = false;
-                    }
-
-                    // Approval filter
-                    const isApproved = $row.find('.status-icon.approved').length > 0;
-                    if (filters.approval) {
-                        if (filters.approval === 'approved' && !isApproved) show = false;
-                        if (filters.approval === 'pending' && isApproved) show = false;
-                    }
-
-                    $row.toggle(show);
-                });
-
-                updateFilteredCount();
-                $('#filterModal').modal('hide');
-            });
-
-            // Reset filters
-            $('#resetFilters').click(function() {
-                $('#filterForm')[0].reset();
-                priceSlider.noUiSlider.set([minPrice, maxPrice]);
-                $('#productsTable tbody tr').show();
-                updateFilteredCount();
-            });
-
-            function updateFilteredCount() {
-                const visibleRows = $('#productsTable tbody tr:visible').length;
-                const totalRows = $('#productsTable tbody tr').length;
-                $('#currentStart').text('1');
-                $('#currentEnd').text(visibleRows);
-                $('#totalItems').text(totalRows);
-            }
-
-            // Initialize all discount toggles
-            $('.discount-toggle').each(function() {
-                $(this).trigger('change');
-            });
+            // Initialize filters
+            initializeFilters();
         });
+
+        // Search functionality
+        function initializeSearch() {
+            if (searchName && searchSKU) {
+                searchName.addEventListener('input', filterTable);
+                searchSKU.addEventListener('input', filterTable);
+            }
+        }
+
+        function filterTable() {
+            const nameFilter = searchName.value.toLowerCase();
+            const skuFilter = searchSKU.value.toLowerCase();
+            const rows = productsTable.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const nameCell = row.cells[1].textContent.toLowerCase(); // Name is in second column
+                const skuCell = row.cells[2].textContent.toLowerCase();  // SKU is in third column
+
+                const nameMatch = nameCell.includes(nameFilter);
+                const skuMatch = skuCell.includes(skuFilter);
+
+                row.style.display = (nameMatch && skuMatch) ? '' : 'none';
+            });
+
+            // Update pagination after filtering
+            updatePagination();
+        }
+
+        // Discount toggle functionality
+        function initializeDiscountToggles() {
+            document.querySelectorAll('.discount-toggle').forEach(toggle => {
+                toggle.addEventListener('change', handleDiscountToggle);
+            });
+
+            document.getElementById('confirmDiscount')?.addEventListener('click', confirmDiscountChange);
+        }
+
+        function handleDiscountToggle(e) {
+            e.preventDefault();
+            currentToggle = this;
+            
+            const row = this.closest('tr');
+            const priceDisplay = row.querySelector('.price-display');
+            const originalPrice = parseFloat(priceDisplay.dataset.originalPrice);
+            const discount = parseFloat(priceDisplay.dataset.discount);
+            
+            updateDiscountModal(this.checked, originalPrice, discount);
+            this.checked = !this.checked;
+        }
+
+        function updateDiscountModal(isEnabling, originalPrice, discount) {
+            const discountMessage = document.getElementById('discountMessage');
+            const discountDetails = document.getElementById('discountDetails');
+            const discountedPrice = originalPrice - (originalPrice * discount / 100);
+
+            discountMessage.textContent = isEnabling ? 
+                'Are you sure you want to enable the discount?' : 
+                'Are you sure you want to disable the discount?';
+
+            if (isEnabling) {
+                discountDetails.style.display = 'block';
+                document.getElementById('originalPrice').textContent = `$${originalPrice.toFixed(2)}`;
+                document.getElementById('discountRate').textContent = `${discount}%`;
+                document.getElementById('finalPrice').textContent = `$${discountedPrice.toFixed(2)}`;
+            } else {
+                discountDetails.style.display = 'none';
+            }
+
+            discountModal.show();
+        }
+
+        function confirmDiscountChange() {
+            if (!currentToggle) return;
+
+            const row = currentToggle.closest('tr');
+            const priceDisplay = row.querySelector('.price-display');
+            const originalPrice = parseFloat(priceDisplay.dataset.originalPrice);
+            const discount = parseFloat(priceDisplay.dataset.discount);
+
+            currentToggle.checked = !currentToggle.checked;
+            
+            if (currentToggle.checked && discount > 0) {
+                const discountedPrice = originalPrice - (originalPrice * discount / 100);
+                priceDisplay.innerHTML = `
+                    <span class="discounted-price">$${discountedPrice.toFixed(2)}</span>
+                    <span class="original-price">$${originalPrice.toFixed(2)}</span>
+                `;
+            } else {
+                priceDisplay.textContent = `$${originalPrice.toFixed(2)}`;
+            }
+
+            discountModal.hide();
+        }
+
+        // Pagination functionality
+        function initializePagination() {
+            const totalItems = parseInt(totalItemsSpan.textContent);
+            itemsPerPageSelect.addEventListener('change', () => {
+                currentPage = 1;
+                updatePagination();
+            });
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const itemsPerPage = parseInt(itemsPerPageSelect.value);
+            const visibleRows = productsTable.querySelectorAll('tbody tr:not([style*="display: none"])');
+            const totalVisibleItems = visibleRows.length;
+            const totalPages = Math.ceil(totalVisibleItems / itemsPerPage);
+
+            // Update showing text
+            const start = ((currentPage - 1) * itemsPerPage) + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalVisibleItems);
+            currentStartSpan.textContent = totalVisibleItems === 0 ? 0 : start;
+            currentEndSpan.textContent = end;
+            totalItemsSpan.textContent = totalVisibleItems;
+
+            // Generate pagination HTML
+            generatePaginationHTML(totalPages);
+
+            // Show/hide rows based on current page
+            updateVisibleRows(visibleRows, itemsPerPage);
+        }
+
+        function generatePaginationHTML(totalPages) {
+            let paginationHtml = '';
+            
+            // Previous button
+            paginationHtml += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (
+                    i === 1 || // First page
+                    i === totalPages || // Last page
+                    (i >= currentPage - 1 && i <= currentPage + 1) // Pages around current
+                ) {
+                    paginationHtml += `
+                        <li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    paginationHtml += `
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    `;
+                }
+            }
+            
+            // Next button
+            paginationHtml += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            paginationContainer.innerHTML = paginationHtml;
+            
+            // Add click handlers
+            paginationContainer.querySelectorAll('.page-link[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newPage = parseInt(this.dataset.page);
+                    if (!isNaN(newPage) && newPage > 0 && newPage <= totalPages) {
+                        currentPage = newPage;
+                        updatePagination();
+                    }
+                });
+            });
+        }
+
+        function updateVisibleRows(visibleRows, itemsPerPage) {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            visibleRows.forEach((row, index) => {
+                row.style.display = (index >= startIndex && index < endIndex) ? '' : 'none';
+            });
+        }
+
+        // Filter functionality
+        function initializeFilters() {
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            const resetFiltersBtn = document.getElementById('resetFilters');
+
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', filterProducts);
+            }
+
+            if (resetFiltersBtn) {
+                resetFiltersBtn.addEventListener('click', resetFilters);
+            }
+        }
+
+        function filterProducts() {
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            const stockStatus = document.getElementById('stockFilter').value;
+            const categoryId = document.getElementById('categoryFilter').value;
+            const approvalStatus = document.getElementById('statusFilter').value;
+
+            const rows = productsTable.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const price = parseFloat(row.querySelector('.price-display').dataset.originalPrice);
+                const stock = parseInt(row.querySelector('td:nth-child(5)').textContent);
+                const category = row.querySelector('td:nth-child(6)').textContent;
+                const status = row.querySelector('.status-icon').classList.contains('approved') ? 'approved' : 'pending';
+
+                let showRow = true;
+
+                if (price < minPrice || price > maxPrice) showRow = false;
+                if (stockStatus !== 'all') {
+                    if (stockStatus === 'in-stock' && stock <= 0) showRow = false;
+                    if (stockStatus === 'low-stock' && (stock > 10 || stock <= 0)) showRow = false;
+                    if (stockStatus === 'out-of-stock' && stock > 0) showRow = false;
+                }
+                if (categoryId !== 'all' && !category.includes(categoryId)) showRow = false;
+                if (approvalStatus !== 'all' && status !== approvalStatus) showRow = false;
+
+                row.style.display = showRow ? '' : 'none';
+            });
+
+            updatePagination();
+            bootstrap.Modal.getInstance(document.getElementById('filterModal')).hide();
+        }
+
+        function resetFilters() {
+            document.getElementById('filterForm').reset();
+            productsTable.querySelectorAll('tbody tr').forEach(row => {
+                row.style.display = '';
+            });
+            updatePagination();
+        }
+
+        // Add this function at the beginning of your scripts
+        function showDeleteModal(productId, productName) {
+            document.getElementById('deleteProductId').value = productId;
+            document.getElementById('deleteProductName').textContent = productName;
+            new bootstrap.Modal(document.getElementById('deleteProductModal')).show();
+        }
     </script>
 }

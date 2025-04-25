@@ -5,8 +5,131 @@
     ViewData["Title"] = "Product Details";
 }
 
-<h2>@Model.Name</h2>
-<p><strong>SKU:</strong> @Model.SKU</p>
-<p><strong>Price:</strong> @Model.Price</p>
-<p><strong>Description:</strong> @Model.Description</p>
-<!-- Add other product details here -->
+<style>
+    .product-details {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .page-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .details-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #2a2a2a;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.75rem;
+    }
+
+    .form-control:focus {
+        border-color: #dc8e26;
+        box-shadow: 0 0 0 0.2rem rgba(220, 142, 38, 0.25);
+    }
+
+    .detail-row {
+        margin-bottom: 1.25rem;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 1.25rem;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .detail-label {
+        font-weight: 700;
+        color: #2a2a2a;
+        margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+        color: #6c757d;
+    }
+</style>
+
+<div class="product-details">
+    <h2 class="page-title">Product Details</h2>
+
+    <div class="details-card">
+        <div class="detail-row">
+            <div class="detail-label">Product Name</div>
+            <div class="detail-value">@Model.Name</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">SKU</div>
+            <div class="detail-value">@Model.SKU</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Price</div>
+            <div class="detail-value">$@Model.Price.ToString("0.00")</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Description</div>
+            <div class="detail-value">@Model.Description</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Stock</div>
+            <div class="detail-value">@Model.Stock</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Category</div>
+            <div class="detail-value">@Model.Category?.CategoryName</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Brand</div>
+            <div class="detail-value">@Model.Brand?.BrandName</div>
+        </div>
+
+        @if (Model.Discount.HasValue)
+        {
+            <div class="detail-row">
+                <div class="detail-label">Discount</div>
+                <div class="detail-value">@(Model.Discount.Value.ToString("0.00"))%</div>
+            </div>
+        }
+
+        <div class="detail-row">
+            <div class="detail-label">Main Material</div>
+            <div class="detail-value">@(Model.MainMaterial ?? "Not specified")</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Created Date</div>
+            <div class="detail-value">@(Model.CreatedAt?.ToString("MM/dd/yyyy") ?? "N/A")</div>
+        </div>
+
+        <div class="detail-row">
+            <div class="detail-label">Approval Status</div>
+            <div class="detail-value">@Model.IsApprovedFromAdmin</div>
+        </div>
+    </div>
+</div>

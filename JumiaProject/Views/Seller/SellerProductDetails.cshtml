@@ -371,7 +371,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Seller/DeleteProduct/@Model.ProductId" class="btn btn-danger">Delete Product</a>
+                <form asp-action="DeleteProduct" asp-controller="Seller" method="post" style="display: inline;">
+                    <input type="hidden" name="id" value="@Model.ProductId" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Delete Product</button>
+                </form>
             </div>
         </div>
     </div>
