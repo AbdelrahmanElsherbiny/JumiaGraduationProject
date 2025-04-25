@@ -80,6 +80,10 @@ namespace JumiaProject.Controllers
             {
 
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var cart = await _cart.GetCartByUserId(userId);
+                await _cart.AddOrUpdateCartItem(cart.CartId, productId, variantId, quantity);
+                return Json(new { success = true, message = "Item added to cart successfully" });
+            }
                 if (userId != null)
                 {
                     var cart = await _cart.GetCartByUserId(userId);
@@ -100,7 +104,11 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetTotalCartQuantity()
         {
               string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var cart = await _cart.GetCartByUserId(userId);
+            if (userId == null)
+            {
+                return Content("0");
+            }
+            var cart = await _cart.GetCartByUserId(userId);
 
             int totalQuantity = await _cart.GetTotalCartQuantity(cart.CartId);
 
@@ -138,6 +146,10 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetTotalPrice()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Content("0");
+            }
             var cart = await _cart.GetCartByUserId(userId);
 
             decimal totalprice = await _cart.CalculateCartTotalPrice(userId);
@@ -147,6 +159,10 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetCartCount()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Content("0");
+            }
             var cart = await _cart.GetCartByUserId(userId);
 
             int cartCount = await _cart.GetTotalCartQuantity(cart.CartId);

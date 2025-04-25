@@ -1,9 +1,10 @@
 ﻿@model ProfileVM
-<div class="d-flex">
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+<div class="d-flex gap">
 	<div>
 		@await Html.PartialAsync("_SideBarPartial")
 	</div>
-	<div class="profile-container  col-9">
+	<div class="profile-container wid col-9">
 		<header class="profile-header">
 			<h1 class="text-header">Edit Address</h1>
 		</header>
@@ -27,12 +28,24 @@
             <input type="hidden" asp-for="Address.AddressId" />
             <div class="contain">
                 <label class="address-lable" for="Country">Country</label>
-                <input class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country" />
+                @* <input class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country" /> *@
+               
+                <select class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country">
+                    <option value="" style="color:#666;">Select Your Country</option>
+                    <option value="egypt">Egypt</option>
+                    <option value="morocco">Morocco</option>
+                    <option value="ghana">Ghana</option>
+                    <option value="nigeria">Nigeria</option>
+                    <option value="sengal">Sengal</option>
+                    <option value="uganda">Uganda</option>
+                    <option value="kenya">Kenya</option>
+                    <option value="ivorycosta">Ivory Costa</option>
+                </select>
                 <span asp-validation-for="Address.Country" class="text-danger"></span>
             </div>
             <div class="contain">
                 <label class="address-lable" for="City">City</label>
-                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" />
+                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" placeholder="Enter You City" />
                 <span asp-validation-for="Address.City" class="text-danger"></span>
             </div>
             <div class="contain">

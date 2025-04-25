@@ -17,7 +17,13 @@ namespace JumiaProject.Interfaces
         public Task<List<Brand>> GetBrandsByCategory(int categoryId);
         Task<List<decimal>> GetProductsByPriceRange(int catgoryId);
         Task<List<decimal>> GetProductsByDiscount(int categoryId);
-
+        Task<List<Product>> GetProductsByCategoryWithFilters(
+            int categoryId,
+            List<int>? sizeId,
+            List<int>? brandId,
+            decimal? minPrice,
+            decimal? maxPrice,
+            List<decimal>? minDiscount);
     }
 }
 

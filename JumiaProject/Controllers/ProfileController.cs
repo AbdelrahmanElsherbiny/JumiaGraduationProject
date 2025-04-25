@@ -128,6 +128,8 @@ namespace JumiaProject.Controllers
             ViewBag.wishlistItems = wishlistItems;
             return View();
         }
+
+
         [HttpPost]
         public IActionResult AddToWishlist(int productId, int productVariantId)
         {
@@ -220,6 +222,7 @@ namespace JumiaProject.Controllers
             return View();
         }
 
+
         [HttpPost]
         public IActionResult ToggleWishlist(int productId, int? productVariantId)
         {
@@ -228,20 +231,15 @@ namespace JumiaProject.Controllers
             {
                 return Json(new { success = false, loginRequired = true });
             }
+            var existingWishlistItem = Wishlist.GetWishlistItem(userId, productId, productVariantId);
 
-            // Check if the product (with or without variant) is already in the wishlist
-            var exists = Wishlist.ExistsInWishlist(userId, productId, productVariantId);
-            var wishlistItem = Wishlist.GetWishlistItem(userId, productId, productVariantId);
-
-            if (exists)
+            if (existingWishlistItem != null)
             {
-                // If it exists, remove it from the wishlist
-                Wishlist.RemoveFromWishlist(wishlistItem.WishlistId);
-                return Json(new { success = true, action = "removed", message = "Product removed from wishlist!" });
+               Wishlist.RemoveFromWishlist(existingWishlistItem.WishlistId);
+                return Json(new { success = true, result = false });
             }
             else
             {
-                // If it doesn't exist, add it to the wishlist
                 var wishlist = new Wishlist
                 {
                     ProductId = productId,
@@ -250,11 +248,9 @@ namespace JumiaProject.Controllers
                 };
 
                 Wishlist.AddToWishlist(wishlist);
-                return Json(new { success = true, action = "added", message = "Product added to wishlist!" });
+                return Json(new { success = true, result = true });
             }
         }
-
-
 
     }
     }

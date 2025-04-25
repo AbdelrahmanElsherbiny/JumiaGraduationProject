@@ -1,0 +1,113 @@
+﻿@model JumiaProject.Models.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Jumia</title>
+    <link href="~/css/Checkout.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .order-details {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .success-icon {
+            color: #4CAF50;
+            font-size: 60px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .continue-shopping {
+            background-color: #f68b1e;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-header">
+            <img src="~/images/home/logo.png" alt="Jumia Logo" style="height: 40px;">
+            <h2>Order Confirmed!</h2>
+        </div>
+
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <div class="order-details">
+            <h3>Order Details</h3>
+            <div class="detail-row">
+                <span>Order Number:</span>
+                <span>#@Model.OrderId</span>
+            </div>
+            <div class="detail-row">
+                <span>Order Date:</span>
+                <span>@Model.OrderDate?.ToString("dd MMMM yyyy")</span>
+            </div>
+            <div class="detail-row">
+                <span>Total Amount:</span>
+                <span>EGP @((Model.TotalAmount + Model.Taxes + Model.ShippingMethod.Cost).ToString("N2"))</span>
+            </div>
+            <div class="detail-row">
+                <span>Payment Method:</span>
+                <span>@(Model.Payments.ToList()[0]?.PaymentMethod ?? "N/A")</span>
+            </div>
+            <div class="detail-row">
+                <span>Payment Status:</span>
+                <span>@(Model.Payments.ToList()[0]?.PaymentStatus ?? "N/A")</span>
+            </div>
+            <div class="detail-row">
+                <span>Tracking Number:</span>
+                <span>@(Model.ShippingTrackings.ToList()[0].TrackingNumber ?? "Processing")</span>
+            </div>
+        </div>
+
+        <p>Thank you for your order! We'll send you confirmation and tracking information to your email.</p>
+
+        <a href="/Home/Index" class="continue-shopping">Continue Shopping</a>
+    </div>
+</body>
+</html>

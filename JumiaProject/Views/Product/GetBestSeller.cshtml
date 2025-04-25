@@ -2,6 +2,48 @@
 @{
     ViewData["Title"] = "GetBestSeller";
 }
+<style>
+    .categories-pagination {
+        margin-top: 2.5rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .categories-pagination .page-item {
+        margin: 0;
+    }
+
+    .categories-pagination .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px !important;
+        color: #2a2a2a;
+        border: 1px solid #eaeaea;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+        .categories-pagination .page-link:hover {
+            background-color: #fff3e8;
+            color: #f68b1e;
+            border-color: #fff3e8;
+            transform: translateY(-2px);
+        }
+
+        .categories-pagination .page-link.active {
+        background-color: #f68b1e;
+        border-color: #f68b1e;
+        color: white;
+        box-shadow: 0 4px 8px rgba(246, 139, 30, 0.3);
+    }
+</style>
+
 
 <div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
@@ -15,6 +57,13 @@
 <div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
 </div>
+<div id="alertMessageAddtoWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to wishlist successfully
+</div>
+<div id="alertMessageRemoveWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product removed from wishlist successfully
+</div>
+
 <div class="parentItem m-auto rounded bg-white">
     <div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
         <h4 class="dark-color m-0">@ViewBag.PageName</h4>
@@ -27,7 +76,11 @@
           
 
                 <div class="cartitemlarge bg-white p-2 rounded mb-3 d-flex flex-column justify-content-between">
-                      <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+                <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
+                   data-product-id="@product.ProductId"
+                   data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
+                </i>
+                <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
                     <img src="~/images/best.jpg" alt="" class="">
                     <p class="m-0 p-0 small14 text-black">@product.Name</p>
                     <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
@@ -86,7 +139,37 @@
             </div>
           
         }
+
     </div>
+
+    <div class="d-flex justify-content-center categories-pagination" >
+        @if (ViewBag.PageName == "Best Sellers"){
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="@Url.Action("GetBestSeller", new { pageIndex = i, pageSize = Model.PageSize })" class="page-link mx-1 @((i == Model.CurrentPage) ? "active" : "")">@i</a>
+            }
+        }
+        else if (ViewBag.PageName == "Exclusive Offers | Up to 70% off")
+        {
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="@Url.Action("GetMostDiscount", new { pageIndex = i, pageSize = Model.PageSize })" class="page-link mx-1 @((i == Model.CurrentPage) ? "active" : "")">@i</a>
+            }
+        }
+        else{
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="@Url.Action("GetBrandProducts", new {id = Model.BrandId, pageIndex = i, pageSize = Model.PageSize })" class="page-link mx-1 @((i == Model.CurrentPage) ? "active" : "")">@i</a>
+            }
+        }
+    </div>
+
+
+
+   
+
+
+
 </div>
 <!--This is the popup for variant sizes Roma-->
 <div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
@@ -112,7 +195,34 @@
         </div>
     </div>
 </div>
+
+
+<!--This is the popup for variant sizes Roma Wishlisttttttttttt-->
+<div class="modal fade" id="variantModal1" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-2">
+
+            <div class="modal-header border border-0">
+                <h6 class="modal-title dark-color">Please select a variation</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body border border-0">
+                <div id="variantOptions1" class="d-flex align-items-center justify-content-evenly flex-wrap">
+                </div>
+            </div>
+            <div class="modal-footer border border-0 text-center">
+                <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="UserWishlist" asp-controller="Profile">Go to WishList</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 @section Scripts {
     <script src="~/js/cart.js"></script>
+    <script src="~/js/wishlist.js"></script>
 }
 

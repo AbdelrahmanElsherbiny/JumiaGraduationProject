@@ -114,7 +114,7 @@ namespace JumiaProject.Repositories
            .ToListAsync();
 
             var priceRanges = products
-                .GroupBy(p => (int)(p / 50)) 
+                .GroupBy(p => (int)(p / 50))
                 .Select(g => new { Min = g.Min(), Max = g.Max() })
                 .ToList();
 
@@ -133,6 +133,42 @@ namespace JumiaProject.Repositories
             return discounts.Where(d => d > 0).ToList();
         }
 
-   
+        public async Task<List<Product>> GetProductsByCategoryWithFilters(
+            int categoryId,
+            List<int>? sizeId,
+             List<int>? brandId,
+            decimal? minPrice,
+            decimal? maxPrice,
+            List<decimal>? selectedDiscounts)
+        {
+            var query = Context.Products.Where(p => p.CategoryId == categoryId);
+
+            if (sizeId != null && sizeId.Any())
+            {
+                query = query.Where(p => p.ProductVariants.Any(v => sizeId.Contains(v.SizeId)));
+            }
+
+            if (brandId != null && brandId.Any())
+            {
+                query = query.Where(p => brandId.Contains(p.BrandId));
+            }
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            if (selectedDiscounts != null && selectedDiscounts.Any())
+            {
+                query = query.Where(p => p.Discount.HasValue && selectedDiscounts.Contains(p.Discount.Value));
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace JumiaProject.Repositories
         }
         public Wishlist GetWishlistItem(string userId, int productId, int? productVariantId)
         {
-           
+
             return Context.Wishlists.FirstOrDefault(w => w.UserId == userId && w.ProductId == productId && w.ProductVariantId == productVariantId);
         }
     }
