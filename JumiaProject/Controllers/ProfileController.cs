@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace JumiaProject.Controllers
 {
     //[Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
         private readonly JumiaContext context;
         private readonly IProfile profile;
@@ -19,7 +19,8 @@ namespace JumiaProject.Controllers
         private readonly IWishlist Wishlist;
         private readonly IHome Home;
         private readonly IOrder Order;
-        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager, IWishlist _wishlist, IHome _home, IOrder _order)
+        private readonly ICart cart;
+        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager, IWishlist _wishlist, IHome _home, IOrder _order,ICart cart):base(cart,_userManager)
         {
             UserManager = _userManager;
             Wishlist = _wishlist;
@@ -27,6 +28,7 @@ namespace JumiaProject.Controllers
             Order = _order;
             this.profile = profile;
             this.context = context;
+            this.cart = cart;
         }
         public IActionResult MyAccount()
         {
@@ -217,7 +219,45 @@ namespace JumiaProject.Controllers
             ViewBag.order = order;
             return View();
         }
+
+        [HttpPost]
+        public IActionResult ToggleWishlist(int productId, int? productVariantId)
+        {
+            var userId = UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return Json(new { success = false, loginRequired = true });
+            }
+
+            // Check if the product (with or without variant) is already in the wishlist
+            var exists = Wishlist.ExistsInWishlist(userId, productId, productVariantId);
+            var wishlistItem = Wishlist.GetWishlistItem(userId, productId, productVariantId);
+
+            if (exists)
+            {
+                // If it exists, remove it from the wishlist
+                Wishlist.RemoveFromWishlist(wishlistItem.WishlistId);
+                return Json(new { success = true, action = "removed", message = "Product removed from wishlist!" });
+            }
+            else
+            {
+                // If it doesn't exist, add it to the wishlist
+                var wishlist = new Wishlist
+                {
+                    ProductId = productId,
+                    ProductVariantId = productVariantId,
+                    UserId = userId
+                };
+
+                Wishlist.AddToWishlist(wishlist);
+                return Json(new { success = true, action = "added", message = "Product added to wishlist!" });
+            }
+        }
+
+
+
     }
-}
+    }
+
 
 

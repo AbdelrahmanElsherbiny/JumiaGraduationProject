@@ -12,23 +12,42 @@ namespace JumiaProject.Controllers
         private readonly IProduct Product;
         private readonly ICart _cart;
         private readonly UserManager<ApplicationUser> _userManager;
-        public CategoryController(IProduct _product, ICart _cart, UserManager<ApplicationUser> userMnager) : base(_cart, userMnager)
+        private readonly ICategory category;
+        public CategoryController(IProduct _product, ICart _cart, UserManager<ApplicationUser> userMnager, ICategory category) : base(_cart, userMnager)
         {
             Product = _product;
             this._cart = _cart;
             _userManager = userMnager;
+            this.category = category;
+
         }
         public async Task<IActionResult> Index(int id)
         {
             string userId = _userManager?.GetUserId(User);
-            var Products = Product.GetProductsByCategory(id);
-            var cartItems = await _cart?.GetAllCartItems(userId);
-            BestProductViewModel data = new BestProductViewModel()
+            if (userId != null)
             {
-                Products = Products,
-                CartItems = cartItems,
-            };
-            return View(data);
+                var Products = Product.GetProductsByCategory(id);
+                var cartItems = await _cart?.GetAllCartItems(userId);
+                BestProductViewModel data = new BestProductViewModel()
+                {
+                    Products = Products,
+                    CartItems = cartItems,
+                };
+                return View(data);
+            }
+            else
+            {
+                var Products = Product.GetProductsByCategory(id);
+                var cartItems = new List<CartItem>();
+                BestProductViewModel data = new BestProductViewModel()
+                {
+                    Products = Products,
+                    CartItems = cartItems,
+                };
+                return View(data);
+            }
         }
+
+
     }
 }

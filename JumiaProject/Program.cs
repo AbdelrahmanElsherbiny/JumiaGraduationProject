@@ -43,7 +43,8 @@ namespace JumiaProject
             builder.Services.AddScoped<ICart, CartRepo>();
             builder.Services.AddScoped<IWishlist, WishlistRepo>();
             builder.Services.AddScoped<IProfile, ProfileRepo>();
-
+            builder.Services.AddHttpClient();
+            builder.Services.AddSingleton<ChatGptService>();
             builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
@@ -68,7 +69,7 @@ namespace JumiaProject
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}")
+                pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();

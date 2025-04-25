@@ -17,7 +17,8 @@
                         <div class="d-flex justify-content-center align-items-center text-center flex-column w-100 py-4 bg-white">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <form asp-action="VerifyCode" method="post" class=" d-flex justify-content-center align-items-center flex-column w-100 py-1 px-4 bg-white ">
-                                <input  asp-for="Code" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Code*">
+                            <label class="code-lable">Code</label>
+                                <input  asp-for="Code" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Enter Your Code">
                             <span asp-validation-for="Code" class="text-danger"></span>
                                 <button class=" mynew-btn continue1-btn border border-0 w-100 mt-3 mb-0 rounded fw-bold" type="submit">Verify</button>
                             </form>

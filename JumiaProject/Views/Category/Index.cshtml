@@ -1,4 +1,6 @@
 ﻿@model BestProductViewModel
+
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -20,11 +22,13 @@
 <div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
 </div>
+
+
 <div class="parentItem m-auto rounded  d-flex">
-    <div class="cart-summary bg-white rounded d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
-     
-    </div>
-    <div class="cartitemcat-container p-2 pb-3 d-flex rounded ms-4 flex-wrap bg-white">
+    <div class="cart-summary bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 align-items-center ">
+      
+     </div>
+    <div class="cartitemcat-container p-2 pb-3 d-flex rounded ms-4 flex-wrap bg-white bg-danger" id="our-container">
         @foreach (Product product in @Model.Products)
         {
             var variant = product.ProductVariants.FirstOrDefault();
@@ -32,7 +36,7 @@
 
 
             <div class="cartitemcatlarge bg-white p-2 rounded mx-1 mb-3 d-flex flex-column justify-content-between">
-                      <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+                <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
                     <img src="~/images/best.jpg" alt="" class="">
                     <p class="m-0 p-0 small14 text-black">@product.Name</p>
                     <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
@@ -41,35 +45,45 @@
                         <p class="disable-color  m-0 p-0 small14">
                             <span class="text-decoration-line-through"> EGP @(@product.Price - (@product.Price * @product.Discount))</span>
                             <span class="item-sale rounded item-position">@product.Discount%</span>
-                        </p> 
+                        </p>
                     }
                 </a>
-            
-                    @if (isInCart) 
-                    {
-                        <div class="cart-item-row d-flex align-items-center justify-content-center mt-2"
-                             data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
-                             data-stock="@variant?.Stock"
-                             data-product-id="product.ProductId">
 
-                            <div class="cart-quantity-controls quantity-controls d-flex px-1 justify-content-end align-items-center mt-4">
-                                <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-5 shadow-sm"
-                                        data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
-                                        data-stock="@variant?.Stock"
-                                        data-product-id="@product.ProductId"
-                                        data-novariantstock="@product.Stock">
-                                    −
-                                </button>
-                                <span class="quantity-display mx-2 dark-color" data-quantity="0">@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId).Quantity</span>
-                                <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-5 shadow-sm"
-                                        data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
-                                        data-stock="@variant?.Stock"
-                                        data-product-id="@product.ProductId"
-                                        data-novariantstock="@product.Stock">
-                                    +
-                                </button>
-                            </div>
+                @if (isInCart)
+                {
+                    <div class="cart-item-row d-flex align-items-center justify-content-center mt-2"
+                         data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
+                         data-stock="@variant?.Stock"
+                         data-product-id="product.ProductId">
+
+                        <div class="cart-quantity-controls quantity-controls d-flex px-1 justify-content-end align-items-center mt-4">
+                            <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-5 shadow-sm"
+                                    data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
+                                    data-stock="@variant?.Stock"
+                                    data-product-id="@product.ProductId"
+                                    data-novariantstock="@product.Stock">
+                                −
+                            </button>
+                            <span class="quantity-display mx-2 dark-color" data-quantity="0">@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId).Quantity</span>
+                            <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-5 shadow-sm"
+                                    data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
+                                    data-stock="@variant?.Stock"
+                                    data-product-id="@product.ProductId"
+                                    data-novariantstock="@product.Stock">
+                                +
+                            </button>
                         </div>
+                    </div>
+                }
+                else
+                {
+                    @if (!(User.Identity.IsAuthenticated))
+                    {
+                        <button class="checkout-btn border border-0 rounded fw-medium w-100 add-to-cart-btn mt-4 cart-btn-best">
+                            <a asp-action="Login" asp-controller="Account" class="text-decoration-none text-white">
+                                Add to cart  <i class="fa-solid fa-cart-shopping text-white"></i>
+                            </a>
+                        </button>
                     }
                     else
                     {
@@ -79,8 +93,9 @@
                             Add to Cart
                         </button>
                     }
+                }
             </div>
-          
+
         }
     </div>
 </div>

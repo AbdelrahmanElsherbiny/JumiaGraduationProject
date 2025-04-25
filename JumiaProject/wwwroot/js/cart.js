@@ -248,7 +248,6 @@ $(document).ready(function () {
 
     // Handle "+" button on cart page (increment and update cart)
     $(document).on('click', '.cart-plus-btn', function () {
-        console.log("PLUS CLICKED");
         const $row = $(this).closest('.cart-item-row');
         const $quantityDisplay = $row.find('.quantity-display');
         const $minusBtn = $row.find('.cart-minus-btn');
@@ -266,19 +265,15 @@ $(document).ready(function () {
                     variantId: null
                 },
                 success: function (existingQuantity) {
-                    console.log("exist "+ existingQuantity)
-                    
                     let newQuantity = existingQuantity + 1;
-                    console.log("new" + newQuantity)
-                    console.log("stock" + stocknovariant)
                     if (newQuantity <= stocknovariant) {
                         $quantityDisplay.text(newQuantity);
                         $minusBtn.prop('disabled', false);
                         if (newQuantity >= stocknovariant) {
                             $(this).prop('disabled', true);
+                    
                         }
 
-                        console.log("new" +newQuantity)
                       
                         $.ajax({
                             url: '/Cart/AddOrUpdateCartItem',
