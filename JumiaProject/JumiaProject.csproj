@@ -15,6 +15,7 @@
     <Content Remove="Views\Order\Details.cshtml" />
     <Content Remove="Views\Product\Details.cshtml" />
     <Content Remove="wwwroot\css\AdminProduct.css" />
+    <Content Remove="wwwroot\css\seller-orders.cs" />
   </ItemGroup>
 
   <ItemGroup>

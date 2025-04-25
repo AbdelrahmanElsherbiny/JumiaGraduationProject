@@ -4,6 +4,7 @@ using JumiaProject.Models;
 using JumiaProject.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace JumiaProject
 {
@@ -12,6 +13,12 @@ namespace JumiaProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Add logging
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+            builder.Logging.AddEventLog();
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -40,6 +47,8 @@ namespace JumiaProject
             builder.Services.AddScoped<ICategory, CategoryRepo>();
             builder.Services.AddScoped<ISize, SizeRepo>();
             builder.Services.AddScoped<ICategorySize, CategorySizeRepo>();
+            builder.Services.AddScoped<BrandRepo>();
+
 
 
             var app = builder.Build();
@@ -55,6 +64,7 @@ namespace JumiaProject
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseRouting();

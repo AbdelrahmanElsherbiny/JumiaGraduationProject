@@ -1,0 +1,444 @@
+@model Product
+@{
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
+    ViewData["Title"] = "Product Details";
+}
+
+<style>
+    /* Product Details Styles */
+    .product-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .product-header {
+        background: linear-gradient(45deg, #dc8e26, #e6a94e);
+        padding: 1.5rem;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .product-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-pending {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .status-approved {
+        background: #198754;
+        color: white;
+    }
+
+    .status-rejected {
+        background: #dc3545;
+        color: white;
+    }
+
+    .section-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .section-title {
+        margin: 0;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-table {
+        width: 100%;
+        margin: 0;
+    }
+
+    .info-table tr {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        padding: 0.75rem 1rem;
+        color: #6c757d;
+        font-weight: 500;
+        width: 40%;
+    }
+
+    .info-value {
+        padding: 0.75rem 1rem;
+    }
+
+    .product-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .btn-action {
+        display: block;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        border: none;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-save {
+        background: #dc8e26;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #c47e22;
+        color: white;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #bb2d3b;
+    }
+
+    .form-control:focus {
+        border-color: #dc8e26;
+        box-shadow: 0 0 0 0.2rem rgba(220, 142, 38, 0.25);
+    }
+
+    .image-preview {
+        position: relative;
+        display: inline-block;
+    }
+
+    .image-preview .remove-image {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #dc3545;
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .image-upload-container {
+        border: 2px dashed #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .image-upload-container:hover {
+        border-color: #dc8e26;
+    }
+</style>
+
+<div class="container-fluid my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0" style="position: relative; display: inline-block;">
+            <i class="bi bi-box-seam"></i> Product Details
+            <span style="position: absolute; bottom: -8px; left: 0; width: 60px; height: 4px; background: #dc8e26; border-radius: 2px;"></span>
+        </h2>
+        <a href="/Seller/ProductsList" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Products
+        </a>
+    </div>
+
+    <form id="productForm" method="post" enctype="multipart/form-data" asp-action="ProductDetails" asp-controller="Seller">
+        <input type="hidden" asp-for="ProductId" />
+        <div class="product-container">
+            <!-- Header with status badge -->
+            <div class="product-header">
+                <div>
+                    <input type="text" asp-for="Name" class="form-control form-control-lg bg-white" 
+                           placeholder="Product Name" required style="max-width: 400px;" />
+                    <div class="text-white small mt-2">ID: @Model.ProductId</div>
+                </div>
+                <div class="status-container">
+                    <span class="status-badge
+                          @(Model.IsApprovedFromAdmin == "Pending" ? "status-pending" :
+                            Model.IsApprovedFromAdmin == "Approved" ? "status-approved" : "status-rejected")">
+                        <i class="bi
+                          @(Model.IsApprovedFromAdmin == "Pending" ? "bi-hourglass-split" :
+                            Model.IsApprovedFromAdmin == "Approved" ? "bi-check-circle" : "bi-x-circle")"></i>
+                        @Model.IsApprovedFromAdmin
+                    </span>
+                </div>
+            </div>
+
+            <div class="row p-4">
+                <!-- Left Column - Product Info -->
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="section-card h-100">
+                                <h5 class="section-title">
+                                    <i class="bi bi-info-circle"></i> Basic Information
+                                </h5>
+                                <div class="p-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">SKU</label>
+                                        <input type="text" asp-for="SKU" class="form-control" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Product Code</label>
+                                        <input type="text" asp-for="Code" class="form-control" readonly />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Brand</label>
+                                        <select asp-for="BrandId" class="form-select" required>
+                                            @foreach (var brand in ViewBag.Brands)
+                                            {
+                                                <option value="@brand.Value">@brand.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Category</label>
+                                        <select asp-for="CategoryId" class="form-select" required>
+                                            @foreach (var category in ViewBag.Categories)
+                                            {
+                                                <option value="@category.Value">@category.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Main Material</label>
+                                        <input type="text" asp-for="MainMaterial" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="section-card h-100">
+                                <h5 class="section-title">
+                                    <i class="bi bi-graph-up"></i> Inventory & Pricing
+                                </h5>
+                                <div class="p-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" asp-for="Price" class="form-control" step="0.01" min="0" required />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Discount (%)</label>
+                                        <input type="number" asp-for="Discount" class="form-control" min="0" max="100" step="0.1" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Stock</label>
+                                        <input type="number" asp-for="Stock" class="form-control" min="0" required />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Units Sold</label>
+                                        <input type="number" asp-for="SoldNumber" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-card-text"></i> Description
+                        </h5>
+                        <div class="p-3">
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h5 class="section-title">
+                            <i class="bi bi-images"></i> Product Images
+                        </h5>
+                        <div class="p-3">
+                            <div class="d-flex flex-wrap gap-3 mb-3">
+                                @foreach (var image in Model.ProductImages)
+                                {
+                                    <div class="image-preview">
+                                        <img src="@Url.Content(image.ImageUrl)" class="product-img" alt="Product image">
+                                        <span class="remove-image" data-image-id="@image.ImageId">
+                                            <i class="bi bi-x"></i>
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="image-upload-container" onclick="document.getElementById('newImages').click()">
+                                <i class="bi bi-cloud-upload fs-2 text-muted"></i>
+                                <p class="mb-0 mt-2">Click to upload new images</p>
+                                <input type="file" id="newImages" name="newImages" multiple accept="image/*" 
+                                       style="display: none;" onchange="previewImages(this)" />
+                            </div>
+                            <div id="imagePreviewContainer" class="d-flex flex-wrap gap-3 mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Actions -->
+                <div class="col-md-4">
+                    <div class="section-card mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-gear"></i> Actions
+                        </h5>
+                        <div class="p-3">
+                            <button type="submit" class="btn-action btn-save">
+                                <i class="bi bi-check2-circle"></i> Save Changes
+                            </button>
+                            <button type="button" class="btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash"></i> Delete Product
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="section-card mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-shop"></i> Store Information
+                        </h5>
+                        <div class="p-3">
+                            <p class="mb-2"><strong>Store:</strong> @Model.Seller.StoreName</p>
+                            <p class="mb-0"><strong>Products:</strong> @Model.Seller.Products.Count</p>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h5 class="section-title">
+                            <i class="bi bi-clock-history"></i> Audit Information
+                        </h5>
+                        <div class="p-3 small">
+                            <p class="mb-2"><strong>Created:</strong> @Model.CreatedAt?.ToString("MMM dd, yyyy HH:mm")</p>
+                            <p class="mb-0"><strong>Status:</strong> @Model.IsApprovedFromAdmin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="/Seller/DeleteProduct/@Model.ProductId" class="btn btn-danger">Delete Product</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Image preview functionality
+        function previewImages(input) {
+            const container = document.getElementById('imagePreviewContainer');
+            container.innerHTML = '';
+
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.createElement('div');
+                        preview.className = 'image-preview';
+                        preview.innerHTML = `
+                            <img src="${e.target.result}" class="product-img" alt="New image">
+                            <span class="remove-image" onclick="this.parentElement.remove()">
+                                <i class="bi bi-x"></i>
+                            </span>
+                        `;
+                        container.appendChild(preview);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // Handle existing image deletion
+        document.querySelectorAll('.remove-image[data-image-id]').forEach(button => {
+            button.addEventListener('click', function() {
+                const imageId = this.dataset.imageId;
+                if (confirm('Are you sure you want to remove this image?')) {
+                    // Add hidden input to track deleted images
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'deletedImageIds';
+                    input.value = imageId;
+                    document.getElementById('productForm').appendChild(input);
+                    this.closest('.image-preview').remove();
+                }
+            });
+        });
+
+        // Form validation
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (isValid) {
+                this.submit();
+            }
+        });
+    </script>
+} 

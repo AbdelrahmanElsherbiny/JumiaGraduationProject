@@ -1,0 +1,12 @@
+@model Product
+
+@{
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
+    ViewData["Title"] = "Product Details";
+}
+
+<h2>@Model.Name</h2>
+<p><strong>SKU:</strong> @Model.SKU</p>
+<p><strong>Price:</strong> @Model.Price</p>
+<p><strong>Description:</strong> @Model.Description</p>
+<!-- Add other product details here -->

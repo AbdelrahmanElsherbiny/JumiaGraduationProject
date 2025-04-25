@@ -1,0 +1,230 @@
+﻿@model Seller
+@{
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
+    ViewData["Title"] = "Seller Profile";
+}
+
+<style>
+    /* Jumia-inspired Profile Styles */
+    .profile-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .page-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: #dc8e26;
+        border-radius: 2px;
+    }
+
+    .profile-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eaeaea;
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #2a2a2a;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.75rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #dc8e26;
+        box-shadow: 0 0 0 0.2rem rgba(220, 142, 38, 0.25);
+    }
+
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        width: 100%;
+        justify-content: center;
+        border: 1px solid #e9ecef;
+    }
+
+    .status-verified {
+        background-color: #198754;
+        color: white;
+        border-color: #198754;
+    }
+
+    .status-pending {
+        background-color: #ffc107;
+        color: #000;
+        border-color: #ffc107;
+    }
+
+    .btn-update {
+        background: #dc8e26;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s;
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .btn-update:hover {
+        background: #c47e22;
+        color: white;
+    }
+
+    .divider {
+        height: 1px;
+        background-color: #e9ecef;
+        margin: 2rem 0;
+    }
+
+    @@media (max-width: 768px) {
+        .profile-container {
+            margin: 1rem;
+        }
+
+        .profile-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="profile-container">
+        <div class="page-header">
+            <h2 class="page-title">
+                <i class="bi bi-shop"></i> Seller Profile
+            </h2>
+        </div>
+
+        @if (Model == null)
+        {
+            <div class="alert alert-danger">
+                Seller profile data could not be loaded. Please try again later.
+            </div>
+        }
+        else
+        {
+            <form asp-action="UpdateProfile" asp-controller="Seller" method="post">
+                <div class="profile-card">
+                    <input type="hidden" name="SellerId" value="@Model.SellerId" />
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" value="@Model.User?.UserName" class="form-control" readonly />
+                    </div>
+
+                    <!-- Store Name -->
+                    <div class="form-group">
+                        <label class="form-label">Store Name</label>
+                        <input name="StoreName" value="@Model.StoreName" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="StoreName" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="Email" value="@(Model.User?.Email)" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" name="PhoneNumber" value="@(Model.User?.PhoneNumber)" class="form-control" />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="PhoneNumber" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <!-- Tax Number -->
+                    <div class="form-group">
+                        <label class="form-label">Tax Number</label>
+                        <input type="number" name="TaxNumber" value="@Model.TaxNumber" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="TaxNumber" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <!-- Bank Account -->
+                    <div class="form-group">
+                        <label class="form-label">Bank Account</label>
+                        <input type="number" name="BankAccount" value="@Model.BankAccount" class="form-control" required />
+                        <span class="text-danger field-validation-valid" data-valmsg-for="BankAccount" data-valmsg-replace="true"></span>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Status and Rating -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">Verification Status</label>
+                            <div class="status-badge @(Model.IsVerified == true ? "status-verified" : "status-pending")">
+                                <i class="bi @(Model.IsVerified == true ? "bi-check-circle" : "bi-hourglass-split")"></i>
+                                @(Model.IsVerified == true ? "Verified Seller" : "Verification Pending")
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Store Rating</label>
+                            <div class="input-group">
+                                <input value="@(Model.Rating ?? 0)" class="form-control text-center" readonly />
+                                <span class="input-group-text">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn-update">
+                            <i class="bi bi-check2-circle"></i> Update Profile
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
