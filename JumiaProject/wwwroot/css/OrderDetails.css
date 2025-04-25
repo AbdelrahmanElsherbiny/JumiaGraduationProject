@@ -20,6 +20,7 @@ body {
     background-color: var(--jumia-light-gray);
     color: #333;
     min-width: 1200px; /* Add minimum width like in the first file */
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Main Layout */
@@ -28,7 +29,6 @@ body {
     justify-content: center;
     gap: 20px;
     margin-top: 115px; /* Changed to match first file */
-    padding: 20px;
     min-height: calc(100vh - var(--header-height) - 60px);
 }
 
@@ -38,13 +38,12 @@ body {
     background-color: white;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    padding: 15px;
     height: fit-content;
 }
 
 .order {
     min-width: 753px; /* Add minimum width from first file */
-    width: 850px; /* Fixed width from first file */
+    width: 980px; /* Fixed width from first file */
     background-color: white;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);

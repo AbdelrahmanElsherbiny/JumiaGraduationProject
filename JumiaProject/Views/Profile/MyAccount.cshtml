@@ -1,9 +1,10 @@
 ﻿@model ProfileVM
-<div class="d-flex">
+<link href="~/css/profile.css" rel="stylesheet" />
+<div class="d-flex gap">
 	<div>
 		@await Html.PartialAsync("_SideBarPartial")
 	</div>
-	<div class="profile-container  col-9">
+	<div class="profile-container col-9">
 		<header class="profile-header">
 			<h1 class="text-header">Account Overview</h1>
 		</header>

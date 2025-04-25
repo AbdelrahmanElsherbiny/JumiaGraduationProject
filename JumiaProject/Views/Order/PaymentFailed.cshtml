@@ -1,0 +1,95 @@
+﻿@model JumiaProject.Models.Order
+
+@{
+    ViewData["Title"] = "Payment Failed";
+    Layout = null;
+    var errorMessage = ViewBag.ErrorMessage;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - Jumia</title>
+    <link href="~/css/Checkout.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .failed-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .failed-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .error-details {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ffcdd2;
+            border-radius: 4px;
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .error-icon {
+            color: #d32f2f;
+            font-size: 60px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .retry-button {
+            background-color: #f68b1e;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #f68b1e;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="failed-container">
+        <div class="failed-header">
+            <img src="~/images/home/logo.png" alt="Jumia Logo" style="height: 40px;">
+            <h2>Payment Failed</h2>
+        </div>
+
+        <div class="error-icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+
+        <div class="error-details">
+            <h3>Error Details</h3>
+            <p>@errorMessage</p>
+        </div>
+
+        <p>We were unable to process your payment. Please try again or use a different payment method.</p>
+
+        <a href="/Order/Index" class="retry-button">Try Again</a>
+        <a href="/Home/Index" class="back-link">Return to Shopping</a>
+    </div>
+</body>
+</html>
