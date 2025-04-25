@@ -16,7 +16,8 @@
                         <div class="d-flex justify-content-center align-items-center text-center flex-column w-100">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <form asp-action="SelectCountry" method="post" class=" d-flex justify-content-center align-items-center flex-column w-100  p-4 bg-white ">
-                                <select  asp-for="Country" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Select Your Country*">
+                            <label class="password-lable">Country</label>
+                                <select  asp-for="Country" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Select Your Country">
                                     <option value="">Select Your Country*</option>
                                     <option value="egypt">Egypt</option>
                                     <option value="morocco">Morocco</option>
@@ -37,7 +38,7 @@
                                 Register as a Jumia Global seller and sell your products across Africa.
                                 Know more about Jumia Global at - https://www.jumia-global.com/
                             </p>
-                            <h6>Already have an account? <a href="" class="terms h6 text-decoration-none"> Sign in</a></h6>
+                            <h6>Already have an account? <a asp-action="sellerlogin" asp-controller="selleraccount" class="terms h6 text-decoration-none"> Sign in</a></h6>
                         </div>
                     </div>
                 </div>

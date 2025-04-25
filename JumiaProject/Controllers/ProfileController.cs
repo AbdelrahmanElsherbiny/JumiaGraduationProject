@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace JumiaProject.Controllers
 {
     //[Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
         private readonly JumiaContext context;
         private readonly IProfile profile;
@@ -19,7 +19,8 @@ namespace JumiaProject.Controllers
         private readonly IWishlist Wishlist;
         private readonly IHome Home;
         private readonly IOrder Order;
-        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager, IWishlist _wishlist, IHome _home, IOrder _order)
+        private readonly ICart cart;
+        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager, IWishlist _wishlist, IHome _home, IOrder _order,ICart cart):base(cart,_userManager)
         {
             UserManager = _userManager;
             Wishlist = _wishlist;
@@ -27,6 +28,7 @@ namespace JumiaProject.Controllers
             Order = _order;
             this.profile = profile;
             this.context = context;
+            this.cart = cart;
         }
         public IActionResult MyAccount()
         {
@@ -251,6 +253,7 @@ namespace JumiaProject.Controllers
         }
 
     }
-}
+    }
+
 
 

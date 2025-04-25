@@ -31,11 +31,12 @@
                                         <span class="text">Individual</span>
                                     </label>
                                 </div>
-                               
-                            <input asp-for="ShopName" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Shop Name*">
+                            <label class="code-lable">Shop Name</label>
+                            <input asp-for="ShopName" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Enter Your Shop Name">
                             <span asp-validation-for="ShopName" class="text-danger"></span>
-                            <select asp-for="ShippingAddress" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Select Shipping Zone*">
-                                    <option value="">Shipping Zone</option>
+                            <label class="cpassword-lable">Shipping Zone</label>
+                            <select asp-for="ShippingAddress" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="Select Your Shipping Zone">
+                                <option value="">Select Your Shipping Zone</option>
                                     <option value="cairo">Cairo</option>
                                     <option value="alex">Alex</option>
                                     <option value="gharbia">Al Gharbia</option>
@@ -44,7 +45,8 @@
                                     <option value="mansoura">MansourA</option>
                                 </select>
                             <span asp-validation-for="ShippingAddress" class="text-danger"></span>
-                                <select asp-for="AboutUs" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="How did you hear about us?*">
+                            <label class="about-lable">About us</label>
+                                <select asp-for="AboutUs" class="form-control my-input mt-3 mb-1 p-3 bg-transparent" placeholder="How did you hear about us?">
                                     <option value="">How do you hear about jumia?</option>
                                     <option value="refferal">Refferal</option>
                                     <option value="google">Google</option>

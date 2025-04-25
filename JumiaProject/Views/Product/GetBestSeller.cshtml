@@ -121,11 +121,20 @@
                     }
                     else
                     {
+                    @if (!(User.Identity.IsAuthenticated))
+                    {
+                        <button class="checkout-btn border border-0 rounded fw-medium w-100 add-to-cart-btn mt-4 cart-btn-best">
+                            <a asp-action="Login" asp-controller="Account" class="text-decoration-none text-white">
+                                Add to cart  <i class="fa-solid fa-cart-shopping text-white"></i>
+                            </a>
+                        </button>
+                    }else{
                         <button class="checkout-btn border border-0 rounded fw-medium w-100 add-to-cart-btn mt-4 cart-btn-best"
                                 data-product-id="@product.ProductId"
                                 data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
                             Add to Cart
                         </button>
+                    }
                     }
             </div>
           

@@ -14,36 +14,48 @@ namespace JumiaProject.Controllers
        private readonly JumiaContext _context;
        private readonly IProduct Product;
        private readonly  ICart _cart;
+        private readonly IWishlist _wishlist;
+        private readonly JumiaContext _context;
        private readonly  UserManager<ApplicationUser> _userManager;
-        public ProductController(IProduct _product, ICart cart, UserManager<ApplicationUser> userManager):base(cart, userManager) 
+        public ProductController(IProduct _product, ICart cart, UserManager<ApplicationUser> userManager,IWishlist wishlist,JumiaContext context):base(cart, userManager) 
         {
             Product = _product;
             _cart = cart;
             _userManager = userManager;
+            _wishlist= wishlist;
+            _context = context;
         }
         public async Task<IActionResult> ProductDetails(int id)
         {
             string userId = _userManager.GetUserId(User);
             var productDetails = Product.GetProductById(id);
-            
-
             if (productDetails != null)
             {
+               
+                var CartItems = new List<CartItem>();
+                if (userId != null)
+                {
+                    CartItems = await _cart.GetAllCartItems(userId);
+                }
+              
+
                 var CategoryProducts = Product.GetProductsByCategory(productDetails.CategoryId);
                 var BrandProducts = Product.GetProductsByBrand(productDetails.BrandId);
-                var cart = await _cart.GetCartByUserId(userId);
+
                 ProductDetailsViewModel data = new ProductDetailsViewModel()
                 {
                     Product = productDetails,
-                    CartItems = await _cart.GetAllCartItems(userId),
-                    CategoryProducts=CategoryProducts,
-                    BrandProducts=BrandProducts
+                    CartItems = CartItems,
+                    CategoryProducts = CategoryProducts,
+                    BrandProducts = BrandProducts,
+                   
                 };
                 return View(data);
             }
-
-            return NotFound();
-        }
+            else
+            {
+                return NotFound();
+            }
 
 
         public async Task<IActionResult> GetBestSeller(int pageIndex = 1, int pageSize = 10)
@@ -100,7 +112,11 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetBrandProducts(int id,int pageIndex = 1, int pageSize = 10)
         {
             string userId = _userManager?.GetUserId(User);
-            var cartItems = await _cart?.GetAllCartItems(userId);
+            var cartItems = new List<CartItems>();
+            if (userId != null) {
+                 cartItems = await _cart?.GetAllCartItems(userId);
+            }
+            
 
             List<Product> brandProducts = Product.GetProductsByBrand(id,pageIndex,pageSize);
             int totalItems = Product.GetProductsByBrandCount(id);

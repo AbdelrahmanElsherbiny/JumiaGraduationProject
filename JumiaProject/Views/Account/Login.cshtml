@@ -12,7 +12,8 @@
         <div class="d-flex justify-content-center align-items-center text-center flex-column w-100">
             <div asp-validation-summary="All" class="text-center"></div>
             <form method="post"  asp-action="Login" class=" d-flex justify-content-center align-items-center flex-column w-100">
-                <input asp-for="Email" class="form-control my-input mt-3 mb-4 p-3 bg-transparent" placeholder="Email" />
+                <label class="address-lable">Email</label>
+                <input asp-for="Email" class="form-control my-input mt-3 mb-4 p-3 bg-transparent position-relative" placeholder="Enter Your Email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
                 <button class="my-btn continue-btn border border-0 w-100 mt-3 mb-2 rounded fw-bold" type="submit">Continue</button>
             </form>
