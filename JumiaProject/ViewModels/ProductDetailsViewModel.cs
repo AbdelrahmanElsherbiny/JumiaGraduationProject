@@ -8,6 +8,6 @@ namespace JumiaProject.ViewModels
         public List<CartItem> CartItems { get; set; }
         public List<Product> CategoryProducts { get; set; }
         public List<Product> BrandProducts {  get; set; }
-
+        public List<Wishlist> WishlistItems { get; set; }
     }
 }

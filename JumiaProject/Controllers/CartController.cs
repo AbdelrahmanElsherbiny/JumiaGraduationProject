@@ -76,31 +76,23 @@ namespace JumiaProject.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrUpdateCartItem(int productId, int? variantId, int quantity)
         {
-            try
-            {
-
+           
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var cart = await _cart.GetCartByUserId(userId);
-                await _cart.AddOrUpdateCartItem(cart.CartId, productId, variantId, quantity);
-                return Json(new { success = true, message = "Item added to cart successfully" });
-            }
+               
+            
                 if (userId != null)
                 {
                     var cart = await _cart.GetCartByUserId(userId);
                     await _cart.AddOrUpdateCartItem(cart.CartId, productId, variantId, quantity);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Item added to cart successfully" });
                 }
                 else
                 {
                     return RedirectToAction("Login", "Account");
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Controller: Error in AddOrUpdateCartItem: {ex.Message}");
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
+          
+        
         public async Task<IActionResult> GetTotalCartQuantity()
         {
               string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -154,7 +146,7 @@ namespace JumiaProject.Controllers
 
             decimal totalprice = await _cart.CalculateCartTotalPrice(userId);
 
-            return Json(totalprice);
+            return Json(totalprice.ToString("N2"));
         }
         public async Task<IActionResult> GetCartCount()
         {

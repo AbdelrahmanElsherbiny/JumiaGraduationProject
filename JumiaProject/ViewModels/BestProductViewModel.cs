@@ -11,5 +11,6 @@ namespace JumiaProject.ViewModels
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
         public int BrandId { get; set; }
+        public List<Wishlist> WishlistItems { get; set; }
     }
 }

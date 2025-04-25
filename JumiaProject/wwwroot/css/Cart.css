@@ -261,17 +261,27 @@ a
     display: none;
     padding: 8px 0px;
 }
-.cartitemlarge:hover .cart-btn-best
-{
-    display:block;
+.heart-best {
+    display: none;
+}
+.cartitemcatlarge:hover .heart-best {
+    display: block;
+}
+.cartitemlarge:hover .cart-btn-best {
+    display: block;
 }
 .cartitemcatlarge:hover .cart-btn-best {
     display: block;
 }
-    .category-photo:hover {
+.cartitemcatlarge:hover .cart-btn-best {
+    display: block;
+}
+
+
+.category-photo:hover {
         box-shadow: rgba(0, 0, 0, 0.1) 2px 4px 5px,rgba(0, 0, 0, 0.1) -2px -4px 5px;
         transform: scale(1.001);
-    }
+}
 .express-photo {
     width: 150px;
 }
