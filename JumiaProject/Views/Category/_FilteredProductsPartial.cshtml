@@ -2,16 +2,36 @@
 @foreach (Product product in @Model.Products)
 {
     var variant = product.ProductVariants.FirstOrDefault();
-    bool isInCart = Model.CartItems != null && Model.CartItems.Any(c => c.ProductId == product.ProductId);
-
+    bool isInCart = @Model.CartItems != null && @Model.CartItems.Any(c => c.ProductId == product.ProductId);
+    bool isInWishlist = @Model.WishlistItems != null && @Model.WishlistItems.Any(c => c.ProductId == product.ProductId);
 
     <div class="cartitemcatlarge bg-white p-2 rounded mx-1 mb-3 d-flex flex-column justify-content-between position-relative">
 
-        <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
-           data-product-id="@product.ProductId"
-           data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
-        </i>
-        
+        @if (isInWishlist)
+        {
+          
+            <i class="heart-btn p-2 rounded-circle fa-solid fa-heart my-color position-absolute d-block top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
+               data-product-id="@product.ProductId"
+               data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
+            </i>
+        }
+        else
+        {
+        @if (!(User.Identity.IsAuthenticated))
+        {
+                <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute d-block top-0 end-0 mt-2  fs-5 ">
+                <a class="text-decoration-none" asp-action="Login" asp-controller="Account"></a>
+            </i>
+        }
+        else
+        {
+
+                <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute d-block top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
+               data-product-id="@product.ProductId"
+               data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
+            </i>
+        }
+        }
         <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
             <img src="~/images/best.jpg" alt="" class="">
             <p class="m-0 p-0 small14 text-black">@product.Name</p>

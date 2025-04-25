@@ -68,10 +68,10 @@ else
                                 </div>
                             </div>
                             <div class="price-container ">
-                                <h2 class="h4 dark-color">EGP @(@item.Product.Price - (@item.Product.Price * @item.Product.Discount))</h2>
+                                <h2 class="h4 dark-color">EGP @((@item.Product.Price - (@item.Product.Price * @item.Product.Discount))?.ToString("N2"))</h2>
                                 @if(item.Product.Discount!=0){
 
-                                    <p><span class="disable-color text-decoration-line-through">EGP @item.Product.Price</span><span class="item-sale p-1 rounded ms-1">-@item.Product.Discount%</span></p>
+                                    <p><span class="disable-color text-decoration-line-through">EGP @item.Product.Price.ToString("N2")</span><span class="item-sale p-1 rounded ms-1">-@item.Product.Discount%</span></p>
                                 }else
                                 {
                                     <h2 class="h4 dark-color"></h2>
@@ -99,7 +99,7 @@ else
             <hr>
             <div class="d-flex justify-content-between">
                 <p class="p-font cart-total-quantity2">Item's total (@ViewBag.Totalitems) </p>
-                <span class="dark-color fw-bold cart-total-price">EGP @ViewBag.Price</span>
+                <span class="dark-color fw-bold cart-total-price">EGP @ViewBag.Price?.ToString("N2")</span>
             </div>
             @* <div class="d-flex justify-content-between"> *@
             @*     <p class="w-50 p-font">Adidas & Skechers - Extra 25% Off - JF</p> *@
@@ -108,7 +108,7 @@ else
             <hr>
             <div class="d-flex justify-content-between m-0 p-0">
                 <p class="dark-color p-font fw-bold m-0 p-0 ">Subtotal</p>
-                <span class="h6 fw-bold dark-color cart-total-price">EGP @ViewBag.Price</span>
+                <span class="h6 fw-bold dark-color cart-total-price">EGP @ViewBag.Price?.ToString("N2")</span>
             </div>
             <hr>
             <div class="d-flex justify-content-between">
@@ -116,7 +116,7 @@ else
             </div>
             <hr>
             <a asp-action="Index" asp-controller="Order">
-                <button class="checkout-btn w-100 border border-0 rounded fw-bold shadow-sm m-0">CheckOut (EGP <span class="cart-total-price">@ViewBag.Price</span>)</button>
+                <button class="checkout-btn w-100 border border-0 rounded fw-bold shadow-sm m-0">CheckOut ( <span class="cart-total-price">@ViewBag.Price?.ToString("N1")</span>)</button>
             </a>
         </div>
     </div>
@@ -153,9 +153,9 @@ else
             <div class="cartitem bg-white p-2 rounded position-relative">
                 <img src="~/images/best.jpg" alt="" class="">
                 <p class="m-0 p-0 small14 text-black">@product.Name</p>
-                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                 @if(product.Discount!=0){
-                    <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @(@product.Price-(@product.Price*@product.Discount))</p>
+                        <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
                     <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
                 }
                
@@ -179,10 +179,10 @@ else
                     <div class="cartitem bg-white p-2 rounded position-relative">
                         <img src="~/images/best.jpg" alt="" class="">
                         <p class="m-0 p-0 small14 text-black">@product.Name</p>
-                        <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+                        <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                         @if (product.Discount != 0)
                         {
-                            <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @(@product.Price - (@product.Price * @product.Discount))</p>
+                            <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
                             <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
                         }
 

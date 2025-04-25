@@ -4,6 +4,7 @@
 
     var variant = Model.Product.ProductVariants.FirstOrDefault();
     bool isInCart = Model.CartItems != null && Model.CartItems.Any(c => c.ProductId == Model.Product.ProductId);
+    bool isInWishlist = Model.WishlistItems != null && Model.WishlistItems.Any(c => c.ProductId == Model.Product.ProductId);
 
 }
 <div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
@@ -67,7 +68,7 @@
                     <h4 class="small16 mb-1">Brand: @Model.Product.Brand.BrandName</h4>
                     <hr>
                     <p class="">
-                        <span class="font20 fw-bold">EGP @(@Model.Product.Price-(@Model.Product.Price*@Model.Product.Discount))</span>
+                        <span class="font20 fw-bold">EGP @((@Model.Product.Price-(@Model.Product.Price*@Model.Product.Discount))?.ToString("N2"))</span>
                         @if(Model.Product.Discount!=0){
                             <span class="small16 text-decoration-line-through disable-color">EGP @Model.Product.Price</span>
                             <span class="item-sale small16 p-1 rounded">-@Model.Product.Discount%</span>
@@ -145,12 +146,24 @@
                             Add to cart  <i class="fa-solid fa-cart-shopping text-white"></i>
                         </button>}
                     }
-                    @* <button class="mt-5 shadow w-100 rounded checkout-btn border-0 py-3 fw-semibold px-3 fs-6">Add to cart  <i class="fa-solid fa-cart-shopping text-white"></i></button> *@
-                    @* <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5"></i> *@
-                    <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
-                            data-product-id="@Model.Product.ProductId"
-                            data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
-                    </i>
+                    @if(isInWishlist){
+                        <i class="heart-btn p-2 rounded-circle fa-solid fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
+                           data-product-id="@Model.Product.ProductId"
+                           data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
+                        </i>
+                    }else{
+                    @if (!(User.Identity.IsAuthenticated))
+                    { 
+                        <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 ">
+                            <a class="text-decoration-none" asp-action="Login" asp-controller="Account"></a>
+                        </i>
+                    }else{
+                    
+                        <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
+                           data-product-id="@Model.Product.ProductId"
+                           data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
+                        </i>
+                    }}
                 </div>
             </div>
             <div class="cartitem-container rounded mt-3">
@@ -241,7 +254,7 @@
                 <div class="cartitem bg-white p-2 rounded position-relative">
                     <img src="~/images/best.jpg" alt="@product.Name" class="">
                     <p class="m-0 p-0 small14 text-black">@product.Name</p>
-                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                     @if (product.Discount != 0)
                     {
                         <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @(@product.Price - (@product.Price * @product.Discount))</p>
@@ -268,7 +281,7 @@
                     <div class="cartitem bg-white p-2 rounded position-relative">
                         <img src="~/images/best.jpg" alt="" class="">
                         <p class="m-0 p-0 small14 text-black">@product.Name</p>
-                        <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+                        <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                         @if (product.Discount != 0)
                         {
                             <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @(@product.Price - (@product.Price * @product.Discount))</p>

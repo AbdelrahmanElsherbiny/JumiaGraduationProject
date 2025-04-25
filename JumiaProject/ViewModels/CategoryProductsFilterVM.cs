@@ -18,5 +18,6 @@ namespace JumiaProject.ViewModels
         public List<CartItem> CartItems { get; set; }
         public decimal MinAvailablePrice { get; set; }
         public decimal MaxAvailablePrice { get; set; }
+        public List<Wishlist> WishlistItems { get; set; }
     }
 }

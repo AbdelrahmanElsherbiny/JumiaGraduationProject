@@ -222,7 +222,7 @@ namespace JumiaProject.Controllers
             return View();
         }
 
-
+        
         [HttpPost]
         public IActionResult ToggleWishlist(int productId, int? productVariantId)
         {

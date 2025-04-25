@@ -13,49 +13,28 @@ namespace JumiaProject.Controllers
         private readonly ICart _cart;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICategory category;
-        public CategoryController(IProduct _product, ICart _cart, UserManager<ApplicationUser> userMnager, ICategory category) : base(_cart, userMnager)
+        private readonly IWishlist wishlist;
+        public CategoryController(IProduct _product, ICart _cart, UserManager<ApplicationUser> userMnager, ICategory category,IWishlist wishlist) : base(_cart, userMnager)
         {
             Product = _product;
             this._cart = _cart;
             _userManager = userMnager;
             this.category = category;
+            this.wishlist = wishlist;
 
         }
-        //public async Task<IActionResult> Index(int id)
-        //{
-        //    string userId = _userManager?.GetUserId(User);
-        //    if (userId != null)
-        //    {
-        //        var Products = Product.GetProductsByCategory(id);
-        //        var cartItems = await _cart?.GetAllCartItems(userId);
-        //        BestProductViewModel data = new BestProductViewModel()
-        //        {
-        //            Products = Products,
-        //            CartItems = cartItems,
-        //        };
-        //        return View(data);
-        //    }
-        //    else
-        //    {
-        //        var Products = Product.GetProductsByCategory(id);
-        //        var cartItems =new List<CartItem>();
-        //        BestProductViewModel data = new BestProductViewModel()
-        //        {
-        //            Products = Products,
-        //            CartItems = cartItems,
-        //        };
-        //        return View(data);
-        //    }
-        //}
+    
 
 
         public async Task<IActionResult> Index(int id, List<int>? sizeIds, List<int>? brandIds, decimal? minPrice, decimal? maxPrice, List<decimal>? discountList)
         {
             string userId = _userManager?.GetUserId(User);
             var cartItems = new List<CartItem>();
+            var WishlistItems = new List<Wishlist>();
             if (userId != null)
             {
                 cartItems = await _cart?.GetAllCartItems(userId);
+                WishlistItems = wishlist.GetWishlist(userId);
             }
             var availableSizes = await category.GetSizesByCategory(id);
             var availableBrands = await category.GetBrandsByCategory(id);
@@ -97,7 +76,7 @@ namespace JumiaProject.Controllers
                 CartItems = cartItems,
                 MaxAvailablePrice = maxAvailablePrice,
                 MinAvailablePrice = minAvailablePrice,
-
+                WishlistItems=WishlistItems
             };
 
             return View(data);
@@ -112,6 +91,13 @@ namespace JumiaProject.Controllers
             decimal? maxPrice
             )
         {
+            string userId = _userManager.GetUserId(User);
+            var cartItems = new List<CartItem>();
+            var WishlistItems = new List<Wishlist>();
+            if (userId != null) {
+                cartItems = await _cart?.GetAllCartItems(userId);
+                WishlistItems = wishlist.GetWishlist(userId);
+            }
             var availableSizes = await category.GetSizesByCategory(id);
             var availableBrands = await category.GetBrandsByCategory(id);
             var discountOptions = await category.GetProductsByDiscount(id);
@@ -151,7 +137,8 @@ namespace JumiaProject.Controllers
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
                 SelectedDiscount = discountList,
-                CartItems = new List<CartItem>()
+                CartItems = cartItems,
+                WishlistItems = WishlistItems
             };
 
             return PartialView("_FilteredProductsPartial", viewModel);
