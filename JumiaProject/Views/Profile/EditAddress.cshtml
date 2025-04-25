@@ -1,9 +1,10 @@
 ﻿@model ProfileVM
-<div class="d-flex">
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+<div class="d-flex gap">
 	<div>
 		@await Html.PartialAsync("_SideBarPartial")
 	</div>
-	<div class="profile-container  col-9">
+	<div class="profile-container wid col-9">
 		<header class="profile-header">
 			<h1 class="text-header">Edit Address</h1>
 		</header>

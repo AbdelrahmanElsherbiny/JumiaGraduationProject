@@ -21,6 +21,7 @@ body {
     margin: 0;
     padding: 0;
     min-width: 1200px;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Main Layout */
@@ -29,7 +30,6 @@ body {
     justify-content: center;
     gap: 20px;
     margin-top: 115px;
-    padding: 20px;
     min-height: calc(100vh - var(--header-height) - 60px);
 }
 
@@ -40,7 +40,6 @@ body {
     background-color: white;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    padding: 15px;
     height: fit-content;
 }
 .wishlist-sidebar {
@@ -48,7 +47,7 @@ body {
 }
 
 .wishlist {
-    width: 850px;
+    width: 980px;
     background-color: white;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);

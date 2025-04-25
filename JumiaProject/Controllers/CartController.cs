@@ -77,7 +77,7 @@ namespace JumiaProject.Controllers
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var cart = await _cart.GetCartByUserId(userId);
                 await _cart.AddOrUpdateCartItem(cart.CartId, productId, variantId, quantity);
-                return Json(new { success = true });
+                return Json(new { success = true, message = "Item added to cart successfully" });
             }
             catch (Exception ex)
             {

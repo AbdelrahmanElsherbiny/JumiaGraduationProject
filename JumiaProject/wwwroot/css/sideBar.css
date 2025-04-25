@@ -1,7 +1,5 @@
 ﻿.side-bar {
     background-color: white;
-    margin-right: 1em;
-    margin-left: 2em;
     border-radius: 7px;
     width: 17em;
 }
@@ -27,7 +25,6 @@
 .side-line:hover,
 .side-line:hover a{
     background-color: #f1f1f2;
-    font-weight: 600;
 }
 .side-bar-button {
     background-color: white;
@@ -40,7 +37,6 @@
         border-radius:5px;
     }
 .side {
-    padding: 15px 15px 12px 1em;
     font-weight: 400;
     cursor: pointer;
     display: flex;
@@ -53,5 +49,4 @@
 .side-line:not(.active):hover,
 .side-line:not(.active):hover a {
     background-color: #f1f1f2;
-    font-weight: 600;
 }
