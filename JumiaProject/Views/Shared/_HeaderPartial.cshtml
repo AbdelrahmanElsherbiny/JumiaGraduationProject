@@ -1,5 +1,4 @@
-﻿@* @model HomeVM *@
-<div class="header col-12">
+﻿<div class="header col-12">
 	<div class="flash-sale col-12">
 		<img src="/images/home/flash-sale.png" class="col-10" />
 	</div>
@@ -7,27 +6,23 @@
 	<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm p-0 col-12">
 		<div class="container col-12">
 			<!-- logo -->
-			<a class="navbar-brand col-2 d-flex" asp-controller="Home" asp-action="Index">
-				<img src="~/images/home/logo.png" alt="Jumia" class="jumia-logo">
+			<a class="navbar-brand col-2 d-flex justify-content-center" asp-controller="Home" asp-action="Index">
+				<img src="~/images/home/logo.png" alt="Jumia" class="jumia-logo ">
 			</a>
 
 			<div class="collapse navbar-collapse" id="navbarContent">
 				<!-- search -->
-				<div class="d-flex mx-3 flex-grow-1">
-					<div class="input-group">
-						<input type="text" id="search-key" name="query" class="form-control" placeholder="🔍 Search products">
+				<div class="d-flex mx-3 flex-grow-1 justify-content-center search-container px-4 col-7position-relative">
+					<div class="input-group w-100 custom-search-box">
+						<input type="text" id="search-key" name="query" class="form-control" placeholder="🔍 Search products, Brands" autocomplete="off">
 						<div>
-							<button class="search" onclick="search()">Search</button>
+							<button id="search-btn" class="search">Search</button>
 						</div>
 					</div>
-				</div>
+					<div id="searchResults" class="dropdown-menu show shadow" style="display: none; position: absolute; top: 100%; z-index: 1000;"></div>
+					<div id="searchBrandResults" class="dropdown-menu show shadow" style="display: none; position: absolute; top: 100%; z-index: 999;"></div>
 
-				@* <form asp-controller="Home" asp-action="Search">
-            @*     <p> *@
-				@*         <label>Title: <input id="search-key" type="text" name="searchKey"/></label> *@
-				@*         <input type="submit" value="Filter" /> *@
-				@*     </p> *@
-				@* </form> *@
+				</div>
 
 				<!-- icons -->
 				<ul class="navbar-nav">
@@ -37,12 +32,12 @@
 								@if (!(User.Identity.IsAuthenticated))
 								{
 									<div class="hover-orange">
-										<i class="far fa-user fa-lg"></i>
+										<i class="acc far fa-user fa-lg"></i>
 										<button class="nav d-none d-lg-inline" onclick="showList()">Account</button>
 									</div>
 									<div id="dropdownList" class="list">
 										<div class="sign-in-div">
-											<button class="sign-in-button">Sign In</button>
+											<a asp-action="login" asp-controller="account" class="sign-in-button text-decoration-none">Sign In</a>
 										</div>
 										<div class="icon-list-hover">
 											<i class="fa-regular fa-user"></i>
@@ -63,11 +58,11 @@
 								{
 									<div class="hover-orange">
 										<i class="far fa-user fa-lg"></i>
-										<button class="nav d-none d-lg-inline" onclick="showList()">Account</button>
+										<button class="nav d-none d-lg-inline" onclick="showList()">Hi, @User.Identity.Name.Split("@")[0]</button>
 									</div>
 									<div id="dropdownList" class="list">
 										<div class="icon-list-hover">
-											<i class="fa-regular fa-user"></i>
+											<i class="acc fa-regular fa-user"></i>
 											<a href="/Profile/MyAccount" class="icon-list">My Account</a>
 										</div>
 										<div class="icon-list-hover">
@@ -102,70 +97,24 @@
 				<div class="nav-item mx-2 hover-orange">
 					<a class="nav-link hover-orange position-relative" asp-action="index" asp-controller="cart">
 						<i class="fas fa-shopping-cart fa-lg " style="fill: #313133; -webkit-text-stroke: 1px black;"></i>
-						@await Html.PartialAsync("_CartCountPartial")
+						@if ((User.Identity.IsAuthenticated))
+						{
+							@await Html.PartialAsync("_CartCountPartial")
+						}
 						<span class="d-none d-lg-inline">Cart</span>
 
 					</a>
 				</div>
-
+				<div class="nav-item mx-2 hover-orange">
+					<a asp-controller="api" asp-action="chat" class="nav-link hover-orange position-relative">
+						<i class="fa-regular fa-comment fa-lg" style="fill: #313133; -webkit-text-stroke: 1px black;"></i>	JumiaChat
+					</a>
+				</div>
 			</div>
 		</div>
 	</nav>
 </div>
 
 
-<script>
-
-	var products;
-	function search(){
-		console.log("search");
-	var searchkey = document.getElementById("search-key").value;
-	$.ajax({
-		type: "get",
-	url: "https://localhost:7257/Home/Search",
-	data: {
-		searchKey: searchkey
-			},
-	dataType: "json",
-	success: function(data){
-		products = data.Products;
-			   // if products is null
-			},
-	error: function(err){
-		console.log(err);
-			}
-		})
-
-	}
-
-
-
-	function showList(){
-		document.getElementById("dropdownList").classList.toggle("show");
-	}
-
-	window.onclick = function(event) {
-	  if (!event.target.matches('.nav')) {
-		var dropdowns = document.getElementsByClassName("list");
-	var i;
-	for (i = 0; i < dropdowns.length; i++) {
-		  var openDropdown = dropdowns[i];
-	if (openDropdown.classList.contains('show')) {
-		openDropdown.classList.remove('show');
-		  }
-		}
-	  }
-	}
-
-
-</script>
-
-
-
-
-
-
-
-
-
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/header.js"></script>

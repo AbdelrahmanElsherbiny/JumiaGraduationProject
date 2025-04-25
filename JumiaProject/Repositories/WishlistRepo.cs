@@ -33,5 +33,16 @@ namespace JumiaProject.Repositories
                 Context.SaveChanges();
             }
         }
+        public bool ExistsInWishlist(string userId, int productId, int? productVariantId)
+        {
+            return productVariantId.HasValue
+        ? Context.Wishlists.Any(w => w.UserId == userId && w.ProductId == productId && w.ProductVariantId == productVariantId.Value)
+        : Context.Wishlists.Any(w => w.UserId == userId && w.ProductId == productId && w.ProductVariantId == null);
+        }
+        public Wishlist GetWishlistItem(string userId, int productId, int? productVariantId)
+        {
+
+            return Context.Wishlists.FirstOrDefault(w => w.UserId == userId && w.ProductId == productId && w.ProductVariantId == productVariantId);
+        }
     }
 }

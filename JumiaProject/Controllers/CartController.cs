@@ -3,6 +3,7 @@ using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -87,7 +88,11 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetTotalCartQuantity()
         {
               string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var cart = await _cart.GetCartByUserId(userId);
+            if (userId == null)
+            {
+                return Content("0");
+            }
+            var cart = await _cart.GetCartByUserId(userId);
 
             int totalQuantity = await _cart.GetTotalCartQuantity(cart.CartId);
 
@@ -110,6 +115,10 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetTotalPrice()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Content("0");
+            }
             var cart = await _cart.GetCartByUserId(userId);
 
             decimal totalprice = await _cart.CalculateCartTotalPrice(userId);
@@ -119,6 +128,10 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> GetCartCount()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Content("0");
+            }
             var cart = await _cart.GetCartByUserId(userId);
 
             int cartCount = await _cart.GetTotalCartQuantity(cart.CartId);

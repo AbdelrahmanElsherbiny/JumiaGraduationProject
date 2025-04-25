@@ -18,6 +18,13 @@
 <div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
 </div>
+<div id="alertMessageAddtoWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to wishlist successfully
+</div>
+<div id="alertMessageRemoveWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product removed from wishlist successfully
+</div>
+
 
 
 <div>
@@ -129,7 +136,11 @@
                         </button>
                     }
                     @* <button class="mt-5 shadow w-100 rounded checkout-btn border-0 py-3 fw-semibold px-3 fs-6">Add to cart  <i class="fa-solid fa-cart-shopping text-white"></i></button> *@
-                    <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5"></i>
+                    @* <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5"></i> *@
+                    <i class="heart-btn p-2 rounded-circle fa-regular fa-heart my-color position-absolute top-0 end-0 mt-2  fs-5 add-to-wishlist-btn"
+                            data-product-id="@Model.Product.ProductId"
+                            data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
+                    </i>
                 </div>
             </div>
             <div class="cartitem-container rounded mt-3">
@@ -260,36 +271,13 @@
         </div>
     </div>
 
-</div>
-
-    <script src="~/js/cart.js"></script>
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--This is the popup for variant sizes Roma-->
-<div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+<!--This is the popup for variant sizes Roma Wishlisttttttttttt-->
+<div class="modal fade" id="variantModal1" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content p-2">
 
@@ -299,20 +287,50 @@
             </div>
 
             <div class="modal-body border border-0">
-                <div id="variantOptions" class="d-flex flex-column gap-2">
+                <div id="variantOptions1" class="d-flex align-items-center justify-content-evenly flex-wrap">
                 </div>
             </div>
-
-            <div class="modal-footer border border-0 d-flex justify-content-between">
-
-                <button class="continue-btn  rounded text-decoration-none text-center fs-6 py-2 " data-bs-dismiss="modal">Continue Shopping</button>
-                <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="Index" asp-controller="Cart">Go to Cart</a>
-            </div>
-
+                <div class="modal-footer border border-0 text-center">
+                    <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="UserWishlist" asp-controller="Profile">Go to WishList</a>
+                </div>
         </div>
     </div>
 </div>
-@section Scripts {
-    <script src="~/js/cart.js"></script>
-}
 
+
+
+
+
+
+
+
+
+
+    <!--This is the popup for variant sizes Roma Carttttttttttttt-->
+    <div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-2">
+
+                <div class="modal-header border border-0">
+                    <h6 class="modal-title dark-color">Please select a variation</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body border border-0">
+                    <div id="variantOptions" class="d-flex flex-column gap-2">
+                    </div>
+                </div>
+
+                <div class="modal-footer border border-0 d-flex justify-content-between">
+
+                    <button class="continue-btn  rounded text-decoration-none text-center fs-6 py-2 " data-bs-dismiss="modal">Continue Shopping</button>
+                    <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="Index" asp-controller="Cart">Go to Cart</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @section Scripts {
+        <script src="~/js/cart.js"></script>
+        <script src="~/js/wishlist.js"></script>
+    }

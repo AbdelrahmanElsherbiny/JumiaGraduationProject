@@ -12,23 +12,24 @@ namespace JumiaProject.Controllers
     {
         private readonly IHome home;
         readonly ICart cart;
+        readonly IProduct _product;
+
         readonly UserManager<ApplicationUser> userManager;
-        public HomeController(IHome home, ICart cart, UserManager<ApplicationUser> userManager) : base(cart, userManager)
+        public HomeController(IHome home, ICart cart, UserManager<ApplicationUser> userManager, IProduct product) : base(cart, userManager)
         {
             this.home = home;
+            _product = product;
+
         }
 
         public IActionResult Index()
         {
             HomeVM homeVM = home.GetData();
+            var bestseller = _product.Get6BestSeller();
+            ViewBag.Bestseller = bestseller;
+            var mostDiscount = _product.GetMostDiscount();
+            ViewBag.MostDiscount = mostDiscount;
             return View(homeVM);
-        }
-
-        [HttpGet]
-        public HomeVM Search(string searchKey)
-        {
-            return home.Search(searchKey);
-            //return View("_HeaderPartial", products);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
