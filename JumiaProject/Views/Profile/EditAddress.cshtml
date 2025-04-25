@@ -27,12 +27,24 @@
             <input type="hidden" asp-for="Address.AddressId" />
             <div class="contain">
                 <label class="address-lable" for="Country">Country</label>
-                <input class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country" />
+                @* <input class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country" /> *@
+               
+                <select class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country">
+                    <option value="" style="color:#666;">Select Your Country</option>
+                    <option value="egypt">Egypt</option>
+                    <option value="morocco">Morocco</option>
+                    <option value="ghana">Ghana</option>
+                    <option value="nigeria">Nigeria</option>
+                    <option value="sengal">Sengal</option>
+                    <option value="uganda">Uganda</option>
+                    <option value="kenya">Kenya</option>
+                    <option value="ivorycosta">Ivory Costa</option>
+                </select>
                 <span asp-validation-for="Address.Country" class="text-danger"></span>
             </div>
             <div class="contain">
                 <label class="address-lable" for="City">City</label>
-                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" />
+                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" placeholder="Enter You City" />
                 <span asp-validation-for="Address.City" class="text-danger"></span>
             </div>
             <div class="contain">

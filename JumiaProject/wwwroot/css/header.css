@@ -46,8 +46,11 @@ hover-orange:hover i,
     height: 3em;
 }
 
-.navbar-brand{
+.navbar-brand {
     justify-content: end;
+}
+.acc {
+    font-weight: 500;
 }
 .sell {
     background-color: #f1f1f2;
@@ -64,6 +67,7 @@ hover-orange:hover i,
 }
 .nav {
     background-color: white;
+    font-weight: 500;
     border: none;
 }
 .nav-button{
@@ -124,7 +128,6 @@ hover-orange:hover i,
 
     .nav-button .nav {
         display: inline-block; 
-        margin-left: 10px; 
     }
 #searchResults {
     width: 35em;
