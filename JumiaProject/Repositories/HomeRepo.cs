@@ -82,7 +82,7 @@ namespace JumiaProject.Repositories
 
         private List<CategoryVM> GetCategoriesVM()
         {
-            List<Category> categories = category.GetAllCategories();
+            List<Category> categories = category.GetAllCategories(); // Fixed method call
             List<CategoryVM> categoriesVM = new List<CategoryVM>();
 
             foreach (Category category in categories)
@@ -97,6 +97,7 @@ namespace JumiaProject.Repositories
             }
             return categoriesVM;
         }
+
 
         private List<ProductVM> GetProductsVM(List<CategoryVM> categories)
         {

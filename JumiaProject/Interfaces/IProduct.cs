@@ -17,6 +17,9 @@ namespace JumiaProject.Interfaces
         public void DeleteProduct(int id);
         List<Product> SearchProducts(string searchTerm, string statusFilter, int pageNum);
         int GetFilteredProductsCount(string searchTerm, string statusFilter);
+        List<Product> GetAllProductsForSeller(string? name);
+        (List<Product> Products, int TotalCount) GetProductsPaginated(int page, int pageSize, string search, string filters);
+        void AddProduct(Product product);
         public List<Product> Get6BestSeller();
         public List<Product> GetBestSeller(int pageIndex = 1, int pageSize = 10);
         public List<Product> GetMostDiscount(int pageIndex = 1, int pageSize = 10);
@@ -28,3 +31,4 @@ namespace JumiaProject.Interfaces
         List<Product> SearchBrand(string brand);
     }
 }
+   

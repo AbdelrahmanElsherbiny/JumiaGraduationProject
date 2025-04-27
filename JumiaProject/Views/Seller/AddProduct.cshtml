@@ -1,0 +1,700 @@
+﻿@model ProductViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(Model.ProductId == 0 ? "Add Product" : "Edit Product") | Jumia Seller</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --jumia-orange: #dc8e26;
+            --jumia-orange-light: #e4a44f;
+            --jumia-gray: #f8f9fa;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .product-form-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: var(--jumia-orange);
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .form-content {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            height: 45px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        textarea.form-control {
+            height: auto;
+            min-height: 120px;
+        }
+
+        .form-control:focus {
+            border-color: var(--jumia-orange);
+            box-shadow: 0 0 0 0.2rem rgba(220, 142, 38, 0.15);
+        }
+
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 45px;
+            padding: 0.5rem;
+            border-color: #e0e0e0;
+        }
+
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: var(--jumia-orange) !important;
+            box-shadow: none !important;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border-color: var(--jumia-orange);
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__option--highlighted {
+            background-color: var(--jumia-orange);
+        }
+
+        .image-upload-container {
+            margin-top: 2rem;
+        }
+
+        .image-upload-card {
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            background-color: #fafafa;
+            cursor: pointer;
+        }
+
+        .image-upload-card:hover {
+            border-color: var(--jumia-orange);
+            background-color: #fff;
+        }
+
+        .image-upload-card input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-upload-card .upload-icon {
+            font-size: 2.5rem;
+            color: var(--jumia-orange);
+            margin-bottom: 1rem;
+        }
+
+        .image-upload-card .upload-text {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #e0e0e0;
+            padding: 0.5rem;
+            background: white;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            aspect-ratio: 1;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            padding: 0;
+        }
+
+        .preview-item .remove-btn:hover {
+            background: #dc3545;
+            transform: scale(1.1);
+        }
+
+        .btn-jumia {
+            background: var(--jumia-orange);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-jumia:hover {
+            background: var(--jumia-orange-light);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-jumia {
+            border: 2px solid var(--jumia-orange);
+            color: var(--jumia-orange);
+            background: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-jumia:hover {
+            background: var(--jumia-orange);
+            color: white;
+        }
+
+        .validation-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                padding: 0;
+            }
+
+            .form-content {
+                padding: 1rem;
+            }
+
+            .preview-container {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="product-form-card">
+            <div class="form-header">
+                <i class="bi bi-box-seam me-2"></i>
+                @(Model.ProductId == 0 ? "Add New Product" : "Edit Product")
+            </div>
+            <div class="form-content">
+                <form asp-action="AddProduct" asp-controller="Seller" method="post" enctype="multipart/form-data" id="productForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" asp-for="ProductId" />
+                    <input type="hidden" asp-for="Code" value="@Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper()" />
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Name" class="form-label">Product Name</label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter product name" required 
+                                       minlength="3" maxlength="100" />
+                                <span asp-validation-for="Name" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="SKU" class="form-label">SKU</label>
+                                <input asp-for="SKU" class="form-control" placeholder="Enter SKU" required
+                                       pattern="[A-Za-z0-9-]+" title="SKU can only contain letters, numbers, and hyphens" />
+                                <span asp-validation-for="SKU" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Price" class="form-label">Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Price" class="form-control" type="number" step="0.01" required
+                                           min="0.01" max="999999.99" />
+                                </div>
+                                <span asp-validation-for="Price" class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Discount" class="form-label">Discount (%)</label>
+                                <input asp-for="Discount" class="form-control" type="number" min="0" max="100" />
+                                <span asp-validation-for="Discount" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Stock" class="form-label">Stock Quantity</label>
+                                <input asp-for="Stock" class="form-control" type="number" min="0" required />
+                                <span asp-validation-for="Stock" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="MainMaterial" class="form-label">Main Material</label>
+                                <input asp-for="MainMaterial" class="form-control" placeholder="Enter main material" required />
+                                <span asp-validation-for="MainMaterial" class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="CategoryId" class="form-label">Category</label>
+                                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select" required>
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="BrandId" class="form-label">Brand</label>
+                                <select asp-for="BrandId" asp-items="Model.Brands" class="form-select" required>
+                                    <option value="">-- Select Brand --</option>
+                                </select>
+                                <span asp-validation-for="BrandId" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Description" class="form-label">Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" 
+                                          placeholder="Enter product description" required minlength="20"></textarea>
+                                <span asp-validation-for="Description" class="validation-message"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <h5 class="mb-3 fw-bold">Product Images</h5>
+                            
+                            <!-- Primary Image -->
+                            <div class="form-group mb-4">
+                                <label class="form-label">Primary Image (Required)</label>
+                                <div class="image-upload-card primary-image-upload">
+                                    <i class="bi bi-cloud-upload upload-icon"></i>
+                                    <p class="upload-text">Click or drag primary image here</p>
+                                    <input type="file" asp-for="PrimaryImage" accept="image/*" 
+                                           onchange="previewPrimaryImage(event)" required />
+                                    <img id="primaryImagePreview" class="image-preview d-none" />
+                                </div>
+                                <span asp-validation-for="PrimaryImage" class="validation-message"></span>
+                            </div>
+
+                            <!-- Additional Images -->
+                            <div class="form-group">
+                                <label class="form-label">Additional Images (Optional)</label>
+                                <div class="image-upload-card">
+                                    <i class="bi bi-images upload-icon"></i>
+                                    <p class="upload-text">Click or drag additional images here (up to 5 images)</p>
+                                    <input type="file" asp-for="AdditionalImages" accept="image/*" 
+                                           multiple onchange="previewAdditionalImages(event)" />
+                                </div>
+                                <div id="additionalImagesPreview" class="preview-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <a href="@Url.Action("ProductsList", "Seller")" class="btn btn-outline-jumia me-2">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-jumia">
+                            <i class="bi bi-check-circle me-2"></i>Save Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">Product Added Successfully!</h4>
+                    <p class="text-muted">Your product has been created and is pending approval.</p>
+                    <div class="mt-4">
+                        <a href="@Url.Action("ProductsList", "Seller")" class="btn btn-outline-jumia me-2">
+                            Return to Products
+                        </a>
+                        <button onclick="resetFormAndClose()" class="btn btn-jumia">
+                            Add Another Product
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for dropdowns
+            $('.form-select').select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            });
+
+            // Custom validation rules
+            $.validator.addMethod("maxFiles", function(value, element) {
+                return element.files.length <= 5;
+            }, "You can upload a maximum of 5 additional images");
+
+            // Initialize form validation
+            $("#productForm").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        minlength: 3,
+                        maxlength: 100
+                    },
+                    SKU: {
+                        required: true,
+                        pattern: /^[A-Za-z0-9-]+$/
+                    },
+                    Price: {
+                        required: true,
+                        min: 0.01,
+                        max: 999999.99
+                    },
+                    Stock: {
+                        required: true,
+                        min: 0
+                    },
+                    Description: {
+                        required: true,
+                        minlength: 20
+                    },
+                    CategoryId: "required",
+                    BrandId: "required",
+                    MainMaterial: "required",
+                    PrimaryImage: "required"
+                },
+                messages: {
+                    Name: {
+                        required: "Please enter a product name",
+                        minlength: "Name must be at least 3 characters long",
+                        maxlength: "Name cannot exceed 100 characters"
+                    },
+                    SKU: {
+                        required: "Please enter a SKU",
+                        pattern: "SKU can only contain letters, numbers, and hyphens"
+                    },
+                    Price: {
+                        required: "Please enter a price",
+                        min: "Price must be greater than $0",
+                        max: "Price cannot exceed $999,999.99"
+                    },
+                    Stock: {
+                        required: "Please enter stock quantity",
+                        min: "Stock cannot be negative"
+                    },
+                    Description: {
+                        required: "Please enter a product description",
+                        minlength: "Description must be at least 20 characters long"
+                    },
+                    CategoryId: "Please select a category",
+                    BrandId: "Please select a brand",
+                    MainMaterial: "Please enter the main material",
+                    PrimaryImage: "Please upload a primary image"
+                },
+                errorElement: "span",
+                errorClass: "validation-message"
+            });
+
+            // Form submission handler
+            $("#productForm").on("submit", function(e) {
+                e.preventDefault();
+                
+                if (!$(this).valid()) {
+                    return;
+                }
+
+                var formData = new FormData(this);
+                
+                // Remove any empty file inputs for AdditionalImages
+                if (formData.has('AdditionalImages')) {
+                    const additionalImages = formData.getAll('AdditionalImages');
+                    formData.delete('AdditionalImages');
+                    additionalImages.forEach(file => {
+                        if (file.size > 0) {
+                            formData.append('AdditionalImages', file);
+                        }
+                    });
+                }
+                
+                $.ajax({
+                    url: '@Url.Action("AddProduct", "Seller")',
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            showSuccessMessage();
+                        } else if (response.errors) {
+                            showValidationErrors(response.errors);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showErrorMessage();
+                    }
+                });
+            });
+        });
+
+        // Primary Image Preview
+        function previewPrimaryImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const preview = document.getElementById("primaryImagePreview");
+                preview.src = URL.createObjectURL(file);
+                preview.classList.remove("d-none");
+                
+                const uploadIcon = event.target.parentElement.querySelector(".upload-icon");
+                const uploadText = event.target.parentElement.querySelector(".upload-text");
+                uploadIcon.style.display = "none";
+                uploadText.style.display = "none";
+            }
+        }
+
+        // Additional Images Preview
+        function previewAdditionalImages(event) {
+            const container = document.getElementById("additionalImagesPreview");
+            container.innerHTML = "";
+            
+            // Make sure files exist before processing
+            if (!event.target.files || event.target.files.length === 0) {
+                return;
+            }
+            
+            if (event.target.files.length > 5) {
+                alert("You can upload a maximum of 5 additional images");
+                event.target.value = "";
+                return;
+            }
+            
+            Array.from(event.target.files).forEach((file, index) => {
+                const previewItem = document.createElement("div");
+                previewItem.className = "preview-item";
+                
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                
+                const removeBtn = document.createElement("button");
+                removeBtn.className = "remove-btn";
+                removeBtn.innerHTML = "×";
+                removeBtn.onclick = (e) => {
+                    e.preventDefault();
+                    previewItem.remove();
+                    
+                    // Remove file from input
+                    const dt = new DataTransfer();
+                    const input = event.target;
+                    const { files } = input;
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        if (i !== index) {
+                            dt.items.add(files[i]);
+                        }
+                    }
+                    
+                    input.files = dt.files;
+                };
+                
+                previewItem.appendChild(img);
+                previewItem.appendChild(removeBtn);
+                container.appendChild(previewItem);
+            });
+        }
+
+        function showSuccessMessage() {
+            $('#successModal').modal('show');
+        }
+
+        function showValidationErrors(errors) {
+            const errorHtml = "<div class='alert alert-danger'><ul>" +
+                errors.map(error => "<li>" + error + "</li>").join("") +
+                "</ul></div>";
+            $(".validation-summary-valid")
+                .html(errorHtml)
+                .removeClass("validation-summary-valid")
+                .addClass("validation-summary-errors");
+        }
+
+        function showErrorMessage() {
+            const errorHtml = "<div class='alert alert-danger'>An error occurred while saving the product. Please try again.</div>";
+            $(".validation-summary-valid")
+                .html(errorHtml)
+                .removeClass("validation-summary-valid")
+                .addClass("validation-summary-errors");
+        }
+
+        function resetFormAndClose() {
+            $('#successModal').modal('hide');
+            resetForm();
+        }
+
+        function resetForm() {
+            // Reset form fields
+            $("#productForm")[0].reset();
+            
+            // Reset Select2 dropdowns
+            $('.form-select').val('').trigger('change');
+            
+            // Reset image previews
+            $("#primaryImagePreview").addClass("d-none").attr('src', '');
+            $("#additionalImagesPreview").empty();
+            
+            // Show upload icons and text
+            $(".upload-icon, .upload-text").show();
+            
+            // Clear validation messages
+            $(".validation-message").empty();
+            $(".validation-summary-errors")
+                .empty()
+                .removeClass("validation-summary-errors")
+                .addClass("validation-summary-valid");
+            
+            // Reset file inputs
+            const primaryImageInput = document.querySelector('input[type="file"][required]');
+            const additionalImagesInput = document.querySelector('input[type="file"][multiple]');
+            if (primaryImageInput) primaryImageInput.value = '';
+            if (additionalImagesInput) additionalImagesInput.value = '';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

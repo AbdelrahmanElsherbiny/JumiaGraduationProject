@@ -11,6 +11,7 @@ namespace JumiaProject.Interfaces
         public List<Order> GetCanceledOrdersByUserId(string userId);
         List<Order> SearchOrders(string searchTerm, string statusFilter, int pageNum);
         int GetFilteredOrdersCount(string searchTerm, string statusFilter);
+        public List<Order> GetOrdersForSeller(string? name);
         public void AddOrder(Order order);
         ShippingMethod GetShippingMethodById(int shippingMethodId);
     }

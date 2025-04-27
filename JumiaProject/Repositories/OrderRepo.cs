@@ -14,7 +14,7 @@ namespace JumiaProject.Repositories
         }
         public Order GetOrderById(int id)
         {
-            return Context.Orders.Include(o => o.ShippingMethod).FirstOrDefault(x => x.OrderId == id);
+            return Context.Orders.FirstOrDefault(x => x.OrderId == id);
         }
         public List<Order> GetAllOrders()
         {
@@ -83,6 +83,26 @@ namespace JumiaProject.Repositories
         public ShippingMethod GetShippingMethodById(int shippingMethodId)
         {
             return Context.ShippingMethods.FirstOrDefault(x => x.ShippingMethodId == shippingMethodId);
+        }
+
+        public List<Order> GetOrdersForSeller(string sellerId)
+        {
+            // Fetch orders that include products from the specified seller
+            var orders = Context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .Where(o => o.OrderItems.Any(oi => oi.Product.SellerId == sellerId))
+                .ToList();
+
+            // Filter the order items to include only the products of the specified seller
+            foreach (var order in orders)
+            {
+                order.OrderItems = order.OrderItems
+                    .Where(oi => oi.Product.SellerId == sellerId)
+                    .ToList();
+            }
+
+            return orders;
         }
     }
 }

@@ -1,0 +1,390 @@
+﻿@model Seller
+@{
+    Layout = "~/Views/Shared/_SellerLayout.cshtml";
+    ViewData["Title"] = "Seller Profile";
+}
+
+<style>
+    /* Jumia-inspired Profile Styles */
+    .profile-container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .profile-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eaeaea;
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #2a2a2a;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.75rem;
+        transition: all 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #dc8e26;
+        box-shadow: 0 0 0 0.2rem rgba(220, 142, 38, 0.25);
+    }
+
+    .form-control[readonly] {
+        background-color: #f8f9fa;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+    }
+
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-control.is-invalid ~ .invalid-feedback {
+        display: block;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        width: 100%;
+        justify-content: center;
+        border: 1px solid #e9ecef;
+    }
+
+    .status-verified {
+        background-color: #198754;
+        color: white;
+        border-color: #198754;
+    }
+
+    .status-pending {
+        background-color: #ffc107;
+        color: #000;
+        border-color: #ffc107;
+    }
+
+    .btn-update {
+        background: #dc8e26;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s;
+        width: 100%;
+        max-width: 200px;
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-update.active {
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    .btn-update.active:hover {
+        background: #c47e22;
+    }
+
+    .divider {
+        height: 1px;
+        background-color: #e9ecef;
+        margin: 2rem 0;
+    }
+
+    .alert-success {
+        background-color: #d1e7dd;
+        color: #0f5132;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        display: none;
+    }
+
+    .alert-success.show {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@media (max-width: 768px) {
+        .profile-container {
+            margin: 1rem;
+        }
+
+        .profile-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="profile-container">
+        <div class="page-header">
+            <h2 class="page-title">
+                <i class="bi bi-shop"></i> Seller Profile
+            </h2>
+        </div>
+
+        <div id="updateSuccess" class="alert-success">
+            <i class="bi bi-check-circle"></i> Your profile has been updated successfully.
+        </div>
+
+        @if (Model == null)
+        {
+            <div class="alert alert-danger">
+                Seller profile data could not be loaded. Please try again later.
+            </div>
+        }
+        else
+        {
+            <form id="profileForm" asp-action="UpdateProfile" asp-controller="Seller" method="post" class="needs-validation" novalidate>
+                <div class="profile-card">
+                    <input type="hidden" name="SellerId" value="@Model.SellerId" />
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" value="@Model.User?.UserName" class="form-control" readonly />
+                    </div>
+
+                    <!-- Store Name -->
+                    <div class="form-group">
+                        <label class="form-label">Store Name</label>
+                        <input name="StoreName" value="@Model.StoreName" class="form-control" required 
+                               minlength="3" maxlength="50" pattern="[A-Za-z0-9\s\-]+" />
+                        <div class="invalid-feedback">
+                            Please enter a valid store name (3-50 characters, letters, numbers, spaces, and hyphens only).
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="Email" value="@(Model.User?.Email)" class="form-control" required />
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" name="PhoneNumber" value="@(Model.User?.PhoneNumber)" class="form-control" 
+                               pattern="[0-9]{10,15}" />
+                        <div class="invalid-feedback">
+                            Please enter a valid phone number (10-15 digits).
+                        </div>
+                    </div>
+
+                    <!-- Tax Number -->
+                    <div class="form-group">
+                        <label class="form-label">Tax Number</label>
+                        <input type="number" name="TaxNumber" value="@Model.TaxNumber" class="form-control" required 
+                               min="100000" max="999999999" />
+                        <div class="invalid-feedback">
+                            Please enter a valid tax number (6-9 digits).
+                        </div>
+                    </div>
+
+                    <!-- Bank Account -->
+                    <div class="form-group">
+                        <label class="form-label">Bank Account</label>
+                        <input type="number" name="BankAccount" value="@Model.BankAccount" class="form-control" required 
+                               min="1000000" max="9999999999" />
+                        <div class="invalid-feedback">
+                            Please enter a valid bank account number (7-10 digits).
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Status and Rating -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">Verification Status</label>
+                            <div class="status-badge @(Model.IsVerified == true ? "status-verified" : "status-pending")">
+                                <i class="bi @(Model.IsVerified == true ? "bi-check-circle" : "bi-hourglass-split")"></i>
+                                @(Model.IsVerified == true ? "Verified Seller" : "Verification Pending")
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Store Rating</label>
+                            <div class="input-group">
+                                <input value="@(Model.Rating ?? 0)" class="form-control text-center" readonly />
+                                <span class="input-group-text">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" id="updateButton" class="btn-update">
+                            <i class="bi bi-check2-circle"></i> Update Profile
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('profileForm');
+            const updateButton = document.getElementById('updateButton');
+            const successAlert = document.getElementById('updateSuccess');
+            let formChanged = false;
+
+            // Store initial form values
+            const initialFormData = new FormData(form);
+            const initialValues = Object.fromEntries(initialFormData.entries());
+
+            // Function to reset form state
+            function resetFormState() {
+                // Remove validation classes from all inputs
+                form.querySelectorAll('.form-control').forEach(input => {
+                    input.classList.remove('is-valid', 'is-invalid');
+                });
+                
+                // Reset the form validation state
+                form.classList.remove('was-validated');
+                
+                // Reset button state
+                formChanged = false;
+                updateButton.classList.remove('active');
+                
+                // Update initial values to current values
+                const newFormData = new FormData(form);
+                Object.assign(initialValues, Object.fromEntries(newFormData.entries()));
+            }
+
+            // Check for form changes
+            form.addEventListener('input', function () {
+                const currentFormData = new FormData(form);
+                const currentValues = Object.fromEntries(currentFormData.entries());
+                
+                formChanged = Object.keys(initialValues).some(key => 
+                    initialValues[key] !== currentValues[key]
+                );
+
+                updateButton.classList.toggle('active', formChanged);
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                if (!form.checkValidity()) {
+                    event.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                if (!formChanged) {
+                    return;
+                }
+
+                // Submit form via AJAX
+                const formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    // Check if the response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    }
+                    // If not JSON, treat as success (for non-AJAX fallback)
+                    return { success: response.ok };
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Reset form state
+                        resetFormState();
+
+                        // Show success message
+                        successAlert.classList.add('show');
+                        
+                        // Scroll to top to ensure message is visible
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                        // Hide success message after 3 seconds
+                        setTimeout(() => {
+                            successAlert.classList.remove('show');
+                        }, 3000);
+                    } else {
+                        // Handle validation errors
+                        if (data.errors) {
+                            Object.keys(data.errors).forEach(key => {
+                                const input = form.querySelector(`[name="${key}"]`);
+                                if (input) {
+                                    input.classList.add('is-invalid');
+                                    const feedback = input.nextElementSibling;
+                                    if (feedback && feedback.classList.contains('invalid-feedback')) {
+                                        feedback.textContent = data.errors[key][0];
+                                    }
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+}
