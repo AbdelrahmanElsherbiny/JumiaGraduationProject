@@ -1,0 +1,89 @@
+﻿@model ProfileVM
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+<div class="d-flex gap">
+	<div>
+		@await Html.PartialAsync("_SideBarPartial")
+	</div>
+	<div class="profile-container wid col-9">
+		<header class="profile-header">
+			<h1 class="text-header">Edit Address</h1>
+		</header>
+
+        <form method="post" asp-controller="Profile" asp-action="SaveAddress">
+             <input type="hidden" asp-for="@Model.User.UserId"/>  
+            <input type="hidden" asp-for="User.Email" />
+
+           <div class="first d-flex">
+               <div class="contain">
+                    <label class="address-lable" for="UserName">User Name</label>
+                    <input class="address-input" type="text" id="UserName" name="User.UserName" value="@Model?.User?.UserName" placeholder="Enter You Name" />
+                    <span asp-validation-for="User.UserName" class="text-danger"></span>
+                </div>
+                <div class="contain">
+                    <label class="address-lable" for="PhoneNumber">Phone Number</label>
+                    <input class="address-input" type="text" id="PhoneNumber" name="User.PhoneNumber" value="@Model?.User?.PhoneNumber" placeholder="Enter You Phone Number" />
+                    <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+                </div>
+           </div>
+            <input type="hidden" asp-for="Address.AddressId" />
+            <div class="contain">
+                <label class="address-lable" for="Country">Country</label>
+                @* <input class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country" /> *@
+               
+                <select class="address-input-full" type="text" id="Country" name="Address.Country" value="@Model?.Address?.Country">
+                    <option value="" style="color:#666;">Select Your Country</option>
+                    <option value="egypt">Egypt</option>
+                    <option value="morocco">Morocco</option>
+                    <option value="ghana">Ghana</option>
+                    <option value="nigeria">Nigeria</option>
+                    <option value="sengal">Sengal</option>
+                    <option value="uganda">Uganda</option>
+                    <option value="kenya">Kenya</option>
+                    <option value="ivorycosta">Ivory Costa</option>
+                </select>
+                <span asp-validation-for="Address.Country" class="text-danger"></span>
+            </div>
+            <div class="contain">
+                <label class="address-lable" for="City">City</label>
+                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" placeholder="Enter You City" />
+                <span asp-validation-for="Address.City" class="text-danger"></span>
+            </div>
+            <div class="contain">
+                <label class="address-lable" for="Street">Adress</label>
+                <input class="address-input-full" type="text" id="Street" name="Address.Street" value="@Model?.Address?.Street" placeholder="Enter You Adress" />
+                <span asp-validation-for="Address.Street" class="text-danger"></span>
+            </div>
+            <button class="save" type="submit">Save</button>
+        </form>
+	</div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            $.validator.setDefaults({
+                onsubmit: false
+            });
+
+            $(".address-input, .address-input-full").on('input', function() {
+                var $field = $(this);
+                var $form = $field.closest('form');
+                var validator = $form.validate();
+                validator.element($field);
+                if ($field.valid()) {
+                    $field.next('.text-danger').hide();
+                }
+            });
+            $(".address-input, .address-input-full").blur(function() {
+                $(this).valid();
+            });
+            $('#addressForm').on('submit', function(e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

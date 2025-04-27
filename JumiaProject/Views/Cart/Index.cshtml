@@ -1,0 +1,203 @@
+﻿@model List<JumiaProject.Models.CartItem>
+@{ 
+    ViewData["Title"] = "Cart";  
+}
+
+<div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
+</div>
+<div id="alertMessageFailUpdate" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-xmark text-white mx-2"></i> Fail to update Something went wrong
+</div>
+<div id="alertMessageAddtoCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to cart successfully
+</div>
+<div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
+</div>
+<div id="alertMessage" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product was removed from cart
+</div>
+<div id="alertMessageFail" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i> Fail to remove the product, Something went wrong.
+</div>
+@if(Model.Count==0){
+    <div class="parentItem bg-white text-center m-auto p-5 mt-4 mb-4 rounded shadow-sm">
+        <img src="~/images/cart.668.svg" alt="jumia cart" class="mb-3">
+        <h6>Your Cart Is Empty!</h6>
+        <p class="text-muted">Browse our categories and discover our best deals!</p>
+        <a asp-action="Index" asp-controller="Home" class="text-decoration-none">
+            <button class="checkout-btn border shadow-sm border-0 py-3 px-3 fw-medium rounded">Start shopping</button>
+        </a>
+    </div>
+}  
+else
+{
+    <div class=" parentItem m-auto  d-flex align-items-baseline justify-content-evenly py-2 ">
+
+        <div class=" cartitem-container p-3 bg-white rounded ">
+            <h2 class="h4 cart-total-quantity">Cart (@ViewBag.Totalitems)</h2>
+            <hr>
+            @foreach(var item in Model){
+                <div>
+                    <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@item.ProductId">
+                        <div class="item-container bg-white d-flex justify-content-between">
+                            <div class="d-flex">
+                                <div class="item-img">
+                                    <img src="~/images/productcart.jpg" alt="">
+                                </div>
+                                <div class="main-content">
+                                    <h3 class=" m-0 h5 dark-color">@item.Product.Name</h3>
+                                    @if (@item.Variant!=null)
+                                    {
+                                        <p class="dark-color m-0"><span class="label text-muted">Size:</span> @item.Variant.Size.SizeLabel</p>
+                                    }
+                                    @if (item.Product.Stock < 10)
+                                    {
+                                        <p class=" m-0 text-danger ">@item.Product.Stock units left</p>
+                                    }
+                                    else if(item.Product.Stock==0)
+                                    {
+                                        <p class=" m-0 text-muted">Out of Stock</p>
+                                    }
+                                    else
+                                    {
+                                        <p class=" m-0 text-warning">Few units left </p>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="price-container ">
+                                <h2 class="h4 dark-color">EGP @((@item.Product.Price - (@item.Product.Price * @item.Product.Discount))?.ToString("N2"))</h2>
+                                @if(item.Product.Discount!=0){
+
+                                    <p><span class="disable-color text-decoration-line-through">EGP @item.Product.Price.ToString("N2")</span><span class="item-sale p-1 rounded ms-1">-@item.Product.Discount%</span></p>
+                                }else
+                                {
+                                    <h2 class="h4 dark-color"></h2>
+                                    <p><span class="disable-color text-decoration-line-through"></span><span class="item-sale  rounded"></span></p>
+                                }
+                            </div>
+                        </div>
+                    </a>
+                    <div class="cart-item-row d-flex align-items-center mt-2" data-variant-id="@(item.VariantId.HasValue ? item.VariantId.ToString() : "null")" data-stock="@item.Variant?.Stock" data-product-id="@item.ProductId">
+                        <div class="w-50">
+                            <button class="border border-0 rounded py-1 px-2 remove-btn my-color" data-id="@item.CartItemId"><i class="fa-solid fa-trash my-color"></i> Remove</button>
+                        </div>
+                        <div class="cart-quantity-controls quantity-controls w-50 text-end d-flex justify-content-end align-items-center">
+                            <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-4 shadow-sm" data-variant-id="@(item.VariantId.HasValue ? item.VariantId.ToString() : "null")" data-stock="@item.Variant?.Stock" data-novariantstock="@item.Product.Stock" data-product-id="@item.ProductId">−</button>
+                            <span class="quantity-display mx-2 dark-color" data-quantity="0">@item.Quantity</span>
+                            <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-4 shadow-sm" data-variant-id="@(item.VariantId.HasValue ? item.VariantId.ToString() : "null")" data-stock="@item.Variant?.Stock" data-product-id="@item.ProductId" data-novariantstock="@item.Product.Stock">+</button>
+                        </div>
+                    </div>
+                </div>             
+                <hr>
+            }
+        </div>  
+        <div class="cart-summary p-3 bg-white rounded">
+            <h6>CART SUMMARY</h6>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <p class="p-font cart-total-quantity2">Item's total (@ViewBag.Totalitems) </p>
+                <span class="dark-color fw-bold cart-total-price">EGP @ViewBag.Price?.ToString("N2")</span>
+            </div>
+            @* <div class="d-flex justify-content-between"> *@
+            @*     <p class="w-50 p-font">Adidas & Skechers - Extra 25% Off - JF</p> *@
+            @*     <span class="text-success fw-bold">-EGP 1,250.75</span> *@
+            @* </div> *@
+            <hr>
+            <div class="d-flex justify-content-between m-0 p-0">
+                <p class="dark-color p-font fw-bold m-0 p-0 ">Subtotal</p>
+                <span class="h6 fw-bold dark-color cart-total-price">EGP @ViewBag.Price?.ToString("N2")</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <p class=" m-0 p-0 p-font">Jumia Express items are eligible for free delivery</p>
+            </div>
+            <hr>
+            <a asp-action="Index" asp-controller="Order">
+                <button class="checkout-btn w-100 border border-0 rounded fw-bold shadow-sm m-0">CheckOut ( <span class="cart-total-price">@ViewBag.Price?.ToString("N1")</span>)</button>
+            </a>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content p-2">
+                <div class="modal-header border border-0 my-0 pb-1 pt-3">
+                    <h5 class="modal-title dark-color" id="deleteConfirmModalLabel">Remove from cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body border border-0 py-1">
+                    Do you really want to remove this item from cart?
+                </div>
+                <div class="modal-footer border border-0">
+                    <button type="button" class="w-100 shadow-sm border border-0  removeconfirm-btn rounded" id="confirmDeleteBtn"><i class="fa-solid fa-trash text-white"></i>  Remove Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<div class="parentItem m-auto rounded bg-white">
+    <div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+        <h4 class="dark-color m-0">Best Sellers</h4>
+        <a class="my-color text-decoration-none me-2 fw-medium" asp-controller="product" asp-action="getbestseller">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
+    </div>
+    <div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
+    @foreach (Product product in ViewBag.BestSeller)
+    {
+      <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+      
+            <div class="cartitem bg-white p-2 rounded position-relative">
+                <img src="~/images/best.jpg" alt="" class="">
+                <p class="m-0 p-0 small14 text-black">@product.Name</p>
+                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
+                @if(product.Discount!=0){
+                        <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
+                    <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
+                }
+               
+            </div>
+            </a>
+    }
+    </div>
+</div>
+
+<div class="parentItem m-auto rounded bg-white mt-4">
+    <div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+        <h4 class="dark-color m-0">Exclusive Offers | Up to 70% off</h4>
+        <a class="my-color text-decoration-none me-2 fw-medium" asp-action="GetMostDiscount" asp-controller="product">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
+    </div>
+    <div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
+        <div class="owl-carousel owl-theme bg-white" id="myOwlCarousel">
+            @foreach (Product product in ViewBag.MostDiscount)
+            {
+                <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+
+                    <div class="cartitem bg-white p-2 rounded position-relative">
+                        <img src="~/images/best.jpg" alt="" class="">
+                        <p class="m-0 p-0 small14 text-black">@product.Name</p>
+                        <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
+                        @if (product.Discount != 0)
+                        {
+                            <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
+                            <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
+                        }
+
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+   
+</div>
+
+    @section Scripts {  
+    <script src="~/js/cart.js"></script>
+    }
+
+
+
+

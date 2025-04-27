@@ -17,7 +17,7 @@ namespace JumiaProject.ViewModels
     public class UserEmailViewModel()
     {
         [Required]
-        [RegularExpression(@"[a-z_0-9]{6,20}(@gmail.com|@jumia.com)", ErrorMessage = "Invalid Email Format")]
+        [RegularExpression(@"[a-zA-Z0-9._-]+@[a-zA-Z]+.[a-zA-Z]{2,4}[.]{0,1}[a-zA-Z]{0,2}", ErrorMessage = "Invalid Email Format")]
         public string Email { get; set; }
     }
     public class UserCodeViewModel()

@@ -1,5 +1,6 @@
 ﻿body {
     font-family: sans-serif;
+    background-color: white;
 }
 
 .all-container {
@@ -44,13 +45,21 @@
 }
 
 .my-input {
-    border-color: #f8982d;
+    /*    border-color: #f8982d;
+    caret-color: #f8982d;*/
+    caret-color: #f8982d;
 }
 
-    .my-input:active {
+.my-input:focus {
         border-color: #f8982d;
-    }
-
+        outline: none !important;
+       box-shadow:none !important;
+       caret-color:#f8982d;
+}
+option:hover
+{
+    background-color:red;
+}
 label, a, .registerText {
     font-size: 12px;
     font-weight: 500;
@@ -128,3 +137,112 @@ label, a, .registerText {
         border-color: orange;
         background-color: #fff7eb;
     }
+
+.address-lable {
+    position: relative;
+    bottom: -20px;
+    left: -180px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.password-lable {
+    position: relative;
+    bottom: -20px;
+    left: -170px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.cpassword-lable {
+    position: relative;
+    bottom: -20px;
+    left: -150px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.email-lable {
+    position: relative;
+    bottom: -20px;
+    left: -140px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.code-lable {
+    position: relative;
+    bottom: -20px;
+    left: -160px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.confirmp-lable {
+    position: relative;
+    bottom: -20px;
+    left: -130px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.about-lable {
+    position: relative;
+    bottom: -20px;
+    left: -165px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.login-lable {
+    position: relative;
+    bottom: -10px;
+    left: -170px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.loginemail-lable {
+    position: relative;
+    bottom: -10px;
+    left: -180px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}

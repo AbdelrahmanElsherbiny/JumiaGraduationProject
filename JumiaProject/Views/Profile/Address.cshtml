@@ -1,0 +1,27 @@
+﻿ @model ProfileVM
+<div class="d-flex">
+	<div>
+		@await Html.PartialAsync("_SideBarPartial")
+	</div>
+	<div class="profile-container col-9">
+		<header class="profile-header">
+			<h1 class="text-header">Address Book</h1>
+		</header>
+		<div class="table-right" style="background-color:#fef3e9">
+			<header class="profile-header">
+				<div class="right">
+					<p class="header-box" style="color:#a3a3a6">Set as default</p>
+					<a href="@Url.Action("EditAddress", "Profile")" id="editAddress">
+						<i class="pen fa-solid fa-pen"></i>
+					</a>
+				</div>
+			</header>
+				<div><p class="table-text">@Model.User.UserName</p></div>
+				<div><span class="table-text">@Model.Address.Street</span></div>
+				<div><span class="table-text">@Model.Address.Country, @Model.Address.City</span></div>
+				<div><span class="table-text">@Model.User.PhoneNumber</span></div>
+		</div>
+	</div>
+</div>
+
+

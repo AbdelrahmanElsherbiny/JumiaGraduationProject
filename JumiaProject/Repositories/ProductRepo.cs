@@ -152,7 +152,10 @@ namespace JumiaProject.Repositories
         {
             return _context.Products.Where(p => p.Category.CategoryId == id).ToList();
         }
-
+        public List<Product> GetProductsByBrand(int id, int pageIndex = 1, int pageSize = 10)
+        {
+            return Context.Products.Where(p => p.BrandId == id).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+        }
         public List<Product> SearchProducts(string searchTerm, string statusFilter, int pageNum)
         {
             var query = _context.Products.Where(p => p.IsDeleted == false && p.IsApprovedFromAdmin != "Not Approved").AsQueryable();
@@ -211,6 +214,64 @@ namespace JumiaProject.Repositories
             }
 
             return query.Count();
+        }
+        public  List<Product> Get6BestSeller()
+        {
+            var bestseller = Context.Products.OrderByDescending(p => p.SoldNumber).Take(6).ToList();
+            return bestseller;
+        }
+        public List<Product> GetBestSeller(int pageIndex = 1, int pageSize = 10)
+        {
+            var bestseller = Context.Products.OrderByDescending(p => p.SoldNumber).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return bestseller;
+        }
+        public int GetBestSellerCount()
+        {
+            var bestsellerCount = Context.Products.OrderByDescending(p => p.SoldNumber).Count();
+            return bestsellerCount;
+        }
+        public int GetMostDiscountCount()
+        {
+            var mostDiscounCount = Context.Products.Where(p => p.Discount != 0).OrderByDescending(p => p.Discount).Count();
+            return mostDiscounCount;
+        }
+        public int GetProductsByBrandCount(int id)
+        {
+            var productByBrandCount = Context.Products.Where(b => b.BrandId == id).Count();
+            return productByBrandCount;
+        }
+
+        public List<Product> GetMostDiscount(int pageIndex = 1, int pageSize = 10)
+        {
+            var bestseller = Context.Products.Where(p=>p.Discount!=0).OrderByDescending(p => p.Discount).Skip((pageIndex - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToList();
+            return bestseller;
+        }
+        public List<Product> SearchProducts(string query)
+        {
+            var results = Context.Products.Where(p => p.Name.Contains(query)).ToList();
+            return results;
+        }
+        public int IsExistBrand(string brand)
+        {
+            var Brand = Context.Brands.FirstOrDefault(b => b.BrandName == brand);
+            if(Brand != null)
+            {
+                return Brand.BrandId;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        public List<Product> SearchBrand(string brand)
+        {
+            if (string.IsNullOrWhiteSpace(brand))
+                return new List<Product>();
+
+            return Context.Products.Where(p => p.Brand.BrandName.ToLower().Contains(brand.ToLower())).ToList();
+        
         }
 
         public List<Product> GetAllProductsForSeller(string? sellerId)

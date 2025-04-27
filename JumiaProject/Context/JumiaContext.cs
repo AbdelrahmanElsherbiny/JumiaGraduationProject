@@ -128,6 +128,10 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__CartItems__Produ__71D1E811");
+            entity.HasOne(d => d.Variant)
+                .WithMany()
+                .HasForeignKey(d => d.VariantId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -427,6 +431,10 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.ClientSetNull)
                .HasConstraintName("FK__wishlist__User");
+            entity.HasOne(d => d.ProductVariant).WithOne(p => p.Wishlist)
+               .HasForeignKey<Wishlist>(d => d.ProductVariantId)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("FK__Wishlist__ProductVariant");
         });
 
         OnModelCreatingPartial(modelBuilder);

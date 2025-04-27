@@ -1,0 +1,158 @@
+﻿@{
+    ViewData["Title"] = "OrderDetails";
+    var list = ViewBag.Order.Payments as List<Payment>;
+    var payment = list.FirstOrDefault();
+    var order = ViewBag.Order as Order;
+}
+<link rel="stylesheet" href="~/css/OrderDetails.css" />
+<div class="main">
+    <div class="side">
+            <partial name="_SideBarPartial"></partial>
+    </div>
+    <div class="order">
+        <div class="header1">
+            <h1 class="title"><a asp-action="UserOrders" asp-controller="Profile" class="back-button">←</a>Order Details</h1>
+        </div>
+
+        <div class="order-info">
+            <div class="order-number">Order n° @ViewBag.order.OrderId</div>
+            <div class="order-meta">@ViewBag.order.OrderItems.Count Items</div>
+            <div class="order-meta">Placed on @ViewBag.order.OrderDate</div>
+            <div class="order-meta">Total: EGP @(ViewBag.order.TotalAmount+order.Taxes)</div>
+        </div>
+
+        <div class="section-title">ITEMS IN YOUR ORDER</div>
+
+        @foreach (var item in ViewBag.order.OrderItems as List<OrderItem>)
+        {
+            <div class="item-card">
+                <div class="shipping-status status-@item.Order.OrderStatus.ToLower()">@ViewBag.order.OrderStatus</div>
+                <div class="delivery-date">Delivered between @ViewBag.order.ShippingMethod.EstimatedDeliveryTime</div>
+                <div class="item-content">
+                    <img src="@Url.Content(item.Product.ProductImages.FirstOrDefault(p=>p.IsPrimary==true).ImageUrl)" alt="@item.Product.Name" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">@item.Product.Name</div>
+                        <div class="quantity">QTY: @item.Quantity</div>
+                        <div class="price-container">
+                            @if (item.Product.Discount > 0)
+                            {
+                                <span class="current-price">EGP @((item.Product.Price * (1 - item.Product.Discount))?.ToString("F2"))</span>
+                                <span class="original-price">EGP @item.Product.Price.ToString("N2")</span>
+                            }
+                            else
+                            {
+                                <span class="current-price">EGP @item.Product.Price.ToString("N2")</span>
+                            }
+                        </div>
+                    </div>
+                    @if (item.Order.OrderStatus == "Returned" || item.Order.OrderStatus == "Canceled")
+                    {
+
+                    }
+                    else
+                    {
+                        <div class="action-buttons">
+                            <a class="track-button" asp-action="OrderTracking" asp-controller="Profile" asp-route-id="@item.OrderId">Track My Item</a>
+                            <button class="cancel-button">Cancel Item</button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        }
+        <div class="info-grid">
+            <div class="info-section">
+                <div class="info-title">PAYMENT INFORMATION</div>
+
+                <div class="info-label">Payment Method</div>
+                <div class="info-value">
+                    @if (payment.PaymentMethod != null)
+                    {
+                        <text>@payment.PaymentMethod</text>
+                    }
+                </div>
+
+                <div class="info-label">Payment Details</div>
+                <div class="price-breakdown">
+                    <span>Items total:</span>
+                    <span>EGP @order.TotalAmount.ToString("N2")</span>
+                </div>
+                <div class="price-breakdown">
+                    <span>Delivery Fees:</span>
+                    <span>EGP @order.ShippingMethod.Cost.ToString("N2")</span>
+                </div>
+                @if (order.Taxes > 0)
+                {
+                    <div class="price-breakdown">
+                        <span>Taxes:</span>
+                        <span>EGP @order.Taxes.ToString("N2")</span>
+                    </div>
+                }
+                <div class="price-breakdown total">
+                    <span>Total:</span>
+                    <span>EGP @((order.TotalAmount + order.Taxes).ToString("N2"))</span>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="info-title">DELIVERY INFORMATION</div>
+
+                <div class="info-label">Delivery Method</div>
+                <div class="info-value">@order.ShippingMethod.ShippingMethodName</div>
+
+                <div class="info-label">Shipping Address</div>
+                <div class="info-value">
+                    @order.User.UserName<br>
+                    <br />
+					@order.Address.City, @order.Address.Street<br>
+					@order.Address.ZipCode<br>
+					@order.Address.Country
+                </div>
+
+                <div class="info-label">Shipping Details</div>
+                <div class="info-value">
+                    Fulfilled by Jumia<br>
+					Delivery within @order.ShippingMethod.EstimatedDeliveryTime
+                </div>
+            </div>
+        </div>
+
+        <div class="help-text">Need Help?</div>
+        <!-- Simple Cancel Popup -->
+        <div id="cancelPopup" class="close-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.2); z-index:1000;    max-height: 80vh;
+    max-width: 576px;
+    min-width: 576px;">
+            <h4 style="margin-top:0; margin-bottom:10px;">Order Cancellation</h4>
+            <p>Want to cancel an item or order? Get quick help by chatting with our Customer Service or calling us.</p>
+            <button onclick="document.getElementById('cancelPopup').style.display='none'" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px;">×</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Make all Cancel buttons show the popup
+    document.querySelectorAll('.cancel-button').forEach(button => {
+        button.onclick = function() {
+            document.getElementById('cancelPopup').style.display = 'block';
+            document.body.classList.add('modal-open');
+        };
+    });
+
+    // Close modal and restore background
+        function closeModal() {
+        console.log("Closing modal"); // Debug line
+        document.getElementById('cancelPopup').style.display = 'none';
+        document.body.classList.remove('modal-open');
+    }
+
+
+    // Close when clicking X button
+    document.querySelector('.close-modal').onclick = closeModal;
+
+    // Close when clicking outside popup
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('cancelPopup')) {
+            closeModal();
+        }
+    };
+</script>

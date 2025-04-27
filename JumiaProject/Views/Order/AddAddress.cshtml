@@ -1,0 +1,165 @@
+﻿@model AddressUserVM
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Address - Jumia</title>
+    <link href="~/css/EditAddress.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a class="logo-section" asp-action="Index" asp-controller="Home">
+                <div class="site-logo"><span class="orange-dot"><img class="image" src="~/images/home/logo.png" alt="Alternate Text" /></span></div>
+            </a>
+            <div class="page-title">Edit Address</div>
+            <div class="header-actions">
+                <a asp-action="" asp-controller="" class="header-link">
+                    <i class="fas fa-question-circle icon"></i>
+                    <span>Need Help?<br><span class="subtext">Contact us</span></span>
+                </a>
+                <div class="header-link">
+                    <i class="fas fa-exchange-alt icon"></i>
+                    <span>Easy<br>Returns</span>
+                </div>
+                <div class="header-link">
+                    <i class="fas fa-lock icon"></i>
+                    <span>Secure<br>Payments</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="checkout-main">
+            <!-- Customer Address -->
+            <div class="checkout-section" id="address-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <span class="step-icon">✓</span>
+                        1. CUSTOMER ADDRESS
+                    </div>
+                </div>
+                <div class="section-content">
+                    <form method="post" asp-controller="Order" asp-action="AddAddress">
+                        <div class="first d-flex">
+                            <div class="contain">
+                                <label class="address-lable" asp-for="@Model.UserName">User Name</label>
+                                <input class="address-input" type="text" asp-for="@Model.UserName" placeholder="Enter You Name" />
+                                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+                            </div>
+                            <div class="contain">
+                                <label class="address-lable" asp-for="@Model.PhoneNumber">Phone Number</label>
+                                <input class="address-input" type="text" asp-for="@Model.PhoneNumber" placeholder="Enter You Phone Number" />
+                                <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <input type="hidden" name="UserId" value="@ViewBag.userId" />
+                        <input type="hidden" name="AddressId" value="0" />
+                        <div class="contain">
+                            <label class="address-lable" asp-for="@Model.Country">Country</label>
+                            <select class="address-input-full" asp-for="@Model.Country">
+                                <option value="Egypt">Egypt</option>
+                            </select>
+                            <span asp-validation-for="@Model.Country" class="text-danger"></span>
+                        </div>
+                        <div class="contain">
+                            <label class="address-lable" asp-for="@Model.City">City</label>
+                            <select class="address-input-full" asp-for="@Model.City">
+                                <option value="Cairo">Cairo</option>
+                                <option value="Giza">Giza</option>
+                                <option value="Alexandria">Alexandria</option>
+                                <option value="Aswan">Aswan</option>
+                                <option value="Luxor">Luxor</option>
+                                <option value="Port Said">Port Said</option>
+                                <option value="Suez">Suez</option>
+                                <option value="Sharm El Sheikh">Sharm El Sheikh</option>
+                                <option value="Hurghada">Hurghada</option>
+                                <option value="Dahab">Dahab</option>
+                                <option value="Mansoura">Mansoura</option>
+                                <option value="Tanta">Tanta</option>
+                                <option value="Ismailia">Ismailia</option>
+                                <option value="Fayoum">Fayoum</option>
+                                <option value="Qena">Qena</option>
+                                <option value="Beni Suef">Beni Suef</option>
+                                <option value="Minya">Minya</option>
+                                <option value="Asyut">Asyut</option>
+                                <option value="Sohag">Sohag</option>
+                                <option value="Kafr El Sheikh">Kafr El Sheikh</option>
+                                <option value="Damietta">Damietta</option>
+                                <option value="Monufia">Monufia</option>
+                                <option value="Sharqia">Sharqia</option>
+                                <option value="Dakahlia">Dakahlia</option>
+                                <option value="Gharbia">Gharbia</option>
+                                <option value="Qalyubia">Qalyubia</option>
+                                <option value="Beheira">Beheira</option>
+                                <option value="Matrouh">Matrouh</option>
+                            </select>
+                            <span asp-validation-for="@Model.City" class="text-danger"></span>
+                        </div>
+                        <div class="contain">
+                            <label class="address-lable" asp-for="@Model.Street">Street</label>
+                            <input class="address-input-full" type="text" asp-for="@Model.Street" placeholder="Enter You Street" />
+                            <span asp-validation-for="@Model.Street" class="text-danger"></span>
+                        </div>
+                        <div class="contain">
+                            <label class="address-lable" asp-for="@Model.ZipCode">ZipCode</label>
+                            <input class="address-input" type="text" asp-for="@Model.ZipCode" placeholder="Enter You ZipCode" />
+                            <span asp-validation-for="@Model.ZipCode" class="text-danger"></span>
+                        </div>
+                        <button class="save" type="submit">Save</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="checkout-steps">
+                <div class="step">
+                    <div class="step-text">
+                        <span class="step-icon">✓</span>
+                        2. DELIVERY DETAILS
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-text">
+                        <span class="step-icon">✓</span>
+                        3. PAYMENT METHOD
+                    </div>
+                </div>
+            </div>
+
+            <a asp-action="Index" asp-controller="Home" class="back-link">Go back & continue shopping</a>
+        </div>
+
+        <div class="checkout-sidebar">
+            <div class="order-summary">
+                <h3 class="summary-title">Order summary</h3>
+                <div class="summary-row">
+                    <span>Item's total (3)</span>
+                    <span>EGP 219.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery fees</span>
+                    <span>EGP 35.00</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>EGP 254.00</span>
+                </div>
+                <button class="confirm-button" disabled>Confirm order</button>
+                <div class="terms-text">
+                    By proceeding, you are automatically accepting the <a href="#">Terms & Conditions</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

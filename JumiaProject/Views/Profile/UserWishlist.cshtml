@@ -1,0 +1,227 @@
+﻿@model HomeVM
+@{
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Wishlist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/css/UserWishlist.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="message"></div>
+
+    <div class="main">
+        <div class="side">
+            <partial name="_SideBarPartial"></partial>
+        </div>
+        <div class="wishlist">
+            @if (ViewBag.wishlistItems.Count > 0)
+            {
+                <h3 class="wishlist-title">Wishlist (<span id="wishlist-count">@ViewBag.wishlistItems.Count</span>)</h3>
+                <hr />
+                @foreach (var wishlistItem in ViewBag.wishlistItems as List<Wishlist>)
+                {
+                    <div class="items" id="wishlist-item-@wishlistItem.WishlistId">
+                        <div>
+                            <img src="@Url.Content(wishlistItem.Product.ProductImages.FirstOrDefault(p => p.IsPrimary == true)?.ImageUrl)"
+                                 alt="Product Image"
+                                 class="product-image">
+                        </div>
+
+                        <div class="info">
+                            <p class="product-name">@wishlistItem.Product.Name</p>
+                            <p class="product-variation">
+                                @if (!string.IsNullOrEmpty(wishlistItem.ProductVariant?.Color))
+                                {
+                                    <span class="gray">Color:</span>
+                                    <span> @wishlistItem.ProductVariant?.Color</span>
+                                    <br />
+                                }
+                                @if (!string.IsNullOrEmpty(wishlistItem.ProductVariant?.Size.SizeLabel))
+                                {
+                                    <span class="gray">Size:</span>
+                                    <span> @wishlistItem.ProductVariant?.Size.SizeLabel</span>
+                                }
+                            </p>
+                            <div class="price-container">
+                                <p class="product-price">
+                                    @{
+                                        decimal price = wishlistItem.Product.Price;
+                                        decimal? discount = wishlistItem.Product.Discount;
+                                        decimal? discountedPrice = price * (1 - (discount / 100m));
+                                        <text>EGP @discountedPrice?.ToString("N2")</text>
+                                    }
+                                </p>
+                                @if (wishlistItem.Product.Discount > 0)
+                                {
+                                    <p>
+                                        <span class="product-original-price"><del>EGP @wishlistItem.Product.Price.ToString("N2")</del></span>
+                                        <span class="discount">-@wishlistItem.Product.Discount%</span>
+                                    </p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn-remove" onclick="removeFromWishlist(@wishlistItem.WishlistId, event)">
+                                @Html.AntiForgeryToken()
+                                <i class="fas fa-trash-alt"></i> Remove
+                            </button>
+                            <button class="btn-add-to-cart" onclick="addToCart(@wishlistItem.ProductId, @(wishlistItem.ProductVariant?.VariantId ?? 0), event)">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-wishlist">
+                    <h3 class="wishlist-title">Wishlist</h3>
+                    <hr />
+                    <div class="empty-content">
+                        <img src="~/images/nr2i70vz.png" alt="Empty Wishlist" class="empty-image" />
+                        <p class="empty-message">You haven't saved an item yet!</p>
+                        <p class="empty-instruction">Found something you like? Tap on the heart shaped icon next to the item to add it to your wishlist! All your saved items will appear here.</p>
+                        <a asp-action="Index" asp-controller="Home" class="btn-add-to-cart">Continue Shopping</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const persistedMessage = sessionStorage.getItem('persistedMessage');
+            if (persistedMessage) {
+                const { text, type } = JSON.parse(persistedMessage);
+                showMessage(text, type);
+                sessionStorage.removeItem('persistedMessage');
+            }
+        });
+
+        function addToCart(productId, variantId, event) {
+            event.preventDefault();
+            const button = $(event.target).closest('.btn-add-to-cart');
+            const originalText = button.html();
+            button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Adding...');
+
+            // Prepare data object
+            const data = {
+                productId: productId,
+                quantity: 1
+            };
+
+            // Only add variantId if it's not 0
+            if (variantId !== 0) {
+                data.variantId = variantId;
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddOrUpdateCartItem", "Cart")',
+                type: 'POST',
+                data: data,
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        showMessage('<i class="fas fa-check"></i> ' + response.message, 'success');
+                    } else {
+                        showMessage(response.message || 'Error adding product to cart', 'error');
+                    }
+                },
+                error: function (xhr) {
+                    let errorMessage = 'Error adding product to cart';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    showMessage(errorMessage, 'error');
+                },
+                complete: function () {
+                    button.prop('disabled', false).html(originalText);
+                }
+            });
+        }
+
+        function removeFromWishlist(wishlistId, event) {
+            event.preventDefault();
+            const button = $(event.target).closest('.btn-remove');
+            const originalText = button.html();
+            button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Removing...');
+            const itemElement = $(`#wishlist-item-${wishlistId}`);
+
+            $.ajax({
+                url: '@Url.Action("RemoveFromWishlist", "Profile")',
+                type: 'POST',
+                data: {
+                    wishlistId: wishlistId
+                },
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        itemElement.fadeOut(300, function() {
+                            $(this).remove();
+                            updateWishlistCount();
+                            checkEmptyWishlist();
+                        });
+                        showMessage('<i class="fas fa-check"></i> ' + 'Item removed successfully', 'success');
+                    } else {
+                        showMessage(response.message || 'Error removing product from wishlist', 'error');
+                    }
+                },
+                error: function (xhr) {
+                    let errorMessage = 'Error removing product from wishlist';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    showMessage(errorMessage, 'error');
+                },
+                complete: function () {
+                    button.prop('disabled', false).html(originalText);
+                }
+            });
+        }
+
+        function updateWishlistCount() {
+            const count = $('.items').length;
+            $('#wishlist-count').text(count);
+        }
+
+        function checkEmptyWishlist() {
+            if ($('.items').length === 0) {
+                $('.wishlist').html(`
+                    <div class="empty-wishlist">
+                        <h3 class="wishlist-title">Wishlist</h3>
+                        <hr />
+                        <div class="empty-content">
+                            <img src="/images/nr2i70vz.png" alt="Empty Wishlist" class="empty-image" />
+                            <p class="empty-message">You haven't saved an item yet!</p>
+                            <p class="empty-instruction">Found something you like? Tap on the heart shaped icon next to the item to add it to your wishlist! All your saved items will appear here.</p>
+                            <a asp-action="Index" asp-controller="Home" class="btn-add-to-cart">Continue Shopping</a>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        function showMessage(text, type) {
+            const $message = $('.message');
+            $message.html(text)
+                .removeClass('error success')
+                .addClass(type)
+                .fadeIn(300)
+                .delay(2000)
+                .fadeOut(300);
+        }
+    </script>
+</body>
+</html>

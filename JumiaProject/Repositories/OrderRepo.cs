@@ -28,7 +28,11 @@ namespace JumiaProject.Repositories
         }
         public List<Order> GetOrdersByUserId(string userId)
         {
-            return Context.Orders.Where(x => x.UserId == userId).ToList();
+            return Context.Orders.Where(x => x.UserId == userId && x.OrderStatus!="Canceled" && x.OrderStatus != "Returned").ToList();
+        }
+        public List<Order> GetCanceledOrdersByUserId(string userId)
+        {
+            return Context.Orders.Where(x => x.UserId == userId && (x.OrderStatus == "Canceled" || x.OrderStatus == "Returned")).ToList();
         }
         public List<Order> SearchOrders(string searchTerm, string statusFilter, int pageNum)
         {
@@ -70,6 +74,15 @@ namespace JumiaProject.Repositories
             }
 
             return query.Count();
+        }
+        public void AddOrder(Order order)
+        {
+            Context.Orders.Add(order);
+            Context.SaveChanges();
+        }
+        public ShippingMethod GetShippingMethodById(int shippingMethodId)
+        {
+            return Context.ShippingMethods.FirstOrDefault(x => x.ShippingMethodId == shippingMethodId);
         }
 
         public List<Order> GetOrdersForSeller(string sellerId)
