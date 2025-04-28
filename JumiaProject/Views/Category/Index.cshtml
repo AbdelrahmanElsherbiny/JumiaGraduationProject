@@ -93,7 +93,7 @@
         </div>
     </div>
     <div class="cartitemcat-container p-2 pb-3 d-flex rounded ms-4 flex-wrap bg-white bg-danger" id="our-container">
-        @Html.Partial("_FilteredProductsPartial", new CategoryProductsFilterVM { Products = Model.Products, CartItems = Model.CartItems })
+        @Html.Partial("_FilteredProductsPartial", new CategoryProductsFilterVM { Products = Model.Products, CartItems = Model.CartItems ,WishlistItems=Model.WishlistItems})
     </div>
 </div>
 

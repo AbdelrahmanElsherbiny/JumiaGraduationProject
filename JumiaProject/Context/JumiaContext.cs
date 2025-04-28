@@ -38,6 +38,7 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; } = null!;
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 

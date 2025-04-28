@@ -2,15 +2,18 @@
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
 {
     public class WishlistRepo : IWishlist
     {
         private readonly JumiaContext Context;
+       
         public WishlistRepo(JumiaContext _context)
         {
             Context = _context;
+          
         }
         public List<Wishlist> GetWishlist(string userId)
         {

@@ -8,5 +8,6 @@
         public DateTime ViewedAt { get; set; }
         public virtual ApplicationUser User { get; set; }
         public virtual Product Product { get; set; }
+
     }
 }

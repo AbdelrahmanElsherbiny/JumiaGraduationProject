@@ -167,7 +167,7 @@
                                                 <div class="shipment-vendor text-muted small">Fulfilled by @Model[i].Product.Seller.StoreName</div>
                                             </div>
                                             <div class="product-item d-flex align-items-center">
-                                                <img src="@Url.Content(@Model[i].Product.ProductImages.FirstOrDefault(p => p.IsPrimary == true).ImageUrl)" alt="Product" class="product-image img-thumbnail me-2" style="width: 80px; height: auto;">
+                                                <img src="@Url.Content(@Model[i].Product?.ProductImages?.FirstOrDefault(p => p.IsPrimary == true)?.ImageUrl)" alt="Product" class="product-image img-thumbnail me-2" style="width: 80px; height: auto;">
                                                 <div class="product-info">
                                                     <div class="product-name fw-semibold">@Model[i].Product.Name</div>
                                                     <div class="product-qty text-muted small">QTY: @Model[i].Quantity</div>
@@ -439,23 +439,34 @@
         });
 
                // Handle payment method selection
-        document.querySelectorAll('.payment-radio-input').forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Remove selected class from all options
-                document.querySelectorAll('.payment-option').forEach(option => {
-                    option.classList.remove('selected');
+                document.addEventListener('DOMContentLoaded', function() {
+            // ... all your existing DOMContentLoaded code ...
+
+            // Handle payment method selection
+            document.querySelectorAll('.payment-radio-input').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.payment-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+
+                    // Add selected class to current option
+                    if (this.checked) {
+                        this.closest('.payment-option').classList.add('selected');
+                    }
                 });
-
-                // Add selected class to current option
-                if (this.checked) {
-                    this.closest('.payment-option').classList.add('selected');
-                }
             });
-        });
 
-        // Initialize with default selected option
-        document.querySelector('.payment-radio-input[value="CashOnDelivery"]').checked = true;
-        document.querySelector('.payment-option:first-child').classList.add('selected');
+            // Initialize with default selected option
+                    const cashOnDeliveryInput = document.querySelector('.payment-radio-input[value="CashOnDelivery"]');
+        if (cashOnDeliveryInput) {
+            cashOnDeliveryInput.checked = true;
+            const cashOnDeliveryOption = cashOnDeliveryInput.closest('.payment-option');
+            if (cashOnDeliveryOption) {
+                cashOnDeliveryOption.classList.add('selected');
+            }
+        }
+        });
     </script>
 </body>
 </html>

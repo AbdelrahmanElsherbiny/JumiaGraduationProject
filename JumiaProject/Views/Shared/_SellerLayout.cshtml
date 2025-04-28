@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Seller Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="~/css/seller-dashboard.css" rel="stylesheet">
+    <style>
+        /* Enhanced Navigation Spacing */
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .main-nav .nav-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .main-nav .nav-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .nav-link {
+            padding: 0.875rem 1.25rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-link i {
+            font-size: 1.25rem;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+
+        .nav-text {
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .collapsed-icons {
+            padding: 1rem 0;
+        }
+
+        .collapsed-icons .icon-item {
+            margin-bottom: 1rem;
+        }
+
+        .collapsed-icons .icon-item:last-child {
+            margin-bottom: 0;
+        }
+
+        #sidebar.collapsed .nav-link {
+            padding: 0.875rem;
+            justify-content: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="bg-white">
+            <!-- Toggle Button -->
+            <button id="sidebarToggleBtn" class="toggle-btn">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <div class="sidebar-content">
+                <div class="sidebar-header text-center py-3">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="bi bi-shop me-2"></i>
+                        <h4 class="mb-0">Vendor Center</h4>
+                    </div>
+                </div>
+                <div class="sidebar-nav">
+                    <ul class="list-unstyled components px-3 main-nav">
+                        <li class="nav-item">
+                            <a href="/Seller/ProductsList" class="nav-link rounded">
+                                <i class="bi bi-box-seam"></i>
+                                <span class="nav-text">Products</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Seller/Orders" class="nav-link rounded">
+                                <i class="bi bi-bag"></i>
+                                <span class="nav-text">Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Seller/Profile" class="nav-link rounded">
+                                <i class="bi bi-person-circle"></i>
+                                <span class="nav-text">Profile</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sidebar-footer">
+                    <ul class="list-unstyled components px-3">
+                        <li class="nav-item">
+                            <a href="/SellerAccount/Logout" class="nav-link rounded">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Icons for collapsed sidebar -->
+            <div class="collapsed-icons">
+                <div class="icon-item">
+                    <a href="/Seller/ProductsList" class="nav-link">
+                        <i class="bi bi-box-seam"></i>
+                    </a>
+                </div>
+                <div class="icon-item">
+                    <a href="/Seller/Orders" class="nav-link">
+                        <i class="bi bi-bag"></i>
+                    </a>
+                </div>
+                <div class="icon-item">
+                    <a href="/Seller/Profile" class="nav-link">
+                        <i class="bi bi-person-circle"></i>
+                    </a>
+                </div>
+                <div class="icon-item mt-auto">
+                    <a href="/Seller/Logout" class="nav-link">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="bg-white">
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/seller-dashboard.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

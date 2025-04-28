@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Controllers
 {
+    [Authorize]
     public class CartController : BaseController
     {
         private readonly JumiaContext context;
@@ -23,13 +25,14 @@ namespace JumiaProject.Controllers
             this._cart = _cart;
             _product = product;
         }
+     
         public async Task<IActionResult> Index()
         {
             string id = userManager.GetUserId(User);
-            if (id == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            //if (id == null)
+            //{
+            //    return RedirectToAction("Login", "Account");
+            //}
             var cart=await _cart.GetCartByUserId(id);
             var cartItems = await _cart.GetAllCartItems(id);
             var price = await _cart.CalculateCartTotalPrice(id);
@@ -69,22 +72,27 @@ namespace JumiaProject.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddOrUpdateCartItem(int productId, int? variantId, int quantity)
         {
-            try
-            {
+           
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var cart = await _cart.GetCartByUserId(userId);
-                await _cart.AddOrUpdateCartItem(cart.CartId, productId, variantId, quantity);
-                return Json(new { success = true, message = "Item added to cart successfully" });
+               
+            
+                if (userId != null)
+                {
+                    var cart = await _cart.GetCartByUserId(userId);
+                    await _cart.AddOrUpdateCartItem(cart.CartId, productId, variantId, quantity);
+                    return Json(new { success = true, message = "Item added to cart successfully" });
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account");
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Controller: Error in AddOrUpdateCartItem: {ex.Message}");
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
+          
+        
         public async Task<IActionResult> GetTotalCartQuantity()
         {
               string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -112,6 +120,21 @@ namespace JumiaProject.Controllers
                 }).ToList();
             return Json(variants);
         }
+        [HttpGet]
+        public IActionResult GetProductVariants(int productId)
+        {
+            var variants = context.ProductVariants
+                .Where(v => v.ProductId == productId)
+                .Select(v => new
+                {
+                    variantId = v.VariantId,
+                    sizeName = v.Size.SizeLabel,
+                    stock = v.Stock
+                })
+                .ToList();
+
+            return Json(new { success = true, variants = variants });
+        }
         public async Task<IActionResult> GetTotalPrice()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -123,7 +146,7 @@ namespace JumiaProject.Controllers
 
             decimal totalprice = await _cart.CalculateCartTotalPrice(userId);
 
-            return Json(totalprice);
+            return Json(totalprice.ToString("N2"));
         }
         public async Task<IActionResult> GetCartCount()
         {
@@ -133,6 +156,10 @@ namespace JumiaProject.Controllers
                 return Content("0");
             }
             var cart = await _cart.GetCartByUserId(userId);
+            if (cart == null)
+            {
+                return Content("0");
+            }
 
             int cartCount = await _cart.GetTotalCartQuantity(cart.CartId);
             

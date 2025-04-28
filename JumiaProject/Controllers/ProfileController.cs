@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace JumiaProject.Controllers
 {
     //[Authorize]
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
         private readonly JumiaContext context;
         private readonly IProfile profile;
@@ -22,8 +22,8 @@ namespace JumiaProject.Controllers
         private readonly IHome Home;
         private readonly IOrder Order;
         private readonly IUserDeleteAcc Delete;
-
-        public ProfileController(IProfile profile, IUserDeleteAcc Delete, JumiaContext context, UserManager<ApplicationUser> _userManager, SignInManager<ApplicationUser> signInManager, IWishlist _wishlist, IHome _home, IOrder _order)
+        private readonly ICart cart;
+        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager,IUserDeleteAcc Delete, IWishlist _wishlist, IHome _home, SignInManager<ApplicationUser> signInManager ,IOrder _order,ICart cart):base(cart,_userManager)
         {
             UserManager = _userManager;
             Wishlist = _wishlist;
@@ -31,6 +31,7 @@ namespace JumiaProject.Controllers
             Order = _order;
             this.profile = profile;
             this.context = context;
+            this.cart = cart;
             this.signInManager = signInManager;
             this.Delete = Delete;
         }
@@ -309,7 +310,7 @@ namespace JumiaProject.Controllers
             return View();
         }
 
-
+        
         [HttpPost]
         public IActionResult ToggleWishlist(int productId, int? productVariantId)
         {
@@ -340,6 +341,7 @@ namespace JumiaProject.Controllers
         }
 
     }
-}
+    }
+
 
 
