@@ -184,6 +184,10 @@ namespace JumiaProject.Controllers
                 return Content("0");
             }
             var cart = await _cart.GetCartByUserId(userId);
+            if (cart == null)
+            {
+                return Content("0");
+            }
 
             int cartCount = await _cart.GetTotalCartQuantity(cart.CartId);
             

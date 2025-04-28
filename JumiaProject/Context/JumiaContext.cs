@@ -38,6 +38,7 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; } = null!;
 
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 
@@ -54,9 +55,8 @@ public partial class JumiaContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Size> Sizes { get; set; }
 
     public virtual DbSet<Wishlist> Wishlists { get; set; }
+    public DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
 
-   
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

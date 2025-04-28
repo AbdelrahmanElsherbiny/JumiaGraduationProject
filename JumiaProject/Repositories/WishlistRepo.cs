@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
 {
-    public class WishlistRepo:IWishlist
+    public class WishlistRepo : IWishlist
     {
         private readonly JumiaContext Context;
        
@@ -47,5 +47,7 @@ namespace JumiaProject.Repositories
 
             return Context.Wishlists.FirstOrDefault(w => w.UserId == userId && w.ProductId == productId && w.ProductVariantId == productVariantId);
         }
+        
     }
 }
+

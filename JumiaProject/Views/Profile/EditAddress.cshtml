@@ -16,12 +16,12 @@
            <div class="first d-flex">
                <div class="contain">
                     <label class="address-lable" for="UserName">User Name</label>
-                    <input class="address-input" type="text" id="UserName" name="User.UserName" value="@Model?.User?.UserName" placeholder="Enter You Name" />
+                    <input class="address-input" type="text" id="UserName" name="User.UserName" value="@Model?.User?.UserName" placeholder="Enter Your Name" />
                     <span asp-validation-for="User.UserName" class="text-danger"></span>
                 </div>
                 <div class="contain">
                     <label class="address-lable" for="PhoneNumber">Phone Number</label>
-                    <input class="address-input" type="text" id="PhoneNumber" name="User.PhoneNumber" value="@Model?.User?.PhoneNumber" placeholder="Enter You Phone Number" />
+                    <input class="address-input" type="text" id="PhoneNumber" name="User.PhoneNumber" value="@Model?.User?.PhoneNumber" placeholder="Enter Your Phone Number" />
                     <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
                 </div>
            </div>
@@ -45,12 +45,12 @@
             </div>
             <div class="contain">
                 <label class="address-lable" for="City">City</label>
-                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" placeholder="Enter You City" />
+                <input class="address-input-full" type="text" id="City" name="Address.City" value="@Model?.Address?.City" placeholder="Enter Your City" />
                 <span asp-validation-for="Address.City" class="text-danger"></span>
             </div>
             <div class="contain">
                 <label class="address-lable" for="Street">Adress</label>
-                <input class="address-input-full" type="text" id="Street" name="Address.Street" value="@Model?.Address?.Street" placeholder="Enter You Adress" />
+                <input class="address-input-full" type="text" id="Street" name="Address.Street" value="@Model?.Address?.Street" placeholder="Enter Your Adress" />
                 <span asp-validation-for="Address.Street" class="text-danger"></span>
             </div>
             <button class="save" type="submit">Save</button>

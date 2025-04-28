@@ -15,10 +15,10 @@ namespace JumiaProject.Controllers
        private readonly IProduct Product;
        private readonly  ICart _cart;
         private readonly IWishlist _wishlist;
-        
-        
-       private readonly  UserManager<ApplicationUser> _userManager;
-        public ProductController(IProduct _product, ICart cart, UserManager<ApplicationUser> userManager,IWishlist wishlist,JumiaContext context):base(cart, userManager) 
+        private readonly IProfile profile;
+
+        private readonly  UserManager<ApplicationUser> _userManager;
+        public ProductController(IProduct _product, ICart cart, UserManager<ApplicationUser> userManager,IProfile profile, IWishlist wishlist,JumiaContext context):base(cart, userManager) 
         {
             Product = _product;
             _cart = cart;
@@ -26,6 +26,7 @@ namespace JumiaProject.Controllers
             _wishlist= wishlist;
             _context = context;
 
+            this.profile = profile;
         }
         public async Task<IActionResult> ProductDetails(int id)
         {
@@ -44,6 +45,19 @@ namespace JumiaProject.Controllers
 
                 var CategoryProducts = Product.GetProductsByCategory(productDetails.CategoryId);
                 var BrandProducts = Product.GetProductsByBrand(productDetails.BrandId);
+                var cart = await _cart.GetCartByUserId(userId);
+
+
+                if (userId != null)
+                {
+                    var recentlyViewed = new RecentlyViewedProduct
+                    {
+                        UserId = userId,
+                        ProductId = productDetails.ProductId,
+                        ViewedAt = DateTime.Now
+                    };
+                    await Product.AddRecentlyViewedProductAsync(recentlyViewed);  
+                }
 
                 ProductDetailsViewModel data = new ProductDetailsViewModel()
                 {
@@ -118,6 +132,38 @@ namespace JumiaProject.Controllers
             ViewBag.PageName = "Exclusive Offers | Up to 70% off";
             return View("GetBestSeller", data);
         }
+
+        public async Task<IActionResult> RecentlyViewed(int pageIndex = 1, int pageSize = 10)
+        {
+            string userId = _userManager?.GetUserId(User);
+            var cartItems = new List<CartItem>();
+
+            if (userId != null)
+            {
+                cartItems = await _cart?.GetAllCartItems(userId);
+                var recentlyViewedProducts = await Product.GetRecentlyViewedProductsAsync(userId, pageIndex, pageSize);
+
+                int totalItems = Product.GetRecentlyViewedCount(userId);
+                int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+                var viewModel = new BestProductViewModel
+                {
+                    Products = recentlyViewedProducts,  
+                    CartItems = cartItems,
+                    TotalItems = totalItems,
+                    TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                    CurrentPage = pageIndex,
+                    PageSize = pageSize
+                };
+
+                ViewBag.PageName = "Recently Viewed";
+                return View("GetBestSeller", viewModel); 
+            }
+
+            return View(new BestProductViewModel());
+        }
+
+
+
         public async Task<IActionResult> GetBrandProducts(int id,int pageIndex = 1, int pageSize = 10)
         {
             string userId = _userManager?.GetUserId(User);
@@ -147,6 +193,9 @@ namespace JumiaProject.Controllers
             ViewBag.PageName = "Brand";
             return View("GetBestSeller", data);
         }
+
+
+
         [HttpGet]
         public IActionResult Search(string query)
         {

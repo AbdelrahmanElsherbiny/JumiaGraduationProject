@@ -455,8 +455,7 @@
                             <td data-label="Image">
                                 <img src="@Url.Content(category.ImageUrl)"
                                      alt="Category Image"
-                                     class="category-img"
-                                     onerror="this.src='/images/default-category.png'">
+                                     class="category-img">
                             </td>
                         </tr>
                     }
@@ -527,12 +526,5 @@
             }
         });
 
-        // Handle image errors
-        const categoryImages = document.querySelectorAll('.category-img');
-        categoryImages.forEach(img => {
-            img.addEventListener('error', function() {
-                this.src = '/images/default-category.png';
-            });
-        });
     });
 </script>

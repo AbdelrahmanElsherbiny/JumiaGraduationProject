@@ -4,6 +4,7 @@ using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ namespace JumiaProject.Controllers
         private readonly JumiaContext context;
         private readonly IProfile profile;
         private readonly UserManager<ApplicationUser> UserManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IWishlist Wishlist;
         private readonly IHome Home;
         private readonly IOrder Order;
+        private readonly IUserDeleteAcc Delete;
         private readonly ICart cart;
-        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager, IWishlist _wishlist, IHome _home, IOrder _order,ICart cart):base(cart,_userManager)
+        public ProfileController(IProfile profile, JumiaContext context, UserManager<ApplicationUser> _userManager,IUserDeleteAcc Delete, IWishlist _wishlist, IHome _home, SignInManager<ApplicationUser> signInManager ,IOrder _order,ICart cart):base(cart,_userManager)
         {
             UserManager = _userManager;
             Wishlist = _wishlist;
@@ -29,6 +32,8 @@ namespace JumiaProject.Controllers
             this.profile = profile;
             this.context = context;
             this.cart = cart;
+            this.signInManager = signInManager;
+            this.Delete = Delete;
         }
         public IActionResult MyAccount()
         {
@@ -116,6 +121,90 @@ namespace JumiaProject.Controllers
             }
         }
 
+        public IActionResult Inbox()
+        {
+            var userId = UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return View();
+        }
+
+        public IActionResult Reviews()
+        {
+            var userId = UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return View();
+        }
+
+        public IActionResult FollowSeller()
+        {
+            var userId = UserManager.GetUserId(User);
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> LogOut()
+        {
+            await signInManager.SignOutAsync();  
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await UserManager.GetUserAsync(User);
+            var model = new DeleteAccountVM
+            {
+                Email = user?.Email 
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount(DeleteAccountVM model)
+        {
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                ModelState.AddModelError("Password", "Password is required.");
+                return View(model); 
+            }
+            var isPasswordValid = await Delete.ValidatePassword(model.Email, model.Password);
+            if (!isPasswordValid)
+            {
+                ViewData["PasswordError"] = "Incorrect password.";  
+                return View(model);  
+            }
+            ViewData["ShowConfirmation"] = true;
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDeleteAccount()
+        {
+            var user = await UserManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            await Delete.RemoveUserDataByEmail(user.Email);
+            var deleteSuccess = await Delete.DeleteAccount(user.Email);
+            Console.WriteLine($"Delete Success: {deleteSuccess}");
+            if (deleteSuccess)
+            {
+                return RedirectToAction("LogOut", "Profile");
+            }
+            else
+            {
+                TempData["DeleteError"] = "An error occurred while trying to delete your account. Please try again.";
+                return RedirectToAction("DeleteAccount");
+            }
+        }
+
         public IActionResult UserWishlist()
         {
             var userId = UserManager.GetUserId(User);
@@ -128,7 +217,6 @@ namespace JumiaProject.Controllers
             ViewBag.wishlistItems = wishlistItems;
             return View();
         }
-
 
         [HttpPost]
         public IActionResult AddToWishlist(int productId, int productVariantId)

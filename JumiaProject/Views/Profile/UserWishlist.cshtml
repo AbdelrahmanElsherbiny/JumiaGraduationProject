@@ -53,7 +53,7 @@
                                     @{
                                         decimal price = wishlistItem.Product.Price;
                                         decimal? discount = wishlistItem.Product.Discount;
-                                        decimal? discountedPrice = price * (1 - (discount / 100m));
+                                        decimal? discountedPrice = price * (1 - discount);
                                         <text>EGP @discountedPrice?.ToString("N2")</text>
                                     }
                                 </p>
@@ -61,7 +61,7 @@
                                 {
                                     <p>
                                         <span class="product-original-price"><del>EGP @wishlistItem.Product.Price.ToString("N2")</del></span>
-                                        <span class="discount">-@wishlistItem.Product.Discount%</span>
+                                        <span class="discount">-@(wishlistItem.Product.Discount*100)%</span>
                                     </p>
                                 }
                             </div>

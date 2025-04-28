@@ -64,25 +64,36 @@ namespace JumiaProject.Repositories
             {
                 new Slider
                 {
-                    ImgURL="/images/1.jpg",
+                    ImgURL="~/images/slider/1.jpg",
                     Link=""
                 },
                  new Slider
                 {
-                    ImgURL="/images/2.jpg",
+                    ImgURL="/images/slider/3.jpg",
+                    Link=""
+                }, new Slider
+                {
+                    ImgURL="~/images/slider/4.jpg",
+                    Link=""
+                }, new Slider
+                {
+                    ImgURL="~/images/slider/5.jpg",
+                    Link=""
+                }, new Slider
+                {
+                    ImgURL="~/images/slider/6.jpg",
+                    Link=""
+                }, new Slider
+                {
+                    ImgURL="~/images/slider/7.jpg",
                     Link=""
                 },
-                  new Slider
-                {
-                    ImgURL="/images/3.jpg",
-                    Link=""
-                }
             };
         }
 
         private List<CategoryVM> GetCategoriesVM()
         {
-            List<Category> categories = category.GetAllCategories();
+            List<Category> categories = category.GetAllCategories(); // Fixed method call
             List<CategoryVM> categoriesVM = new List<CategoryVM>();
 
             foreach (Category category in categories)
@@ -97,6 +108,7 @@ namespace JumiaProject.Repositories
             }
             return categoriesVM;
         }
+
 
         private List<ProductVM> GetProductsVM(List<CategoryVM> categories)
         {
