@@ -17,6 +17,10 @@ namespace JumiaProject.Repositories
         }
         public async Task<Cart> GetCartByUserId(string userId)
         {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return null;
+            }
             var cart = await this.context.Carts
                 .Include(c => c.CartItems)
                 .ThenInclude(c => c.Product)

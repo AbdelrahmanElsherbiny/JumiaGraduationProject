@@ -12,5 +12,6 @@ namespace JumiaProject.Interfaces
         public bool DeleteUser(string id);
         public Task<List<ApplicationUser>> SearchCustomers(string searchTerm, int pageNum);
         public Task<int> GetFilteredCustomersCount(string searchTerm);
+        int GetCustomersCountAsync();
     }
 }

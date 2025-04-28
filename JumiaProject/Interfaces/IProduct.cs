@@ -1,4 +1,5 @@
 ﻿using JumiaProject.Models;
+using JumiaProject.ViewModels;
 
 namespace JumiaProject.Interfaces
 {
@@ -12,7 +13,6 @@ namespace JumiaProject.Interfaces
         public Product GetProductById(int id);
         public List<Product> GetProductsByCategory(int id);
         public List<Product> GetProductsByBrand(int id, int pageIndex = 1, int pageSize = 10);
-        public bool AddProduct(Product product);
         public bool UpdateProduct(Product product);
         public void DeleteProduct(int id);
         List<Product> SearchProducts(string searchTerm, string statusFilter, int pageNum);
@@ -29,6 +29,11 @@ namespace JumiaProject.Interfaces
         List<Product> SearchProducts(string query);
         public int IsExistBrand(string brand);
         List<Product> SearchBrand(string brand);
+        Task<List<Product>> GetTopSellingProductsAsync(int count = 10);
+        Task<List<Product>> GetPendingApprovalProductsAsync(int count = 10);
+        Task<int> GetApprovedProductsCountAsync();
+        Task<Dictionary<string,int>> GetCategoryDistributionAsync();
+
     }
 }
    

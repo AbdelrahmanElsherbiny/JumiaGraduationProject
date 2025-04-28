@@ -1,0 +1,394 @@
+﻿@model DashboardViewModel
+@{
+    var topProducts = Model.TopProducts;
+    var monthlySales = Model.MonthlySales;
+    var categoryDistribution = Model.CategoryDistribution;
+    var recentOrders = Model.RecentOrders;
+    var totalRevenue = Model.TotalRevenue;
+    var totalProducts = Model.TotalProducts;
+    var totalCustomers = Model.TotalCustomers;
+    var totalSellers = Model.TotalSellers;
+    var pendingApprovals = Model.PendingApprovals;
+    var mostViewedProducts = Model.MostViewedProducts;
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+    var dashboardData = {
+        monthlySales: @Json.Serialize(Model.MonthlySales),
+        multiYearMonthlySales: @Json.Serialize(Model.MultiYearMonthlySales),
+        categoryDistribution: @Json.Serialize(Model.CategoryDistribution),
+        topSellingProducts: @Json.Serialize(Model.TopProducts.Select(p => new { name = p.Name, sales = p.SoldNumber, price = p.Price })),
+        pendingProductsByDate: @Json.Serialize(Model.PendingApprovals.GroupBy(p => p.CreatedAt?.ToString("MMM dd") ?? "Unknown").Select(g => new { date = g.Key, count = g.Count() })),
+        recentOrderStatus: @Json.Serialize(Model.RecentOrders.GroupBy(o => o.OrderStatus).Select(g => new { status = g.Key, count = g.Count() })),
+        mostViewedProducts: @Json.Serialize(Model.MostViewedProducts.Select(p => new { name = p.Product.Name, views = p.ViewCount }))
+    };
+</script>
+<script src="~/js/AdminDashboard.js" defer></script>
+<style>
+    /* Jumia-inspired Dashboard Styles */
+    :root {
+        --jumia-orange: #f68b1e;
+        --jumia-orange-light: #fef3ea;
+        --jumia-dark: #282828;
+        --jumia-gray: #75757a;
+        --jumia-light-gray: #f5f5f5;
+        --jumia-white: #ffffff;
+        --jumia-border: #ebeef2;
+    }
+
+    body {
+        background-color: #f7f7f7;
+        font-family: 'Roboto', Arial, sans-serif;
+    }
+
+    .dashboard-container {
+        padding: 20px;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header h2 {
+        font-weight: 700;
+        color: var(--jumia-dark);
+        margin-bottom: 5px;
+        font-size: 24px;
+    }
+
+    .dashboard-header p {
+        color: var(--jumia-gray);
+        font-size: 14px;
+    }
+
+    /* Stats Card Styling */
+    .stat-card {
+        background-color: var(--jumia-white);
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 15px;
+        height: 100%;
+        border-left: 4px solid var(--jumia-orange);
+        transition: transform 0.2s;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .stat-card-body {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .stat-card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        background-color: var(--jumia-orange-light);
+    }
+
+        .stat-card-icon i {
+            font-size: 1.5rem;
+            color: var(--jumia-orange);
+        }
+
+    .stat-card-title {
+        font-size: 0.85rem;
+        color: var(--jumia-gray);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-card-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--jumia-dark);
+    }
+
+    /* Chart Card Styling */
+    .chart-card {
+        background-color: var(--jumia-white);
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+        height: 100%;
+        border-top: 3px solid var(--jumia-orange);
+    }
+
+    .chart-card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--jumia-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .chart-card-header h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--jumia-dark);
+        }
+
+    .chart-card-body {
+        padding: 20px;
+        min-height: 300px;
+    }
+
+    /* Button styling */
+    .btn-outline-primary {
+        color: var(--jumia-orange);
+        border-color: var(--jumia-orange);
+        border-radius: 4px;
+        font-size: 12px;
+        padding: 4px 12px;
+        font-weight: 500;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: var(--jumia-orange);
+            color: white;
+        }
+
+    /* Table styling */
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+        .table th {
+            font-weight: 600;
+            font-size: 0.85rem;
+            background-color: var(--jumia-light-gray);
+            color: var(--jumia-dark);
+            border-bottom: 2px solid var(--jumia-border);
+            padding: 12px 15px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--jumia-border);
+        }
+
+    .product-thumb {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 3px;
+        margin-right: 10px;
+    }
+
+    .product-name {
+        font-weight: 500;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--jumia-dark);
+    }
+
+    /* Badge styling */
+    .badge {
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+
+    /* Chart sizes */
+    #monthlySalesChart,
+    #categoryDistributionChart,
+    #topSellingProductsChart,
+    #mostViewedProductsChart,
+    #orderStatusChart,
+    #pendingApprovalsChart {
+        height: 280px !important;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .stat-card-icon
+
+    {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stat-card-icon i {
+        font-size: 1.2rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.1rem;
+    }
+
+    .chart-card-body {
+        min-height: 200px;
+    }
+
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="dashboard-header mb-4">
+        <h2>Admin Dashboard</h2>
+        <p class="text-muted">Overview of marketplace performance and key metrics</p>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="stat-card-icon">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <div class="stat-card-title">Total Revenue</div>
+                        <div class="stat-card-value">@totalRevenue.ToString("C")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="stat-card-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <div class="stat-card-title">Products</div>
+                        <div class="stat-card-value">@totalProducts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="stat-card-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <div class="stat-card-title">Customers</div>
+                        <div class="stat-card-value">@totalCustomers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="stat-card-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <div class="stat-card-title">Sellers</div>
+                        <div class="stat-card-value">@totalSellers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row - Existing Charts -->
+    <div class="row mb-4">
+        <!-- Monthly Sales Chart -->
+        <div class="col-md-8">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5>Monthly Sales Comparison</h5>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="monthlySalesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Distribution -->
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5>Product Categories</h5>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="categoryDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Products Charts Row -->
+    <div class="row mb-4">
+        <!-- Best Sellers Chart -->
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5>Top Selling Products</h5>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="topSellingProductsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Most Viewed Products Chart -->
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5>Most Viewed Products</h5>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="mostViewedProductsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders and Approvals Charts Row -->
+    <div class="row">
+        <!-- Recent Orders Status Chart -->
+        <div class="col-md-6">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <h5>Recent Orders Status</h5>
+                    <a onclick="loadContent('Orders')" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Additional JS to update Chart.js theme to match Jumia styling
+    document.addEventListener('DOMContentLoaded', function() {
+        // Define Jumia color palette for charts
+        Chart.defaults.color = '#75757a';
+        Chart.defaults.font.family = "'Roboto', 'Arial', sans-serif";
+
+        // Set Jumia orange as primary color for charts
+        const jumiaColors = [
+            '#f68b1e', // Jumia orange
+            '#75757a', // Gray
+            '#282828', // Dark
+            '#fda862', // Light orange
+            '#ffcda3', // Lighter orange
+            '#e4e4e4', // Light gray
+        ];
+
+        // Apply these colors in your AdminDashboard.js when creating charts
+        window.jumiaChartColors = jumiaColors;
+    });
+</script>

@@ -51,7 +51,7 @@ namespace JumiaProject.Controllers
                     totalAmount += (cartItem.Product.Price * (1 - cartItem.Product.Discount)) * cartItem.Quantity;
                 }
                 decimal? taxes = totalAmount * 0.14m;
-                var shippingMethod = Order.GetShippingMethodById(shippingMethodId); // You may need this method
+                var shippingMethod = Order.GetShippingMethodById(shippingMethodId);
                 decimal? amount = totalAmount + taxes + shippingMethod.Cost;
 
                 var options = new ChargeCreateOptions
@@ -163,7 +163,7 @@ namespace JumiaProject.Controllers
             decimal? totalAmount = 0;
             foreach (var cartItem in cartItems)
             {
-                totalAmount += (cartItem.Product.Price * (1 - cartItem.Product.Discount)) * cartItem.Quantity;
+                totalAmount += (cartItem.Quantity * (cartItem.Product.Price * (1 - cartItem.Product.Discount)));
             }
 
             decimal? taxes = totalAmount * 0.14m;
@@ -235,7 +235,7 @@ namespace JumiaProject.Controllers
             }
             decimal? taxes = totalAmount * 0.14m;
             var shippingMethod = Order.GetShippingMethodById(shippingMethodId);
-            decimal? amount = totalAmount + taxes + (shippingMethod?.Cost ?? 0);
+            decimal? amount = totalAmount + taxes + (shippingMethod.Cost);
 
             Order order = new Order
             {
