@@ -104,7 +104,7 @@ namespace JumiaProject.Repositories
             List<ProductVM> productVMs = new List<ProductVM>();
             foreach (CategoryVM categoryVM in categories)
             {
-                products = product.GetProductsByCategory(categoryVM.CategoryId).Take<Product>(7).ToList();
+                products = product.GetProductsByCategory(categoryVM.CategoryId).Take<Product>(6).ToList();
                 foreach (Product product in products)
                 {
                     ProductVM productVM = new ProductVM

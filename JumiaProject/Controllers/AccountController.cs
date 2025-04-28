@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using JumiaProject.ViewModels;
 using JumiaProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace JumiaProject.Controllers
 {
@@ -38,8 +39,8 @@ namespace JumiaProject.Controllers
                     loginVM.Email = model.Email;
                     return RedirectToAction("Password");
                 }
-                ApplicationUser userModel = await userManager.FindByEmailAsync(model.Email);
-                if (userModel != null)
+                ApplicationUser? userModel = await userManager.FindByEmailAsync(model.Email); ;
+                if (userModel != null && userModel.IsDeleted!=true)
                 {
                     loginVM.Email = model.Email;
                     return RedirectToAction("Password");
@@ -178,7 +179,20 @@ namespace JumiaProject.Controllers
             ViewBag.ShowResendButton = false;
             return View("Verify");
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResendCodeVerify(string email)
+        {
+            // string verificationCode = GenerateVerificationCode();
+            string verificationCode = "1234";  //jsust for now roma
+            loginVM.Email = email;
+            loginVM.VerificationCode = verificationCode;
+            loginVM.CodeSentTime = DateTime.Now;
+            SendVerificationCode(email, verificationCode);
+            ViewBag.UserEmail = email;
+            ViewBag.ShowResendButton = false;
+            return View("VerifyCodeForgetPassword");
+        }
         public ActionResult RegisterPassword()
         {
             return View();
@@ -211,9 +225,13 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
+            return RedirectToAction("Index","Home");
+        }
+        public async Task<IActionResult> LogoutAdmin()
+        {
+            await signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
-
 
 
         //[HttpPost]
@@ -251,6 +269,105 @@ namespace JumiaProject.Controllers
 
         //    return RedirectToAction(nameof(Login));
         //}
+
+
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgetPassword(UserEmailViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "No user found with this email.");
+                    return View(model);
+                }
+                var code = GenerateVerificationCode();
+                loginVM.CodeSentTime = DateTime.Now;
+                loginVM.VerificationCode = "1234"; //code;   //just for now roma
+                loginVM.Email = model.Email;
+                ViewBag.UserEmail = model.Email;
+                SendVerificationCode(model.Email, "1234");
+                return RedirectToAction("VerifyCodeForgetPassword");
+            }
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult VerifyCodeForgetPassword()
+        {
+            ViewBag.UserEmail = loginVM.Email;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult VerifyCodeForgetPassword(UserCodeViewModel model)
+        {
+            ViewBag.UserEmail = loginVM.Email;
+
+            if (ModelState.IsValid)
+            {
+                if (loginVM.VerificationCode == model.Code && DateTime.Now < loginVM.CodeSentTime.AddMinutes(5))
+                {
+                    return RedirectToAction("SetNewPassword");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid or expired code");
+                    return View();
+                }
+            }
+
+            ViewBag.UserEmail = loginVM.Email;
+            ModelState.AddModelError("", "Incorrect verification code.");
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult SetNewPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetNewPassword(SellerResetNewPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (string.IsNullOrEmpty(loginVM.Email))
+                {
+                    return RedirectToAction("ForgetPassword");
+                }
+                var user = await userManager.FindByEmailAsync(loginVM.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "No user found with this email.");
+                    return View("ForgetPassword");
+                }
+                var passwordHasher = new PasswordHasher<ApplicationUser>();
+                user.PasswordHash = passwordHasher.HashPassword(user, model.Password);
+                var result = await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login","Account");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            return View();
+        }
     }
 
 }

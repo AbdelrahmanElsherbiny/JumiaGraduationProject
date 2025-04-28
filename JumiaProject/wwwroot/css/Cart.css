@@ -149,7 +149,7 @@ bgmy-color {
     transition: all;
     transition: transform 0.3s, box-shadow 0.3s;
     min-width: 11em;
-    height:270px;
+    height:285px;
 }
 
     .cartitem:hover {
@@ -166,7 +166,7 @@ bgmy-color {
     transition: all;
     transition: transform 0.3s, box-shadow 0.3s;
     min-width: 11em;
-    height:340px;
+    height:355px;
 }
 .cartitemlarge:hover {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 5px;
@@ -181,7 +181,7 @@ bgmy-color {
     transition: all;
     transition: transform 0.3s, box-shadow 0.3s;
     min-width: 11em;
-    height: 340px;
+    height: 355px;
 }
 
     .cartitemcatlarge:hover {

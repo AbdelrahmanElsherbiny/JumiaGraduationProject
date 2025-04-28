@@ -6,7 +6,7 @@
 
 <img src="~/images/star.png" alt="Jumia" width="64" height="64" class="mt-5" />
 <div class="px-3 py-2">
-    <div class="all-container d-flex  justify-content-center align-items-center flex-column">
+    <div class="all-container d-flex  justify-content-center align-items-center flex-column text-center">
         <h2 class="welcome">Verify your email address</h2>
         <p>
             We have sent a verification code to @ViewBag.UserEmail.
@@ -27,7 +27,7 @@
                     request a new one in <span id="countdown" class="my-color">60</span><span class="my-color"> seconds</span>
                 </p>
 
-                <form method="post" action="/Account/ResendCode" style="display:none;" id="resendForm" class="w-100">
+                <form method="post" asp-action="ResendCode" asp-controller="Account" asp-route-email="@ViewBag.UserEmail" style="display:none;" id="resendForm" class="w-100">
                     <input type="hidden" name="email" value="@ViewBag.UserEmail" />
                     <button type="submit" class="request-new my-color w-100 mb-5 mt-2 border border-0">Request a New Code</button>
                 </form>

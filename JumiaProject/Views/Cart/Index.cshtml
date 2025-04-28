@@ -2,7 +2,9 @@
 @{ 
     ViewData["Title"] = "Cart";  
 }
-
+<div id="alertMessageStockLimit" class="alert alert-warning d-none" role="alert">
+    Cannot add more items. Stock limit reached.
+</div>
 <div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
 </div>
@@ -16,7 +18,7 @@
     <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
 </div>
 <div id="alertMessage" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
-    <i class="fas fa-check text-white mx-2"></i>  Product was removed from cart
+    <i class="fas fa-check text-white mx-2"></i>  Product removed from cart successfully
 </div>
 <div id="alertMessageFail" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-check text-white mx-2"></i> Fail to remove the product, Something went wrong.
@@ -156,7 +158,7 @@ else
                     <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                 @if(product.Discount!=0){
                         <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
-                    <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
+                        <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">-@((product.Discount * 100)?.ToString("N0"))%</span>
                 }
                
             </div>
@@ -171,7 +173,7 @@ else
         <a class="my-color text-decoration-none me-2 fw-medium" asp-action="GetMostDiscount" asp-controller="product">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
     </div>
     <div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
-        <div class="owl-carousel owl-theme bg-white" id="myOwlCarousel">
+        <div class="owl-carousel owl-theme bg-white myOwlCarousel" id="myOwlCarousel">
             @foreach (Product product in ViewBag.MostDiscount)
             {
                 <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
@@ -183,7 +185,7 @@ else
                         @if (product.Discount != 0)
                         {
                             <p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
-                            <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
+                            <span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">-@((product.Discount * 100)?.ToString("N0"))%</span>
                         }
 
                     </div>

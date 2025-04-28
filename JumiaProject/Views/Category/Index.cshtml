@@ -9,7 +9,9 @@
     <img src="~/images/mainophotoCategory.jpg" class="rounded category-photo w-100" />
 
 </div>
-
+<div id="alertMessageStockLimit" class="alert alert-warning d-none" role="alert">
+    Cannot add more items. Stock limit reached.
+</div>
 <div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
 </div>
@@ -32,8 +34,8 @@
 
 <input type="hidden" id="CategoryId" value="@Model.CategoryId" />
 
-<div class="parentItem m-auto rounded  d-flex">
-    <div class="cart-summary bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 ">
+<div class="parentItem m-auto rounded d-flex mb-2">
+    <div class="cart-summary bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 mt-0">
 
         <div class="filteration">
             <Header class="filter-name">BRAND</Header>
@@ -92,8 +94,10 @@
 
         </div>
     </div>
-    <div class="cartitemcat-container p-2 pb-3 d-flex rounded ms-4 flex-wrap bg-white bg-danger" id="our-container">
+    <div class="cartitemcat-container  bg-white ms-4 rounded" >
+        <div class="cartitemcat-container  p-2 pb-3 d-flex rounded  flex-wrap bg-white" id="our-container">
         @Html.Partial("_FilteredProductsPartial", new CategoryProductsFilterVM { Products = Model.Products, CartItems = Model.CartItems ,WishlistItems=Model.WishlistItems})
+        </div>
     </div>
 </div>
 
@@ -146,12 +150,12 @@
                 var minPrice = $("#minPriceInput").val();
                 var maxPrice = $("#maxPriceInput").val();
                 var categoryId = $("#CategoryId").val();
-        console.log("Sizes: ", selectedSizes);
-        console.log("Brands: ", selectedBrands);
-        console.log("Discounts: ", selectedDiscounts);
-        console.log("categoryId",categoryId);
-        console.log("minPrice",minPrice)
-         console.log("maxPrice",maxPrice)
+        // console.log("Sizes: ", selectedSizes);
+        // console.log("Brands: ", selectedBrands);
+        // console.log("Discounts: ", selectedDiscounts);
+        // console.log("categoryId",categoryId);
+        // console.log("minPrice",minPrice)
+        //  console.log("maxPrice",maxPrice)
                 $.ajax({
                     url: '/Category/FilterProducts',
                     type: 'POST',
