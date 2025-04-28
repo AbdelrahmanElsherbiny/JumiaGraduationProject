@@ -1,4 +1,5 @@
 ﻿using JumiaProject.Models;
+using JumiaProject.ViewModels;
 
 namespace JumiaProject.Interfaces
 {
@@ -20,6 +21,10 @@ namespace JumiaProject.Interfaces
         public List<Product> Get6BestSeller();
         public List<Product> GetBestSeller();
         public List<Product> GetMostDiscount();
+        Task<List<Product>> GetTopSellingProductsAsync(int count = 10);
+        Task<List<Product>> GetPendingApprovalProductsAsync(int count = 10);
+        Task<int> GetApprovedProductsCountAsync();
+        Task<Dictionary<string,int>> GetCategoryDistributionAsync();
 
     }
 }

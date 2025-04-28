@@ -1,4 +1,6 @@
-﻿using JumiaProject.Interfaces;
+﻿using System.Globalization;
+using JumiaProject.Context;
+using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +32,7 @@ namespace JumiaProject.Controllers
             CategorySize = _categorySize;
         }
 
-        public IActionResult Index(string sectionName="", int pageNum = 1)
+        public IActionResult Index(string sectionName= "", int pageNum = 1)
         {
             ViewBag.currentPage = pageNum;
             return View("Index", sectionName);
@@ -40,6 +42,9 @@ namespace JumiaProject.Controllers
         {
             switch (sectionName)
             {
+                case "Dashboard":
+                    var data = await LoadDashboardData();
+                    return PartialView("AdminDashboardPartial",data);
                 case "Products":
                     List<Product> products = Product.SearchProducts(searchTerm, statusFilter, pageNum);
                     ViewBag.CurrentPage = pageNum;
@@ -84,6 +89,44 @@ namespace JumiaProject.Controllers
                 default:
                     return PartialView("WelcomeAdminPartial");
             }
+        }
+        private async Task<DashboardViewModel> LoadDashboardData()
+        {
+            // Get most viewed products data
+            var mostViewedProducts = await GetMostViewedProductsAsync();
+
+            return new DashboardViewModel
+            {
+                TopProducts = await Product.GetTopSellingProductsAsync(),
+                PendingApprovals = await Product.GetPendingApprovalProductsAsync(),
+                RecentOrders = await Order.GetRecentOrdersAsync(),
+                TotalRevenue = await Order.GetTotalRevenueAsync(),
+                TotalProducts = await Product.GetApprovedProductsCountAsync(),
+                TotalCustomers = User.GetCustomersCountAsync(),
+                TotalSellers = await Seller.GetSellersCountAsync(),
+                MonthlySales = await Order.GetMonthlySalesDataAsync(DateTime.Now.Year),
+                MultiYearMonthlySales = await Order.GetMultiYearMonthlySalesDataAsync(5),
+                CategoryDistribution = await Product.GetCategoryDistributionAsync(),
+                MostViewedProducts = mostViewedProducts
+            };
+        }
+
+        private async Task<List<MostViewedProductViewModel>> GetMostViewedProductsAsync()
+        {
+            // Query recently viewed products and group by product to find most viewed
+            var context = HttpContext.RequestServices.GetService<JumiaContext>();
+            var mostViewed = await context.RecentlyViewedProducts
+                .GroupBy(r => r.ProductId)
+                .Select(g => new MostViewedProductViewModel
+                {
+                    Product = g.First().Product,
+                    ViewCount = g.Count()
+                })
+                .OrderByDescending(x => x.ViewCount)
+                .Take(10)
+                .ToListAsync();
+
+            return mostViewed;
         }
         public IActionResult DeleteProduct(int id, int currentPage = 1)
         {
@@ -300,6 +343,12 @@ namespace JumiaProject.Controllers
                 Category.Update(category);
             }
             return RedirectToAction("Index","Admin", new {sectionName="Categories", pageNum = pageNum });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetMultiYearSalesData(int years)
+        {
+            var data = await Order.GetMultiYearMonthlySalesDataAsync(years);
+            return Json(data);
         }
     }
 }

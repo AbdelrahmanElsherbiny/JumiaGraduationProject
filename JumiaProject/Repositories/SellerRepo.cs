@@ -124,5 +124,10 @@ namespace JumiaProject.Repositories
 
             return query.Count();
         }
+        public async Task<int> GetSellersCountAsync()
+        {
+            return await Context.Sellers
+                .CountAsync();
+        }
     }
 }

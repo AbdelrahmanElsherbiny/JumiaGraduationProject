@@ -120,6 +120,10 @@ namespace JumiaProject.Controllers
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cart = await _cart.GetCartByUserId(userId);
+            if (cart == null)
+            {
+                return Content("0");
+            }
 
             int cartCount = await _cart.GetTotalCartQuantity(cart.CartId);
             

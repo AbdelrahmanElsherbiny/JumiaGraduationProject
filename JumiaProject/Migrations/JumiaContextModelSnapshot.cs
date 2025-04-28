@@ -616,6 +616,33 @@ namespace JumiaProject.Migrations
                     b.ToTable("ProductVariants");
                 });
 
+            modelBuilder.Entity("JumiaProject.Models.RecentlyViewedProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RecentlyViewedProducts");
+                });
+
             modelBuilder.Entity("JumiaProject.Models.Review", b =>
                 {
                     b.Property<int>("ReviewId")
@@ -1124,6 +1151,25 @@ namespace JumiaProject.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("JumiaProject.Models.RecentlyViewedProduct", b =>
+                {
+                    b.HasOne("JumiaProject.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JumiaProject.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("JumiaProject.Models.Review", b =>

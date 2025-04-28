@@ -1,4 +1,5 @@
 ﻿using JumiaProject.Models;
+using JumiaProject.ViewModels;
 
 namespace JumiaProject.Interfaces
 {
@@ -13,5 +14,9 @@ namespace JumiaProject.Interfaces
         int GetFilteredOrdersCount(string searchTerm, string statusFilter);
         public void AddOrder(Order order);
         ShippingMethod GetShippingMethodById(int shippingMethodId);
+        Task<List<Order>> GetRecentOrdersAsync(int count = 5);
+        Task<decimal> GetTotalRevenueAsync();
+        Task<Dictionary<string,decimal>> GetMonthlySalesDataAsync(int year);
+        Task<Dictionary<int, Dictionary<string, decimal>>> GetMultiYearMonthlySalesDataAsync(int years);
     }
 }

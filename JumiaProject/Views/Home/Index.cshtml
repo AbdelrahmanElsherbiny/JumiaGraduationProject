@@ -6,7 +6,7 @@
 			@foreach (CategoryVM category in Model.Categories)
 			{
 				<li class="list-group-item">
-					<a class="d-block text-dark text-decoration-none text-decoration-none hover-orange" href="@Url.Action("ByCategory", "Home", new { id = category.CategoryId })">@category.CategoryName</a>
+					<a class="d-block text-dark text-decoration-none text-decoration-none hover-orange" href="@Url.Action("Index", "Category", new { id = category.CategoryId })">@category.CategoryName</a>
 				</li>
 			}
 		</ul>

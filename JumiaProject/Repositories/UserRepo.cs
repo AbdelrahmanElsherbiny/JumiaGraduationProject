@@ -93,6 +93,9 @@ namespace JumiaProject.Repositories
             return query.Count();
         }
 
-
+        public int GetCustomersCountAsync()
+        {
+            return GetAllCustomers().Result.Count();
+        }
     }
 }
