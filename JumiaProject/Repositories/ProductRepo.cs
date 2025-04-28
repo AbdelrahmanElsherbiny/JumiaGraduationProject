@@ -20,7 +20,7 @@ namespace JumiaProject.Repositories
 
         public List<Product> GetAllProducts()
         {
-            return _context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).ToList();
+            return Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).ToList();
         }
         public List<Product> GetProductsPaginated(int pageNumber)
         {
@@ -29,7 +29,7 @@ namespace JumiaProject.Repositories
         }
         public (List<Product> Products, int TotalCount) GetProductsPaginated(int page, int pageSize, string search, string filters)
         {
-            var query = _context.Products.Include(p => p.ProductImages).Include(p => p.Category).AsQueryable();
+            var query = Context.Products.Include(p => p.ProductImages).Include(p => p.Category).AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -68,12 +68,6 @@ namespace JumiaProject.Repositories
         {
             return Context.Products.Where(p => p.IsDeleted == false).FirstOrDefault(p => p.ProductId == id);
         }
-        public bool AddProduct(Product product)
-        {
-                Context.Products.Add(product);
-                Context.SaveChanges();
-                return true;
-        }
         public void DeleteProduct(int id)
         {
             var product = Context.Products.FirstOrDefault(p => p.ProductId == id);
@@ -87,11 +81,11 @@ namespace JumiaProject.Repositories
             {
                 _logger.LogInformation("Starting product update for ProductId: {ProductId}", updatedProduct.ProductId);
 
-                using (var transaction = _context.Database.BeginTransaction())
+                using (var transaction = Context.Database.BeginTransaction())
                 {
                     try
                     {
-                        var existingProduct = _context.Products
+                        var existingProduct = Context.Products
                             .Include(p => p.ProductImages)
                             .FirstOrDefault(p => p.ProductId == updatedProduct.ProductId);
 
@@ -119,7 +113,7 @@ namespace JumiaProject.Repositories
                             var imagesToRemove = existingProduct.ProductImages.ToList();
                             foreach (var image in imagesToRemove)
                             {
-                                _context.ProductImages.Remove(image);
+                                Context.ProductImages.Remove(image);
                             }
 
                             foreach (var newImage in updatedProduct.ProductImages)
@@ -132,7 +126,7 @@ namespace JumiaProject.Repositories
                             }
                         }
 
-                        _context.SaveChanges();
+                        Context.SaveChanges();
                         transaction.Commit();
                         _logger.LogInformation("Product update completed successfully. ProductId: {ProductId}", updatedProduct.ProductId);
                         return true;
@@ -171,7 +165,7 @@ namespace JumiaProject.Repositories
         }
         public List<Product> SearchProducts(string searchTerm, string statusFilter, int pageNum)
         {
-            var query = _context.Products.Where(p => p.IsDeleted == false && p.IsApprovedFromAdmin != "Not Approved").AsQueryable();
+            var query = Context.Products.Where(p => p.IsDeleted == false && p.IsApprovedFromAdmin != "Not Approved").AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -289,7 +283,7 @@ namespace JumiaProject.Repositories
 
         public List<Product> GetAllProductsForSeller(string? sellerId)
         {
-            return _context.Products
+            return Context.Products
                 .Include(p => p.ProductImages)
                 .Include(p => p.Category)
                 .Include(p => p.Brand)
@@ -312,7 +306,7 @@ namespace JumiaProject.Repositories
                 Console.WriteLine($"- Number of images: {product.ProductImages?.Count ?? 0}");
 
                 // Begin transaction
-                using (var transaction = _context.Database.BeginTransaction())
+                using (var transaction = Context.Database.BeginTransaction())
                 {
                     try
                     {
@@ -320,9 +314,9 @@ namespace JumiaProject.Repositories
 
                         // Add the product
                         Console.WriteLine("Adding product to context...");
-                        _context.Products.Add(product);
+                        Context.Products.Add(product);
                         
-                        var saveResult = _context.SaveChanges();
+                        var saveResult = Context.SaveChanges();
                         Console.WriteLine($"SaveChanges result (product): {saveResult}");
                         Console.WriteLine($"Generated ProductId: {product.ProductId}");
 
@@ -335,7 +329,7 @@ namespace JumiaProject.Repositories
                             
                             foreach (var image in imagesToProcess)
                             {
-                                _context.ProductImages.Add(new ProductImage
+                                Context.ProductImages.Add(new ProductImage
                                 {
                                     ProductId = product.ProductId,
                                     ImageUrl = image.ImageUrl,
@@ -344,7 +338,7 @@ namespace JumiaProject.Repositories
                                 Console.WriteLine($"Added image: {image.ImageUrl}");
                             }
                             
-                            saveResult = _context.SaveChanges();
+                            saveResult = Context.SaveChanges();
                             Console.WriteLine($"SaveChanges result (images): {saveResult}");
                         }
 
@@ -429,5 +423,6 @@ namespace JumiaProject.Repositories
                 .Take(8)
                 .ToDictionary(x => x.Key, x => x.Value);
         }
+
     }
 }
