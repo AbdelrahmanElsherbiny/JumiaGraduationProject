@@ -456,6 +456,9 @@ namespace JumiaProject.Migrations
                         .HasColumnType("varchar(50)")
                         .HasDefaultValue("Pending");
 
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("PaymentId")
                         .HasName("PK__Payments__9B556A38F9760B11");
 

@@ -14,7 +14,7 @@ namespace JumiaProject.Repositories
         }
         public Order GetOrderById(int id)
         {
-            return Context.Orders.FirstOrDefault(x => x.OrderId == id);
+            return Context.Orders.Include(o => o.ShippingMethod).FirstOrDefault(x => x.OrderId == id);
         }
         public List<Order> GetAllOrders()
         {
@@ -74,6 +74,15 @@ namespace JumiaProject.Repositories
             }
 
             return query.Count();
+        }
+        public void AddOrder(Order order)
+        {
+            Context.Orders.Add(order);
+            Context.SaveChanges();
+        }
+        public ShippingMethod GetShippingMethodById(int shippingMethodId)
+        {
+            return Context.ShippingMethods.FirstOrDefault(x => x.ShippingMethodId == shippingMethodId);
         }
     }
 }

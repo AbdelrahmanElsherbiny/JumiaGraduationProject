@@ -1,6 +1,4 @@
 ﻿@model CategoryProductsFilterVM
-
-
 @foreach (Product product in @Model.Products)
 {
     var variant = product.ProductVariants.FirstOrDefault();

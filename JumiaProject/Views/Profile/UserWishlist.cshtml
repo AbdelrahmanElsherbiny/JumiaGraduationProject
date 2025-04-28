@@ -17,37 +17,37 @@
 
     <div class="main">
         <div class="side">
-                <partial name="_SideBarPartial"></partial>
+            <partial name="_SideBarPartial"></partial>
         </div>
         <div class="wishlist">
             @if (ViewBag.wishlistItems.Count > 0)
             {
-                <h3 class="wishlist-title">Wishlist (@ViewBag.wishlistItems.Count)</h3>
+                <h3 class="wishlist-title">Wishlist (<span id="wishlist-count">@ViewBag.wishlistItems.Count</span>)</h3>
                 <hr />
                 @foreach (var wishlistItem in ViewBag.wishlistItems as List<Wishlist>)
                 {
-                    <div class="items">
+                    <div class="items" id="wishlist-item-@wishlistItem.WishlistId">
                         <div>
                             <img src="@Url.Content(wishlistItem.Product.ProductImages.FirstOrDefault(p => p.IsPrimary == true)?.ImageUrl)"
-                            alt="Product Image"
-                            class="product-image">
+                                 alt="Product Image"
+                                 class="product-image">
                         </div>
 
                         <div class="info">
                             <p class="product-name">@wishlistItem.Product.Name</p>
-                                <p class="product-variation">
-                                    @if (!string.IsNullOrEmpty(wishlistItem.ProductVariant?.Color))
-                                    {
-                                        <span class="gray">Color:</span>
-                                        <span> @wishlistItem.ProductVariant?.Color</span>
-                                        <br />
-                                    }
-                                    @if (!string.IsNullOrEmpty(wishlistItem.ProductVariant?.Size.SizeLabel))
-                                    {
-                                        <span class="gray">Size:</span>
-                                        <span> @wishlistItem.ProductVariant?.Size.SizeLabel</span>
-                                    }
-                                </p>
+                            <p class="product-variation">
+                                @if (!string.IsNullOrEmpty(wishlistItem.ProductVariant?.Color))
+                                {
+                                    <span class="gray">Color:</span>
+                                    <span> @wishlistItem.ProductVariant?.Color</span>
+                                    <br />
+                                }
+                                @if (!string.IsNullOrEmpty(wishlistItem.ProductVariant?.Size.SizeLabel))
+                                {
+                                    <span class="gray">Size:</span>
+                                    <span> @wishlistItem.ProductVariant?.Size.SizeLabel</span>
+                                }
+                            </p>
                             <div class="price-container">
                                 <p class="product-price">
                                     @{
@@ -68,11 +68,11 @@
                         </div>
 
                         <div class="actions">
-                            <button class="btn-remove" onclick="removeFromWishlist(@wishlistItem.WishlistId)">
+                            <button class="btn-remove" onclick="removeFromWishlist(@wishlistItem.WishlistId, event)">
                                 @Html.AntiForgeryToken()
                                 <i class="fas fa-trash-alt"></i> Remove
                             </button>
-                            <button class="btn-add-to-cart" onclick="addToCart(@wishlistItem.ProductId,@wishlistItem.ProductVariant?.VariantId)">
+                            <button class="btn-add-to-cart" onclick="addToCart(@wishlistItem.ProductId, @(wishlistItem.ProductVariant?.VariantId ?? 0), event)">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
                         </div>
@@ -83,7 +83,7 @@
             {
                 <div class="empty-wishlist">
                     <h3 class="wishlist-title">Wishlist</h3>
-					<hr />
+                    <hr />
                     <div class="empty-content">
                         <img src="~/images/nr2i70vz.png" alt="Empty Wishlist" class="empty-image" />
                         <p class="empty-message">You haven't saved an item yet!</p>
@@ -95,7 +95,6 @@
         </div>
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -103,37 +102,61 @@
             if (persistedMessage) {
                 const { text, type } = JSON.parse(persistedMessage);
                 showMessage(text, type);
-                sessionStorage.removeItem('persistedMessage'); // clear after showing
+                sessionStorage.removeItem('persistedMessage');
             }
         });
 
-        function addToCart(productId, variantId) {
+        function addToCart(productId, variantId, event) {
+            event.preventDefault();
+            const button = $(event.target).closest('.btn-add-to-cart');
+            const originalText = button.html();
+            button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Adding...');
+
+            // Prepare data object
+            const data = {
+                productId: productId,
+                quantity: 1
+            };
+
+            // Only add variantId if it's not 0
+            if (variantId !== 0) {
+                data.variantId = variantId;
+            }
+
             $.ajax({
                 url: '@Url.Action("AddOrUpdateCartItem", "Cart")',
                 type: 'POST',
-                data: {
-                    productId: productId,
-                    variantId: variantId,
-                    quantity :1
-                },
+                data: data,
                 headers: {
                     'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                 },
-                success: function (data) {
-                    if (data.success) {
-                        sessionStorage.setItem('persistedMessage', JSON.stringify({
-                            text: '<i class="fas fa-check"></i> The item was added successfully.',
-                            type: 'success'
-                        }));
-                        location.reload(); // reload first
+                success: function (response) {
+                    if (response.success) {
+                        showMessage('<i class="fas fa-check"></i> ' + response.message, 'success');
+                    } else {
+                        showMessage(response.message || 'Error adding product to cart', 'error');
                     }
                 },
-                error: function () {
-                    showMessage('Error adding product to wishlist', 'error');
+                error: function (xhr) {
+                    let errorMessage = 'Error adding product to cart';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    showMessage(errorMessage, 'error');
+                },
+                complete: function () {
+                    button.prop('disabled', false).html(originalText);
                 }
             });
         }
-        function removeFromWishlist(wishlistId) {
+
+        function removeFromWishlist(wishlistId, event) {
+            event.preventDefault();
+            const button = $(event.target).closest('.btn-remove');
+            const originalText = button.html();
+            button.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Removing...');
+            const itemElement = $(`#wishlist-item-${wishlistId}`);
+
             $.ajax({
                 url: '@Url.Action("RemoveFromWishlist", "Profile")',
                 type: 'POST',
@@ -143,33 +166,62 @@
                 headers: {
                     'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                 },
-                success: function (data) {
-                    if (data.success) {
-                        sessionStorage.setItem('persistedMessage', JSON.stringify({
-                            text: '<i class="fas fa-check"></i> The item was removed successfully.',
-                            type: 'success'
-                        }));
-                        location.reload(); // reload first
+                success: function (response) {
+                    if (response.success) {
+                        itemElement.fadeOut(300, function() {
+                            $(this).remove();
+                            updateWishlistCount();
+                            checkEmptyWishlist();
+                        });
+                        showMessage('<i class="fas fa-check"></i> ' + 'Item removed successfully', 'success');
+                    } else {
+                        showMessage(response.message || 'Error removing product from wishlist', 'error');
                     }
                 },
-                error: function () {
-                    showMessage('Error removing product to wishlist', 'error');
+                error: function (xhr) {
+                    let errorMessage = 'Error removing product from wishlist';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    showMessage(errorMessage, 'error');
+                },
+                complete: function () {
+                    button.prop('disabled', false).html(originalText);
                 }
             });
         }
 
-        // Message display function
-            function showMessage(text, type) {
-                const $message = $('.message');
-                $message.html(text)
-                    .removeClass('error success')
-                    .addClass(type)
-                    .fadeIn(300)
-                    .delay(2000)
-                    .fadeOut(300);
+        function updateWishlistCount() {
+            const count = $('.items').length;
+            $('#wishlist-count').text(count);
+        }
+
+        function checkEmptyWishlist() {
+            if ($('.items').length === 0) {
+                $('.wishlist').html(`
+                    <div class="empty-wishlist">
+                        <h3 class="wishlist-title">Wishlist</h3>
+                        <hr />
+                        <div class="empty-content">
+                            <img src="/images/nr2i70vz.png" alt="Empty Wishlist" class="empty-image" />
+                            <p class="empty-message">You haven't saved an item yet!</p>
+                            <p class="empty-instruction">Found something you like? Tap on the heart shaped icon next to the item to add it to your wishlist! All your saved items will appear here.</p>
+                            <a asp-action="Index" asp-controller="Home" class="btn-add-to-cart">Continue Shopping</a>
+                        </div>
+                    </div>
+                `);
             }
+        }
 
-
+        function showMessage(text, type) {
+            const $message = $('.message');
+            $message.html(text)
+                .removeClass('error success')
+                .addClass(type)
+                .fadeIn(300)
+                .delay(2000)
+                .fadeOut(300);
+        }
     </script>
 </body>
 </html>

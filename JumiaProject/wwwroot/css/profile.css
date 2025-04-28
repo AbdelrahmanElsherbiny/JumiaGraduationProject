@@ -1,6 +1,19 @@
-﻿.profile-container {
+﻿:root {
+    --jumia-orange: #f68b1e;
+    --jumia-light-gray: #f1f1f2;
+    --jumia-text-gray: #666666;
+    --sidebar-width: 250px;
+    --content-width: 800px;
+}
+.myaccount-sidebar {
+    background-color: #d4d4d6 !important;
+}
+.profile-container {
     background-color: white;
     border-radius: 7px;
+}
+body {
+    background-color: var(--jumia-light-gray) !important;
 }
 .profile-header {
     border-bottom: 1px solid #343a4030;

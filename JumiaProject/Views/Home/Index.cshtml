@@ -91,7 +91,7 @@
 								<span class="card-title ">@Model.Categories[i].CategoryName</span>
 							 </div>
 							 <div>
-							<a class="see-all text-decoration-none me-2 fw-medium" asp-controller="Category" asp-action="Index">See All <i class="fa-solid small12 fa-chevron-right"></i></a>
+							<a class="see-all text-decoration-none me-2 fw-medium" asp-controller="Category" asp-action="Index" asp-route-id="@Model.Categories[i].CategoryId">See All <i class="fa-solid small12 fa-chevron-right"></i></a>
 
 							 </div>
 						</div> 
