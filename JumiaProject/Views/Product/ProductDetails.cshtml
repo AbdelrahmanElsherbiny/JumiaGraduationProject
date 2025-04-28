@@ -7,6 +7,9 @@
     bool isInWishlist = Model.WishlistItems != null && Model.WishlistItems.Any(c => c.ProductId == Model.Product.ProductId);
 
 }
+<div id="alertMessageStockLimit" class="alert alert-warning d-none" role="alert">
+    Cannot add more items. Stock limit reached.
+</div>
 <div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
 </div>
@@ -71,7 +74,7 @@
                         <span class="font20 fw-bold">EGP @((@Model.Product.Price-(@Model.Product.Price*@Model.Product.Discount))?.ToString("N2"))</span>
                         @if(Model.Product.Discount!=0){
                             <span class="small16 text-decoration-line-through disable-color">EGP @Model.Product.Price</span>
-                            <span class="item-sale small16 p-1 rounded">-@Model.Product.Discount%</span>
+                            <span class="item-sale small16 p-1 rounded">-@((Model.Product.Discount*100)?.ToString("N0"))%</span>
                         }
                     </p>
                     @if (Model.Product.Stock < 10)
@@ -107,22 +110,26 @@
                         <div class="cart-item-row d-flex align-items-center mt-2"
                         data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
                         data-stock="@variant?.Stock"
-                        data-product-id="@Model.Product.ProductId">
+                        data-product-id="@Model.Product.ProductId"
+                             data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
 
                             <div class="cart-quantity-controls quantity-controls w-50  d-flex align-items-center">
-                                <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-4 shadow-sm"
+                                <button class="quantity-btn  border border-0 rounded quantity-btn me-4 shadow-sm @(Model.Product.ProductVariants.Any() ? "add-to-cart-btn" : "cart-minus-btn")"
                                 data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
                                 data-stock="@variant?.Stock"
                                 data-product-id="@Model.Product.ProductId"
-                                data-novariantstock="@Model.Product.Stock">
+                                data-novariantstock="@Model.Product.Stock"
+                                data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
                                     −
                                 </button>
-                                <span class="quantity-display mx-2 dark-color" data-quantity="0">@Model.CartItems?.FirstOrDefault(c => c.ProductId == Model.Product.ProductId).Quantity</span>
-                                <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-4 shadow-sm"
+                                <span id="quantitySpan_@Model.Product.ProductId" class=" mx-2 dark-color">@Model.CartItems?.FirstOrDefault(c => c.ProductId == @Model.Product.ProductId)?.Quantity</span>
+                                @* <span class="quantity-display mx-2 dark-color" data-quantity="@Model.CartItems?.FirstOrDefault(c => c.ProductId == @Model.Product.ProductId && c.VariantId == variant?.VariantId)?.Quantity">@Model.CartItems?.FirstOrDefault(c => c.ProductId == @Model.Product.ProductId && c.VariantId == variant?.VariantId)?.Quantity</span> *@
+                                <button class="quantity-btn  border border-0 rounded quantity-btn ms-4 shadow-sm  @(Model.Product.ProductVariants.Any() ? "add-to-cart-btn" : "cart-plus-btn")"
                                 data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
                                 data-stock="@variant?.Stock"
                                 data-product-id="@Model.Product.ProductId"
-                                data-novariantstock="@Model.Product.Stock">
+                                data-novariantstock="@Model.Product.Stock"
+                                data-has-variant="@Model.Product.ProductVariants.Any().ToString().ToLower()">
                                     +
                                 </button>
                             </div>
@@ -246,7 +253,7 @@
         <h4 class="dark-color m-0">More products from the same brand</h4>
         <a class="my-color text-decoration-none me-2 fw-medium" asp-controller="product" asp-action="GetBrandProducts" asp-route-id="@Model.Product.BrandId">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
     </div>
-    <div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
+    <div class="cart-items-container p-2 pb-3 d-flex flex-wrap">
         @foreach (Product product in Model.BrandProducts)
         {
             <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
@@ -273,7 +280,7 @@
         <a class="my-color text-decoration-none me-2 fw-medium" asp-action="Index" asp-controller="Category" asp-route-id="@Model.Product.CategoryId">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
     </div>
     <div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
-        <div class="owl-carousel owl-theme bg-white" id="myOwlCarousel">
+        <div class="owl-carousel owl-theme bg-white myOwlCarousel" id="myOwlCarousel">
             @foreach (Product product in Model.CategoryProducts)
             {
                 <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
@@ -293,7 +300,7 @@
             }
         </div>
     </div>
-
+    </div>
 
 
 

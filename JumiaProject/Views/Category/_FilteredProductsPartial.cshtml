@@ -1,9 +1,9 @@
 ﻿@model CategoryProductsFilterVM
 @foreach (Product product in @Model.Products)
 {
-    var variant = product.ProductVariants.FirstOrDefault();
-    bool isInCart = @Model.CartItems != null && @Model.CartItems.Any(c => c.ProductId == product.ProductId);
-    bool isInWishlist = @Model.WishlistItems != null && @Model.WishlistItems.Any(c => c.ProductId == product.ProductId);
+    var variant = @product.ProductVariants.FirstOrDefault();
+    bool isInCart = @Model.CartItems != null && @Model.CartItems.Any(c => c.ProductId == @product.ProductId);
+    bool isInWishlist = @Model.WishlistItems != null && @Model.WishlistItems.Any(c => c.ProductId == @product.ProductId);
 
     <div class="cartitemcatlarge bg-white p-2 rounded mx-1 mb-3 d-flex flex-column justify-content-between position-relative">
 
@@ -40,7 +40,7 @@
             {
                 <p class="disable-color  m-0 p-0 small14">
                     <span class="text-decoration-line-through"> EGP @(@product.Price - (@product.Price * @product.Discount))</span>
-                    <span class="item-sale rounded item-position">@product.Discount%</span>
+                    <span class="item-sale rounded item-position">-@((product.Discount*100)?.ToString("N0"))%</span>
                 </p>
             }
         </a>
@@ -50,22 +50,26 @@
             <div class="cart-item-row d-flex align-items-center justify-content-center mt-2"
                  data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
                  data-stock="@variant?.Stock"
-                 data-product-id="product.ProductId">
+                 data-product-id="@product.ProductId"
+                 data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
 
-                <div class="cart-quantity-controls quantity-controls d-flex px-1 justify-content-end align-items-center mt-4">
-                    <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-5 shadow-sm"
+                <div class="cart-quantity-controls cart-item-row quantity-controls d-flex px-1 justify-content-end align-items-center mt-4">
+                    <button class="quantity-btn  border  border-0 rounded quantity-btn me-5 shadow-sm @(product.ProductVariants.Any() ? "add-to-cart-btn" : "cart-minus-btn")"
                             data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
                             data-stock="@variant?.Stock"
                             data-product-id="@product.ProductId"
-                            data-novariantstock="@product.Stock">
+                            data-novariantstock="@product.Stock"
+                            data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
                         −
                     </button>
-                    <span class="quantity-display mx-2 dark-color" data-quantity="0">@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId).Quantity</span>
-                    <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-5 shadow-sm"
+                    <span id="quantitySpan_@product.ProductId" class=" mx-2 dark-color">@Model.CartItems?.FirstOrDefault(c => c.ProductId == @product.ProductId)?.Quantity</span>
+                    @* <span class="quantity-display mx-2 dark-color" data-quantity="@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId && c.VariantId == variant?.VariantId)?.Quantity">@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId && c.VariantId == variant?.VariantId)?.Quantity</span> *@
+                    <button class="quantity-btn border  border-0 rounded quantity-btn ms-5 shadow-sm @(product.ProductVariants.Any() ? "add-to-cart-btn" : "cart-plus-btn")"
                             data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
                             data-stock="@variant?.Stock"
                             data-product-id="@product.ProductId"
-                            data-novariantstock="@product.Stock">
+                            data-novariantstock="@product.Stock"
+                            data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
                         +
                     </button>
                 </div>
@@ -112,6 +116,28 @@
             <div class="modal-footer border border-0 text-center">
                 <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="UserWishlist" asp-controller="Profile">Go to WishList</a>
             </div>
+        </div>
+    </div>
+</div><!--This is the popup for variant sizes Roma-->
+<div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-2">
+
+            <div class="modal-header border border-0">
+                <h6 class="modal-title dark-color">Please select a variation</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body border border-0">
+                <div id="variantOptions" class="d-flex flex-column gap-2">
+                </div>
+            </div>
+
+            <div class="modal-footer border border-0 d-flex justify-content-between">
+                <button class="continue-btn  rounded text-decoration-none text-center fs-6 py-2 " data-bs-dismiss="modal">Continue Shopping</button>
+                <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="Index" asp-controller="Cart">Go to Cart</a>
+            </div>
+
         </div>
     </div>
 </div>

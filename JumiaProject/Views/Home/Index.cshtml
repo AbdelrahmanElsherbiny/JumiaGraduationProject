@@ -35,7 +35,7 @@
 		<div class="bg-white col-12 join-container">
 			<div class="sidebar-section mb-3">
 				<div class="d-flex">
-					<img src="images/home/1.png" class="sid-bar-img p-1" />
+					<img src="/images/home/1.png" class="sid-bar-img p-1" />
 					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Join Jumia</a>
 				</div>
 				<p class="small text-muted">as a Sales Consultant</p>
@@ -43,7 +43,7 @@
 
 			<div class="sidebar-section mb-3">
 				<div class="d-flex">
-					<img src="images/home/2.png" class="sid-bar-img p-1" />
+					<img src="/images/home/2.png" class="sid-bar-img p-1" />
 					<a asp-controller="SellerAccount" asp-action="selectcountry" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Sell on jumia</a>
 				</div>
 				<p class="small text-muted">And Grow Your Business</p>
@@ -51,7 +51,7 @@
 
 			<div class="sidebar-section mb-3">
 				<div class="d-flex">
-					<img src="images/home/2.png" class="sid-bar-img p-1" />
+					<img src="/images/home/2.png" class="sid-bar-img p-1" />
 					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Warranty</a>
                 </div>
 				<p class="small text-muted">On Your Purchases</p>
@@ -87,7 +87,7 @@
 <div class="product-by-category">
 	<div class="mt-5">
 		<div class="d-flex flex-column">
-			@for(int i = 6; i < 9; i++)
+			@for(int i = 5; i < 9; i++)
 			{
 				<div class="card-product text-center" style="min-width: 250px;">
 						 <div class="card-body-product d-flex  justify-content-between">
@@ -99,14 +99,14 @@
 
 							 </div>
 						</div> 
-						<div class="d-flex  p-3" style="background-color:white">
+						<div class="d-flex justify-content-evenly p-3 bg-white">
 							@foreach (ProductVM product in Model.Products)
 							{
 								if (Model.Categories[i].CategoryId == product.CategoryId)
 								{
 									<a asp-action="productdetails" asp-controller="Product" asp-route-id="@product.ProductId" class="text-decoration-none">
 										<div class="col-2">
-										<div class="card  text-start product-card" style="height: 17.5em;">
+										<div class="card  text-start product-card" style="height: 18em;">
 												<img src="/images/home/buy-now.png" class="col-12" style="14.5em" />
 												<h6 class="card-title m-0 px-1">@product.Name</h6>
 												<p class="card-text text-muted px-1">@product.Description</p>
@@ -180,8 +180,8 @@
 					<p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
 					@if (product.Discount != 0)
 					{
-						<p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @(@product.Price - (@product.Price * @product.Discount))</p>
-						<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
+						<p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
+						<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">-@((product.Discount * 100)?.ToString("N0"))%</span>
 					}
 
 				</div>
@@ -196,7 +196,7 @@
 		<a class="my-color text-decoration-none me-2 fw-medium" asp-action="GetMostDiscount" asp-controller="product">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
 	</div>
 	<div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
-		<div class="owl-carousel owl-theme bg-white" id="myOwlCarousel">
+		<div class="owl-carousel owl-theme bg-white myOwlCarousel">
 			@foreach (Product product in ViewBag.MostDiscount)
 			{
 				<a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
@@ -207,8 +207,8 @@
 						<p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
 						@if (product.Discount != 0)
 						{
-							<p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @(@product.Price - (@product.Price * @product.Discount))</p>
-							<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">@product.Discount%</span>
+							<p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
+							<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">-@((product.Discount * 100)?.ToString("N0"))%</span>
 						}
 
 					</div>

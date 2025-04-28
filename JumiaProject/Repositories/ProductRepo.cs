@@ -224,40 +224,40 @@ namespace JumiaProject.Repositories
         }
         public  List<Product> Get6BestSeller()
         {
-            var bestseller = Context.Products.OrderByDescending(p => p.SoldNumber).Take(6).ToList();
+            var bestseller = Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Take(6).ToList();
             return bestseller;
         }
         public List<Product> GetBestSeller(int pageIndex = 1, int pageSize = 10)
         {
-            var bestseller = Context.Products.OrderByDescending(p => p.SoldNumber).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            var bestseller = Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             return bestseller;
         }
         public int GetBestSellerCount()
         {
-            var bestsellerCount = Context.Products.OrderByDescending(p => p.SoldNumber).Count();
+            var bestsellerCount = Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Count();
             return bestsellerCount;
         }
         public int GetMostDiscountCount()
         {
-            var mostDiscounCount = Context.Products.Where(p => p.Discount != 0).OrderByDescending(p => p.Discount).Count();
+            var mostDiscounCount = Context.Products.Where(p => p.Discount != 0&& p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.Discount).Count();
             return mostDiscounCount;
         }
         public int GetProductsByBrandCount(int id)
         {
-            var productByBrandCount = Context.Products.Where(b => b.BrandId == id).Count();
+            var productByBrandCount = Context.Products.Where(b => b.BrandId == id&& b.IsApprovedFromAdmin != "Not Approved" && b.IsDeleted == false).Count();
             return productByBrandCount;
         }
 
         public List<Product> GetMostDiscount(int pageIndex = 1, int pageSize = 10)
         {
-            var bestseller = Context.Products.Where(p=>p.Discount!=0).OrderByDescending(p => p.Discount).Skip((pageIndex - 1) * pageSize)
+            var bestseller = Context.Products.Where(p=>p.Discount!=0&& p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.Discount).Skip((pageIndex - 1) * pageSize)
                                     .Take(pageSize)
                                     .ToList();
             return bestseller;
         }
         public List<Product> SearchProducts(string query)
         {
-            var results = Context.Products.Where(p => p.Name.Contains(query)).ToList();
+            var results = Context.Products.Where(p => p.Name.Contains(query)&& p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).ToList();
             return results;
         }
         public int IsExistBrand(string brand)

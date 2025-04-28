@@ -3,6 +3,7 @@ using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.Repositories;
+using JumiaProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -106,8 +107,26 @@ namespace JumiaProject.Controllers
 
             return Json(totalQuantity);
         }
-        public IActionResult GetVariants(int productId)
+        //public IActionResult GetVariants(int productId)
+        //{
+        //    var variants = context.ProductVariants
+        //        .Where(v => v.ProductId == productId)
+        //        .Select(v => new
+        //        {
+        //            variantId = v.VariantId,
+        //            sizeName = v.Size.SizeLabel,
+        //            stock = v.Stock,
+        //            price=v.Product.Price,
+        //            discount=v.Product.Discount,
+
+        //        }).ToList();
+        //    return Json(variants);
+        //}
+        public async Task<IActionResult> GetVariants(int productId)
         {
+            string userId = userManager.GetUserId(User);
+            var userCart = await _cart.GetCartByUserId(userId);
+
             var variants = context.ProductVariants
                 .Where(v => v.ProductId == productId)
                 .Select(v => new
@@ -115,9 +134,18 @@ namespace JumiaProject.Controllers
                     variantId = v.VariantId,
                     sizeName = v.Size.SizeLabel,
                     stock = v.Stock,
-                    price=v.Product.Price,
-                    discount=v.Product.Discount,
+                    price = v.Product.Price,
+                    discount = v.Product.Discount,
+                    // Left join with cart items to get quantity
+                    quantityInCart = userCart != null ?
+                        context.CartItems
+                            .Where(ci => ci.CartId == userCart.CartId &&
+                                   ci.VariantId == v.VariantId)
+                            .Select(ci => ci.Quantity)
+                            .FirstOrDefault()
+                        : 0
                 }).ToList();
+
             return Json(variants);
         }
         [HttpGet]
@@ -165,5 +193,36 @@ namespace JumiaProject.Controllers
             
             return Content(cartCount.ToString());
         }
+
+        [HttpGet]
+        public JsonResult GetTotalQuantityForProduct(int productId)
+        {
+            var totalQuantity = 0;
+
+            // Find all cart items for this product (with any variant)
+            var cartItems = context.CartItems
+                .Where(ci => ci.ProductId == productId)
+                .ToList();
+
+            // Sum up all quantities
+            foreach (var item in cartItems)
+            {
+                totalQuantity += item.Quantity;
+            }
+
+            return Json(totalQuantity);
+        }
+        [HttpGet]
+        public JsonResult GetTotalProductQuantity(int productId)
+        {
+            // Find all cart items for this product (any variant)
+            var items = context.CartItems
+                .Where(c => c.ProductId == productId)
+                .ToList();
+
+            int totalQuantity = items.Sum(i => i.Quantity);
+           
+            return Json(totalQuantity);
+        }
     }
-    }
+}

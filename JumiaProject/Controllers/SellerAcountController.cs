@@ -4,6 +4,7 @@ using JumiaProject.Models;
 using JumiaProject.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 
 namespace JumiaProject.Controllers
@@ -228,7 +229,7 @@ namespace JumiaProject.Controllers
         public async Task<IActionResult> SellerLogin(SellerLoginViewModel seller)
         {
             if (ModelState.IsValid) {
-                ApplicationUser userModel = await userManager.FindByEmailAsync(seller.Email);
+                ApplicationUser? userModel = await userManager.FindByEmailAsync(seller.Email);
                 bool found = await userManager.CheckPasswordAsync(userModel, seller.Password);
                 if (found)
                 {
@@ -278,6 +279,7 @@ namespace JumiaProject.Controllers
         [HttpGet]
         public IActionResult VerifyCodeForgetPassword()
         {
+            ViewBag.UserEmail = registerVM.Email;
             return View();
         }
 
