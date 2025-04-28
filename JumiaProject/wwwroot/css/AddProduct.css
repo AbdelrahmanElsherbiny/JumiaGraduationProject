@@ -1,0 +1,77 @@
+﻿body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 2rem;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
+
+.card-header h5 {
+    margin: 0;
+    font-weight: 500;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.image-upload-container .btn {
+    width: 100%;
+}
+
+.image-input-group .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.image-input-group .btn {
+    margin-left: 0.5rem;
+    white-space: nowrap;
+}
+
+button[type="submit"],
+button[type="button"],
+a.btn {
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+}
+
+    button[type="submit"] i,
+    button[type="button"] i,
+    a.btn i {
+        margin-right: 0.4rem;
+    }
+
+.form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.field-validation-valid,
+.field-validation-error {
+    display: block;
+    font-size: 0.875rem;
+    color: #dc3545;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .image-input-group .input-group {
+        flex-direction: column;
+    }
+
+    .image-input-group .btn {
+        margin-left: 0;
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+}

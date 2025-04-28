@@ -17,6 +17,7 @@ namespace JumiaProject.Interfaces
         public bool VerifySeller(ApplicationUser seller);
         public Task<List<ApplicationUser>> SearchSellers(string searchTerm, int pageNum);
         public Task<int> GetFilteredSellersCount(string searchTerm);
+        public bool UpdateSeller(ApplicationUser user);
         Task<int> GetSellersCountAsync();
     }
 }

@@ -1,11 +1,13 @@
-﻿@model BestProductViewModel
+﻿@model CategoryProductsFilterVM
+
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <div class="parentItem m-auto bg-white  rounded mb-3 p-2">
     <img src="~/images/mainophotoCategory.jpg" class="rounded category-photo w-100" />
- 
+
 </div>
 
 <div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
@@ -20,68 +22,78 @@
 <div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
     <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
 </div>
+<div id="alertMessageAddtoWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to wishlist successfully
+</div>
+<div id="alertMessageRemoveWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product removed from wishlist successfully
+</div>
+
+
+<input type="hidden" id="CategoryId" value="@Model.CategoryId" />
+
 <div class="parentItem m-auto rounded  d-flex">
-    <div class="cart-summary bg-white rounded d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
-     
-    </div>
-    <div class="cartitemcat-container p-2 pb-3 d-flex rounded ms-4 flex-wrap bg-white">
-        @foreach (Product product in @Model.Products)
-        {
-            var variant = product.ProductVariants.FirstOrDefault();
-            bool isInCart = Model.CartItems != null && Model.CartItems.Any(c => c.ProductId == product.ProductId);
+    <div class="cart-summary bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 ">
 
+        <div class="filteration">
+            <Header class="filter-name">BRAND</Header>
+            @foreach (var brand in @Model.Brands)
+            {
+                <div class="chech-box-div">
+                    <input type="checkbox" class="check" name="brandIds" id="brand-@brand.BrandId" value="@brand.BrandId" />
+                    <label for="@brand.BrandId">@brand.BrandName</label>
+                </div>
+            }
+        </div>
+        <hr class="line" />
+        <div class="filteration">
+            <Header class="filter-name">DISCOUNT</Header>
 
-            <div class="cartitemcatlarge bg-white p-2 rounded mx-1 mb-3 d-flex flex-column justify-content-between">
-                      <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
-                    <img src="~/images/best.jpg" alt="" class="">
-                    <p class="m-0 p-0 small14 text-black">@product.Name</p>
-                    <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
-                    @if (product.Discount != 0)
-                    {
-                        <p class="disable-color  m-0 p-0 small14">
-                            <span class="text-decoration-line-through"> EGP @(@product.Price - (@product.Price * @product.Discount))</span>
-                            <span class="item-sale rounded item-position">@product.Discount%</span>
-                        </p> 
-                    }
-                </a>
-            
-                    @if (isInCart) 
-                    {
-                        <div class="cart-item-row d-flex align-items-center justify-content-center mt-2"
-                             data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
-                             data-stock="@variant?.Stock"
-                             data-product-id="product.ProductId">
+            @foreach (var discount in Model.Discounts)
+            {
+                <div class="chech-box-div">
+                    <input type="checkbox" class="check"
+                           id="@discount"
+                           name="discountList"
+                           value="@discount.ToString("0.##")" />
+                    <label for="@discount">@discount%</label>
+                </div>
+            }
+        </div>
+        @if(Model.Sizes.Count != 0){
+        <hr class="line" />
+        <div class="filteration">
+            <header class="filter-name">SIZE</header>
+            @foreach (var size in Model.Sizes)
+            {
+                <div class="chech-box-div">
+                    <input type="checkbox" class="check"
+                           name="sizeIds"
+                           id="@size.SizeId"
+                           value="@size.SizeId" />
+                    <label for="@size.SizeId">@size.SizeLabel</label>
+                </div>
+            }
 
-                            <div class="cart-quantity-controls quantity-controls d-flex px-1 justify-content-end align-items-center mt-4">
-                                <button class="quantity-btn cart-minus-btn border border-0 rounded quantity-btn me-5 shadow-sm"
-                                        data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
-                                        data-stock="@variant?.Stock"
-                                        data-product-id="@product.ProductId"
-                                        data-novariantstock="@product.Stock">
-                                    −
-                                </button>
-                                <span class="quantity-display mx-2 dark-color" data-quantity="0">@Model.CartItems?.FirstOrDefault(c => c.ProductId == product.ProductId).Quantity</span>
-                                <button class="quantity-btn cart-plus-btn border border-0 rounded quantity-btn ms-5 shadow-sm"
-                                        data-variant-id="@(variant?.VariantId.ToString() ?? "null")"
-                                        data-stock="@variant?.Stock"
-                                        data-product-id="@product.ProductId"
-                                        data-novariantstock="@product.Stock">
-                                    +
-                                </button>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <button class="checkout-btn border border-0 rounded fw-medium w-100 add-to-cart-btn mt-4 cart-btn-best"
-                                data-product-id="@product.ProductId"
-                                data-has-variant="@product.ProductVariants.Any().ToString().ToLower()">
-                            Add to Cart
-                        </button>
-                    }
-            </div>
-          
+        </div>
         }
+
+        <hr class="line" />
+        <div class="filteration">
+            <div class="price d-flex">
+                <header class="filter-name">PRICE</header>
+                <button class="apply" id="applyPriceBtn">Apply</button>
+            </div>
+            <div id="price-slider"></div>
+            <div class="price-num d-flex">
+                <input type="number" class="price-input" id="minPriceInput" value="@Model.MinPrice" />
+                <input type="number" class="price-input" id="maxPriceInput" value="@Model.MaxPrice" />
+            </div>
+
+        </div>
+    </div>
+    <div class="cartitemcat-container p-2 pb-3 d-flex rounded ms-4 flex-wrap bg-white bg-danger" id="our-container">
+        @Html.Partial("_FilteredProductsPartial", new CategoryProductsFilterVM { Products = Model.Products, CartItems = Model.CartItems ,WishlistItems=Model.WishlistItems})
     </div>
 </div>
 
@@ -113,6 +125,103 @@
 
 @section Scripts {
     <script src="~/js/cart.js"></script>
+    <script src="~/js/wishlist.js"></script>
+    <script>
+
+                       $(document).ready(function () {
+            // Function to collect all filter values and call AJAX
+            function applyFilters() {
+                var selectedSizes = $("input[name='sizeIds']:checked").map(function () {
+                    return $(this).val();
+                }).get();
+
+                var selectedBrands = $("input[name='brandIds']:checked").map(function () {
+                    return $(this).val();
+                }).get();
+
+                var selectedDiscounts = $("input[name='discountList']:checked").map(function () {
+                    return $(this).val();
+                }).get();
+
+                var minPrice = $("#minPriceInput").val();
+                var maxPrice = $("#maxPriceInput").val();
+                var categoryId = $("#CategoryId").val();
+        console.log("Sizes: ", selectedSizes);
+        console.log("Brands: ", selectedBrands);
+        console.log("Discounts: ", selectedDiscounts);
+        console.log("categoryId",categoryId);
+        console.log("minPrice",minPrice)
+         console.log("maxPrice",maxPrice)
+                $.ajax({
+                    url: '/Category/FilterProducts',
+                    type: 'POST',
+                    data: {
+                        id: categoryId,
+                        sizeIds: selectedSizes,
+                        brandIds: selectedBrands,
+                        discountList: selectedDiscounts,
+                        minPrice: minPrice,
+                        maxPrice: maxPrice
+                    },
+                    success: function (response) {
+                        $('#our-container').html(response);
+
+                    },
+                    error: function (error) {
+                        alert(error.document);
+                    }
+                });
+            }
+
+            $("input[name='sizeIds'], input[name='brandIds'], input[name='discountList']").on('change', function () {
+                applyFilters();
+            });
+
+            $('#applyPriceBtn').on('click', function () {
+                applyFilters();
+            });
+
+            var priceSlider = document.getElementById('price-slider');
+
+            noUiSlider.create(priceSlider, {
+             start: [@(@Model.MinPrice ?? @Model.MinAvailablePrice), @(@Model.MaxPrice ?? @Model.MaxAvailablePrice)],
+
+                connect: true,
+                range: {
+                    'min': @Model.MinAvailablePrice,
+                    'max': @Model.MaxAvailablePrice
+                },
+                tooltips: [true, true],
+                   format: {
+            to: function (value) {
+                return value.toFixed(2);
+            },
+            from: function (value) {
+                return parseFloat(value);
+            }
+        }
+            });
+
+            var minInput = document.getElementById('minPriceInput');
+            var maxInput = document.getElementById('maxPriceInput');
+
+            priceSlider.noUiSlider.on('update', function (values, handle) {
+                if (handle === 0) {
+                    minInput.value = values[0];
+                } else {
+                    maxInput.value = values[1];
+                }
+            });
+
+            minInput.addEventListener('change', function () {
+                priceSlider.noUiSlider.set([this.value, null]);
+            });
+
+            maxInput.addEventListener('change', function () {
+                priceSlider.noUiSlider.set([null, this.value]);
+            });
+        });
+    </script>
 }
 
 

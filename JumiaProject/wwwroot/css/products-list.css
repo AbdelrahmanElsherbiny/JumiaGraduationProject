@@ -1,0 +1,149 @@
+﻿/* === Product List Page Custom Styles === */
+
+/* ✅ Table Header Styling */
+#productsTable thead th {
+    background-color: #dc8e26 !important;
+    color: white !important;
+    padding: 1.1rem; /* Increase padding for more height */
+}
+
+    /* Round top-left corner */
+    #productsTable thead th:first-child {
+        border-top-left-radius: 0.3rem; /* or .25rem based on design */
+    }
+
+    /* Round top-right corner */
+    #productsTable thead th:last-child {
+        border-top-right-radius: 0.3rem;
+    }
+
+/* ✅ Remove blue shadow on focus for search fields */
+.form-control:focus {
+    box-shadow: none !important;
+    border-color: #ced4da !important;
+}
+
+/* ✅ Reduce width of search inputs */
+#searchName,
+#searchSKU {
+    max-width: 250px;
+}
+
+/* ✅ Bold the page header title (optional if done in Razor) */
+.page-header-title,
+h2.page-title,
+h2.fw-bold {
+    font-weight: bold;
+}
+
+/* ✅ Product thumbnail image */
+.product-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* ✅ Placeholder for missing product images */
+.no-image-placeholder {
+    width: 50px;
+    height: 50px;
+    background-color: #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: #999;
+}
+
+/* Optional: Fine-tune pagination or filters */
+.pagination .page-link {
+    color: #dc8e26;
+}
+.pagination .page-item.active .page-link {
+    background-color: #dc8e26;
+    border-color: #dc8e26;
+    color: white;
+}
+
+#applyFilters {
+    background-color: #dc8e26 !important;
+    color: white !important;
+    border: none !important;
+}
+
+    #applyFilters:hover {
+        background-color: #bd7b1f !important; /* Optional darker shade on hover */
+    }
+
+
+/* ✅ Apply consistent orange theme to all sliders in modal */
+#filterModal input[type=range] {
+    accent-color: #dc8e26; /* Most modern browsers */
+}
+
+    /* 🎯 For full cross-browser compatibility */
+    #filterModal input[type=range]::-webkit-slider-thumb {
+        background-color: #dc8e26;
+        border: none;
+    }
+
+    #filterModal input[type=range]::-moz-range-thumb {
+        background-color: #dc8e26;
+        border: none;
+    }
+
+    #filterModal input[type=range]::-ms-thumb {
+        background-color: #dc8e26;
+        border: none;
+    }
+
+    /* Optional: Style the track (slider bar) */
+    #filterModal input[type=range]::-webkit-slider-runnable-track {
+        background-color: #f5e2c4; /* soft track background */
+    }
+
+    #filterModal input[type=range]::-moz-range-track {
+        background-color: #f5e2c4;
+    }
+
+    #filterModal input[type=range]::-ms-track {
+        background-color: #f5e2c4;
+    }
+
+
+/* ✅ Make field names bold */
+.modal-body .form-label {
+    font-weight: bold;
+}
+
+/* ✅ Align Brand, Discount, and Visibility fields next to each other */
+#filterModal .row .col-4 {
+    margin-bottom: 15px; /* Adjust spacing between the fields */
+}
+
+#filterModal .col-4 {
+    padding-right: 10px; /* Space between fields */
+}
+
+    #filterModal .col-4 select {
+        width: 100%;
+    }
+
+/* ✅ Remove blue shadow on focus for all form fields */
+.form-control:focus {
+    box-shadow: none !important;
+    border-color: #ced4da !important;
+}
+
+/* ✅ Reset Filters button to light gray */
+#resetFilters {
+    background-color: #d3d3d3;
+    color: black;
+    border: none;
+}
+
+    #resetFilters:hover {
+        background-color: #b0b0b0; /* Darker shade on hover */
+    }

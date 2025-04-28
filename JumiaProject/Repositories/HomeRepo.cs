@@ -58,42 +58,6 @@ namespace JumiaProject.Repositories
             };
         }
 
-
-
-        //public static HeaderVM Search(string searchkey)
-        //{
-        //    List<ProductVM> productVMs = new List<ProductVM>();
-        //    string message = string.Empty;
-        //    if (!string.IsNullOrEmpty(searchkey))
-        //    {
-        //        JumiaContext context = new JumiaContext();
-        //        ProductRepo product1 = new ProductRepo(context);
-        //        List<Product> products = product1.GetAllProducts().Where(p => p.Name.Contains(searchkey)).ToList();
-        //        if (products != null)
-        //        {
-        //            foreach (Product product in products)
-        //            {
-        //                ProductVM productVM = new ProductVM
-        //                {
-        //                    ProductId = product.ProductId,
-        //                    Name = product.Name,
-        //                    Description = product.Description,
-        //                    Price = product.Price,
-        //                    Stock = product.Stock,
-        //                    CategoryId = product.CategoryId
-        //                };
-        //                productVMs.Add(productVM);
-        //            }
-        //        }
-        //        message = "No results";
-        //    }
-        //    return new HeaderVM
-        //    {
-        //        ProductVMs = productVMs,
-        //        Message = message
-        //    };
-        //}
-
         private List<Slider> GetSlideritems()
         {
             return new List<Slider>()
@@ -118,7 +82,7 @@ namespace JumiaProject.Repositories
 
         private List<CategoryVM> GetCategoriesVM()
         {
-            List<Category> categories = category.GetAllCategories();
+            List<Category> categories = category.GetAllCategories(); // Fixed method call
             List<CategoryVM> categoriesVM = new List<CategoryVM>();
 
             foreach (Category category in categories)
@@ -134,13 +98,14 @@ namespace JumiaProject.Repositories
             return categoriesVM;
         }
 
+
         private List<ProductVM> GetProductsVM(List<CategoryVM> categories)
         {
             List<Product> products = new List<Product>();
             List<ProductVM> productVMs = new List<ProductVM>();
             foreach (CategoryVM categoryVM in categories)
             {
-                products = product.GetProductsByCategory(categoryVM.CategoryId).Take<Product>(5).ToList();
+                products = product.GetProductsByCategory(categoryVM.CategoryId).Take<Product>(6).ToList();
                 foreach (Product product in products)
                 {
                     ProductVM productVM = new ProductVM

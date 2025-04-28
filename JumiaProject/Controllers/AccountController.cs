@@ -123,7 +123,7 @@ namespace JumiaProject.Controllers
 
                     if (found)
                     {
-                        await signInManager.SignInAsync(userModel, false);
+                        await signInManager.SignInAsync(userModel, true);
                         return RedirectToAction("Index", "Home");
                     }
                     else
@@ -213,6 +213,8 @@ namespace JumiaProject.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
+
 
         //[HttpPost]
         //public IActionResult FacebookLogin()

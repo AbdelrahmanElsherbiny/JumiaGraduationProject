@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
 {
-    public class SellerRepo:ISeller
+    public class SellerRepo : ISeller
     {
         JumiaContext Context;
         private readonly UserManager<ApplicationUser> UserManager;
@@ -123,6 +123,42 @@ namespace JumiaProject.Repositories
             }
 
             return query.Count();
+        }
+
+        public bool UpdateSeller(ApplicationUser user)
+        {
+            try
+            {
+                // Find the user without tracking first
+                var trackedUser = Context.Users
+                    .Include(u => u.Seller)
+                    .FirstOrDefault(u => u.Id == user.Id);
+
+                if (trackedUser == null)
+                {
+                    return false;
+                }
+
+                // Update only the specific properties
+                trackedUser.Email = user.Email;
+                trackedUser.PhoneNumber = user.PhoneNumber;
+
+                if (trackedUser.Seller != null)
+                {
+                    trackedUser.Seller.StoreName = user.Seller.StoreName;
+                    trackedUser.Seller.TaxNumber = user.Seller.TaxNumber;
+                    trackedUser.Seller.BankAccount = user.Seller.BankAccount;
+                }
+
+                // Save changes and return success based on rows affected
+                int result = Context.SaveChanges();
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in UpdateSeller: {ex.Message}");
+                return false;
+            }
         }
         public async Task<int> GetSellersCountAsync()
         {
