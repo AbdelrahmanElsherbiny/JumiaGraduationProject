@@ -22,14 +22,13 @@ namespace JumiaProject.Repositories
             this.userManager = userManager;
             this.httpContextAccessor = httpContextAccessor;
         }
+
         public ProfileVM GetUserData(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return null;
             }
-            //var userId = userManager.GetUserId(httpContextAccessor.HttpContext.User);
-            //var user =  userManager.FindByIdAsync(userId).Result;
             string userId = id;
             var user = context.Users.FirstOrDefault(u => u.Id == userId);
 

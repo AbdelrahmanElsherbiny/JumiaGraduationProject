@@ -43,6 +43,7 @@ namespace JumiaProject
             builder.Services.AddScoped<ICart, CartRepo>();
             builder.Services.AddScoped<IWishlist, WishlistRepo>();
             builder.Services.AddScoped<IProfile, ProfileRepo>();
+            builder.Services.AddScoped<IUserDeleteAcc, UserDeleteAccRepo>();
 
             builder.Services.AddHttpContextAccessor();
 
@@ -63,6 +64,7 @@ namespace JumiaProject
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

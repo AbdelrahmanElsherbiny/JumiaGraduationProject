@@ -32,7 +32,7 @@
 								@if (!(User.Identity.IsAuthenticated))
 								{
 									<div class="hover-orange">
-										<i class="far fa-user fa-lg"></i>
+										<i class="acc far fa-user fa-lg"></i>
 										<button class="nav d-none d-lg-inline" onclick="showList()">Account</button>
 									</div>
 									<div id="dropdownList" class="list">
@@ -52,7 +52,6 @@
 											<a href="/Profile/UserWishlist" class="icon-list">Wishlist</a>
 										</div>
 									</div>
-
 								}
 								else
 								{
@@ -62,7 +61,7 @@
 									</div>
 									<div id="dropdownList" class="list">
 										<div class="icon-list-hover">
-											<i class="fa-regular fa-user"></i>
+											<i class="acc fa-regular fa-user"></i>
 											<a href="/Profile/MyAccount" class="icon-list">My Account</a>
 										</div>
 										<div class="icon-list-hover">
@@ -81,7 +80,11 @@
 											<i class="fa-regular fa-ticket"></i>
 											<a href="" class="icon-list">Vouchers</a>
 										</div>
-
+										<div class="side">
+											<a asp-controller="Profile" asp-action="LogOut">
+												<button class="side-bar-button">Logout</button>
+											</a>
+										</div>
 									</div>
 								}
 							</div>

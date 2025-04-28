@@ -1,0 +1,46 @@
+﻿<style>
+	#p1 {
+		font-weight: 600;
+		padding-top: 10px;
+	}
+
+	.inbox {
+		padding: 50px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		width: 35em;
+	}
+
+	.center {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+</style>
+<div class="d-flex">
+	<div>
+		@await Html.PartialAsync("_SideBarPartial")
+	</div>
+	<div class="profile-container  col-9">
+		<header class="profile-header">
+			<h1 class="text-header">Pending Reviews</h1>
+		</header>
+		<div class="center">
+			<div class="inbox">
+				<img src="/images/profile/review.svg" />
+				<p id="p1">You have no orders waiting for feedback</p>
+				<span id="p2">After getting your products delivered, you will be able to rate and review them. Your feedback will be published on the product page to help all Jumia's users get the best shopping experience!</span>
+			</div>
+			<div>
+				<a asp-action="Index" asp-controller="Home">
+					<button id="search-btn" class="search">Continue Shopping</button>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

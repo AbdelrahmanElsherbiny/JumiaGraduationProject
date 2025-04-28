@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace JumiaProject.Repositories
 {
-    public class WishlistRepo:IWishlist
+    public class WishlistRepo : IWishlist
     {
         private readonly JumiaContext Context;
         public WishlistRepo(JumiaContext _context)
@@ -44,5 +44,7 @@ namespace JumiaProject.Repositories
 
             return Context.Wishlists.FirstOrDefault(w => w.UserId == userId && w.ProductId == productId && w.ProductVariantId == productVariantId);
         }
+        
     }
 }
+

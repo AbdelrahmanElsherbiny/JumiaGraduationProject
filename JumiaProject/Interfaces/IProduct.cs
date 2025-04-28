@@ -26,5 +26,11 @@ namespace JumiaProject.Interfaces
         List<Product> SearchProducts(string query);
         public int IsExistBrand(string brand);
         List<Product> SearchBrand(string brand);
+
+
+        Task<List<Product>> GetRecentlyViewedProductsAsync(string userId, int pageIndex = 1, int pageSize = 10);
+        Task AddRecentlyViewedProductAsync(RecentlyViewedProduct recentlyViewedProduct);
+        public int GetRecentlyViewedCount(string userId);
+        Task<List<Product>> Get6RecentlyViewedProductsAsync(string userId);
     }
 }

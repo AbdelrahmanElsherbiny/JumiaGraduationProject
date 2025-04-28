@@ -1,6 +1,7 @@
 ﻿using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
+using JumiaProject.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Repositories
@@ -183,6 +184,42 @@ namespace JumiaProject.Repositories
 
             return Context.Products.Where(p => p.Brand.BrandName.ToLower().Contains(brand.ToLower())).ToList();
         
+        }
+
+
+
+        public async Task<List<Product>>  GetRecentlyViewedProductsAsync(string userId, int pageIndex = 1, int pageSize = 10)
+        {
+            return await Context.RecentlyViewedProducts.Where(rv => rv.UserId == userId).OrderByDescending(rv => rv.ViewedAt)
+                                      .Skip((pageIndex - 1) * pageSize)  
+                                      .Take(pageSize)
+                                      .Select(rv => rv.Product)
+                                      .ToListAsync();
+        }
+        public async Task AddRecentlyViewedProductAsync(RecentlyViewedProduct recentlyViewedProduct)
+        {
+            var existingProduct = await Context.RecentlyViewedProducts.FirstOrDefaultAsync(rv => rv.UserId == recentlyViewedProduct.UserId && rv.ProductId == recentlyViewedProduct.ProductId);
+
+            if (existingProduct == null)
+            {
+                Context.RecentlyViewedProducts.Add(recentlyViewedProduct);
+                await Context.SaveChangesAsync();
+            }
+        }
+        public int GetRecentlyViewedCount(string userId)
+        {
+            return  Context.RecentlyViewedProducts.Count(rv => rv.UserId == userId);
+        }
+        public async Task<List<Product>> Get6RecentlyViewedProductsAsync(string userId)
+        {
+            var recentlyViewed = await Context.RecentlyViewedProducts
+     .Where(rv => rv.UserId == userId) 
+     .OrderByDescending(rv => rv.ViewedAt) 
+     .Take(6) 
+     .Select(rv => rv.Product)
+     .ToListAsync(); 
+
+            return recentlyViewed;
         }
     }
 }

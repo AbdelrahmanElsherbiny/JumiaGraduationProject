@@ -136,10 +136,18 @@
                 <a href="@Url.Action("GetMostDiscount", new { pageIndex = i, pageSize = Model.PageSize })" class="page-link mx-1 @((i == Model.CurrentPage) ? "active" : "")">@i</a>
             }
         }
-        else{
+        else if (ViewBag.PageName == "Brand")
+        {
             @for (int i = 1; i <= Model.TotalPages; i++)
             {
                 <a href="@Url.Action("GetBrandProducts", new {id = Model.BrandId, pageIndex = i, pageSize = Model.PageSize })" class="page-link mx-1 @((i == Model.CurrentPage) ? "active" : "")">@i</a>
+            }
+        }
+        else 
+        {
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="@Url.Action("RecentlyViewed", new { pageIndex = i, pageSize = Model.PageSize })" class="page-link mx-1 @((i == Model.CurrentPage) ? "active" : "")">@i</a>
             }
         }
     </div>

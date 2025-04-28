@@ -23,10 +23,6 @@
 					</div>
 				}
 			</div>
-			<div class="position-absolute bottom-0 end-0 mb-3 me-3">
-				<a href="" class="buy_now">Buy Now</a>
-			</div>
-
 		</div>
 	</div>
 
@@ -99,7 +95,7 @@
 
 							 </div>
 						</div> 
-						<div class="d-flex  p-3">
+						<div class="d-flex  p-3" style="background-color:white">
 							@foreach (ProductVM product in Model.Products)
 							{
 								if (Model.Categories[i].CategoryId == product.CategoryId)
@@ -124,9 +120,47 @@
 		</div>
 	</div>
 </div>
+  
+@{
+	var recentlyViewed = ViewBag.recentlyViewed as List<Product>;
+}
+@if (User.Identity.IsAuthenticated && recentlyViewed != null && recentlyViewed.Count > 0)
+{
+	<div class="card-product m-auto rounded bg-white mb-4">
+		<div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+			<h4 class="dark-color m-0">Recently Viewed</h4>
+			<a class="my-color text-decoration-none me-2 fw-medium" asp-action="RecentlyViewed" asp-controller="product">
+				See All <i class="fa-solid small12 fa-chevron-right my-color"></i>
+			</a>
+		</div>
+		<div class="cart-items-container p-2 pb-3 d-flex" style="margin:8px;">
+			@foreach (var product in recentlyViewed)
+			{
+				<a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+					<div class="col-2">
+						<div class="cartitem rounded text-start product-card" style="height: 17.5em;">
+							<img src="~/images/best.jpg" alt="" class="">
+							<p class="m-0 p-0 small14 text-black">@product.Name</p>
+							<p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+							@if (product.Discount != 0)
+							{
+								<p class="disable-color text-decoration-line-through m-0 p-0 small14">
+									EGP @(@product.Price - (@product.Price * @product.Discount))
+								</p>
+								<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">
+									@product.Discount%
+								</span>
+							}
+						</div>
+					</div>
+				</a>
+			}
+		</div>
+	</div>
+}
 
 
-<div class="card-product m-auto rounded bg-white">
+<div class="card-product m-auto rounded bg-white mb-4">
 	<div class=" bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
 		<h4 class="dark-color m-0">Best Sellers</h4>
 		<a class="my-color text-decoration-none me-2 fw-medium" asp-controller="product" asp-action="getbestseller">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
@@ -178,13 +212,14 @@
 			}
 		</div>
 	</div>
-
 </div>
 
 
+<button class="scroll-to-top" id="scroll-to-top"><i class="fa-solid fa-chevron-up" style="height:15px; width:15px; font-weight:500;"></i></button>
 
 @section Scripts {
 	<script src="~/js/cart.js"></script>
+	<script src="~/js/home.js"></script>
 }
 
 

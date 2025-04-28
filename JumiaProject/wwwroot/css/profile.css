@@ -120,3 +120,196 @@
 .text-danger {
     padding-left: 30px;
 }
+.user-details {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    background-color: white;
+    width: 35%;
+    padding: 1em;
+    margin-right: 1em;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+}
+.close-account {
+    background-color: white;
+    width: 60%;
+    padding: 3em;
+/*    margin-right: 1em;*/
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+}
+.centerrr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+.logo-account {
+    width: 6em;
+    padding: .8em
+}
+.detailss {
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+    border: 1px solid rgb(238, 238, 238);
+    width: 100%;
+    height: 4em;
+    margin-top: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+}
+.details-security {
+    margin-top: 2em;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px;
+    border: 1px solid rgb(238, 238, 238);
+    width: 100%;
+    height: 4em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+}
+.user-link {
+    text-decoration: none;
+    color: black;
+    background-color: white;
+    margin: 1em;
+    font-size: 25px;
+    font-weight: 400;
+}
+.user-details {
+    padding-left:0;
+    padding-right:0;
+}
+.right-arrow {
+    font-size: 20px;
+    font-weight: 400;
+    color: #f68b1e;
+    margin: .5em;
+}
+.user-icon {
+    font-size: 25px;
+    font-weight: 400;
+    margin: .5em;
+}
+.Email {
+    margin-bottom: 0;
+    background-color: rgb(238, 238, 238);
+    padding-top: 10px;
+    width: 99%;
+    margin: 30px;
+    display: flex;
+    font-size: 20px;
+    align-items: center;
+    font-weight: 500;
+    border-radius: 5px;
+    text-align: center;
+    flex-direction: column;
+}
+.pass-email {
+    padding:15px;
+    width: 100%;
+    margin-top:0;
+    margin-bottom:4em;
+    display: flex;
+    font-size: 20px;
+    align-items: center;
+    font-weight: 500;
+    border-radius: 5px;
+    border: 1px solid rgb(238, 238, 238);
+}
+.close {
+    width: 100%;
+    margin-left: 27px;
+    padding: 15px;
+    background-color: #f68b1e;
+    color: white;
+    margin: 0 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: larger;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-top:10px;
+
+}
+    .pass-email:focus{
+        border-color: #f68b1e;
+        outline: none;
+    }
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.deletion-modal {
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+    .checkbox-container input {
+        margin-top: 3px;
+        margin-right: 10px;
+    }
+
+.checkbox-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cancel-btn {
+    background-color: white;
+    border: none;
+    color: #333;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.delete-btn {
+    background-color: white;
+    border: none;
+    color: #ff6b6b;
+    font-weight: 600;
+    padding: 8px 16px;
+}
