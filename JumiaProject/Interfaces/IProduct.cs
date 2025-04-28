@@ -34,6 +34,12 @@ namespace JumiaProject.Interfaces
         Task<int> GetApprovedProductsCountAsync();
         Task<Dictionary<string,int>> GetCategoryDistributionAsync();
 
+
+
+        Task<List<Product>> GetRecentlyViewedProductsAsync(string userId, int pageIndex = 1, int pageSize = 10);
+        Task AddRecentlyViewedProductAsync(RecentlyViewedProduct recentlyViewedProduct);
+        public int GetRecentlyViewedCount(string userId);
+        Task<List<Product>> Get6RecentlyViewedProductsAsync(string userId);
     }
 }
    

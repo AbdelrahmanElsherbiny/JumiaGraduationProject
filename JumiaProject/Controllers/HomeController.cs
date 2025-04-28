@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.Repositories;
@@ -13,22 +13,34 @@ namespace JumiaProject.Controllers
         private readonly IHome home;
         readonly ICart cart;
         readonly IProduct _product;
+        private readonly  UserManager<ApplicationUser> _userManager;
 
         readonly UserManager<ApplicationUser> userManager;
         public HomeController(IHome home, ICart cart, UserManager<ApplicationUser> userManager, IProduct product) : base(cart, userManager)
         {
             this.home = home;
             _product = product;
+            _userManager = userManager;
 
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             HomeVM homeVM = home.GetData();
             var bestseller = _product.Get6BestSeller();
             ViewBag.Bestseller = bestseller;
             var mostDiscount = _product.GetMostDiscount();
             ViewBag.MostDiscount = mostDiscount;
+            string userId = _userManager.GetUserId(User);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var recentlyViewed = await _product.Get6RecentlyViewedProductsAsync(userId);
+                ViewBag.RecentlyViewed = recentlyViewed;
+            }
+            else
+            {
+                ViewBag.RecentlyViewed = new List<Product>();  // تفريغ الـ ViewBag لو مفيش بيانات
+            }
             return View(homeVM);
         }
 

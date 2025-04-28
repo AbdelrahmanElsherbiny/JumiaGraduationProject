@@ -61,6 +61,7 @@ namespace JumiaProject
             builder.Services.AddScoped<ICartItem, CartItemRepo>();
             builder.Services.AddScoped<BrandRepo>();
 
+            builder.Services.AddScoped<IUserDeleteAcc, UserDeleteAccRepo>();
 
             builder.Services.AddHttpClient();
             builder.Services.AddSingleton<ChatGptService>();
@@ -84,6 +85,7 @@ namespace JumiaProject
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

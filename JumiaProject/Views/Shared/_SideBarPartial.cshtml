@@ -10,11 +10,11 @@
 	</div>
 	<div class="side-line">
 		<i class="side-bar-icon side-bar-icon fa-regular fa-envelope"></i>
-		<a href="" class="side-bar-link">InBox</a>
+		<a asp-action="Inbox" asp-controller="Profile" class="side-bar-link">InBox</a>
 	</div>
 	<div class="side-line">
 		<i class="side-bar-icon fa-regular fa-message"></i>
-		<a href="" class="side-bar-link">pending Reviews</a>
+		<a asp-action="Reviews" asp-controller="Profile" class="side-bar-link">pending Reviews</a>
 	</div>
 	<div class="side-line">
 		<i class="side-bar-icon fa-solid fa-ticket"></i>
@@ -26,15 +26,15 @@
 	</div>
 	<div class="side-line">
 
-		<a href="" class="side-bar-link">Followed Seller</a>
+		<a asp-action="FollowSeller" asp-controller="Profile" class="side-bar-link">Followed Seller</a>
 	</div>
 	<div class="side-line">
 		<i class="side-bar-icon fa-solid fa-clock-rotate-left"></i>
-		<a href="" class="side-bar-link">Recently Viewed</a>
+		<a asp-action="RecentlyViewed" asp-controller="Product" class="side-bar-link">Recently Viewed</a>
 	</div>
 	<br />
 	<div class="side-line">
-		<a href="" class="side-bar-link">Account Mangement</a>
+		<a asp-controller="Profile" asp-action="DeleteAccount" class="side-bar-link">Close Account</a>
 	</div>
 	<div class="side-line">
 		<a asp-controller="Profile" asp-action="Address" class="side-bar-link">Address Book</a>
@@ -43,7 +43,9 @@
 		<a href="" class="side-bar-link">Newsletter Preferences</a>
 	</div>
 	<div class="side">
-		<a class="side-bar-button py-2 px-3 text-decoration-none" asp-action="Logout" asp-controller="Account">Logout</a>
+		<a asp-controller="Profile" asp-action="LogOut" >
+		     <button class="side-bar-button">Logout</button>
+		</a>
 	</div>
 </div>
 
@@ -52,19 +54,14 @@
 
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
-		// تحديد العنصر النشط بناءً على الصفحة الحالية
 		const currentPath = window.location.pathname;
 		const links = document.querySelectorAll('.side-line a');
 
 		links.forEach(link => {
 			if (link.getAttribute('href') === currentPath) {
 				link.parentElement.classList.add('active');
-
-				// تعطيل حدث النقر على العنصر النشط
 				link.parentElement.style.pointerEvents = 'none';
 			}
-
-			// إضافة حدث النقر للعناصر غير النشطة
 			link.addEventListener('click', function(e) {
 				document.querySelectorAll('.side-line').forEach(el => {
 					el.classList.remove('active');

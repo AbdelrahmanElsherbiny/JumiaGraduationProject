@@ -1,4 +1,5 @@
 ﻿using JumiaProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Interfaces
 {
