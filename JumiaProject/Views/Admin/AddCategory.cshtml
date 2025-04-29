@@ -1,0 +1,276 @@
+﻿@model CategoryViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(Model.CategoryId == 0 ? "Add Category" : "Edit Category") | Jumia Admin</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+	<link href="~/css/AddCategory.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="admin-container">
+        <div class="card jumia-card">
+            <div class="card-header jumia-card-header">
+                <h4 class="mb-0">
+                    <i class="bi bi-tags me-2"></i>
+                    @(Model.CategoryId == 0 ? "Add New Category" : "Edit Category")
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="AddCategory" method="post" asp-controller="Admin" id="categoryForm" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <input type="hidden" asp-for="CategoryId" />
+
+                    <div class="row g-3">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <!-- Category Name -->
+                            <div class="form-group">
+                                <label asp-for="CategoryName" class="form-label jumia-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-heading"></i></span>
+                                    <input asp-for="CategoryName" class="form-control jumia-input" placeholder="e.g. Electronics, Fashion, etc." />
+                                </div>
+                                <span asp-validation-for="CategoryName" class="text-danger jumia-error"></span>
+                            </div>
+
+                            <!-- Parent Category -->
+                            <div class="form-group mt-3">
+                                <label asp-for="ParentCategoryId" class="form-label jumia-label"></label>
+                                <select asp-for="ParentCategoryId" asp-items="Model.ParentCategories" class="form-select jumia-select">
+                                    <option value="">-- No Parent Category --</option>
+                                </select>
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="form-group mt-3">
+                                <label class="form-label jumia-label">Category Image</label>
+                                <div class="jumia-upload-container">
+                                    <input type="file" id="imageUpload" name="imageUpload" class="form-control jumia-upload" accept="image/*" />
+                                    <input type="hidden" asp-for="ImageUrl" id="imageUrl" />
+                                    <div class="mt-2 text-center">
+                                        <img id="imagePreview" src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "" : Model.ImageUrl)"
+                                              class="jumia-image-preview img-thumbnail" />
+                                    </div>
+                                </div>
+                                <span asp-validation-for="ImageUrl" class="text-danger jumia-error"></span>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label asp-for="Description" class="form-label jumia-label"></label>
+                                <textarea asp-for="Description" class="form-control jumia-textarea" rows="4"
+                                          placeholder="Enter category description..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger jumia-error"></span>
+                            </div>
+
+                            <!-- Home Category Toggle -->
+                            <div class="form-check form-switch mt-3">
+                                <input asp-for="IsHomeCategory" class="form-check-input jumia-switch" />
+                                <label asp-for="IsHomeCategory" class="form-check-label jumia-label"></label>
+                            </div>
+
+                            <!-- Size Management Toggle -->
+                            <div class="form-check form-switch mt-3">
+                                <input asp-for="HasSizes" class="form-check-input jumia-switch" id="hasSizesToggle" />
+                                <label asp-for="HasSizes" class="form-check-label jumia-label"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Sizes Section -->
+                    <div id="sizesSection" class="mt-4 @(!Model.HasSizes ? "d-none" : "")">
+                        <div class="card jumia-sub-card">
+                            <div class="card-header jumia-sub-card-header">
+                                <h5 class="mb-0"><i class="bi bi-rulers me-2"></i>Size Management</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Existing Sizes -->
+                                <div class="mb-4">
+                                    <label class="form-label jumia-label">Select Existing Sizes</label>
+                                    <div class="jumia-size-selector-container">
+                                        <select multiple asp-for="SelectedSizeIds" asp-items="Model.AvailableSizes"
+                                                class="form-select jumia-multiselect size-select">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Size Separator -->
+                                <div class="d-flex align-items-center my-3">
+                                    <hr class="flex-grow-1" />
+                                    <span class="px-3 text-muted">OR</span>
+                                    <hr class="flex-grow-1" />
+                                </div>
+
+                                <!-- New Sizes -->
+                                <div class="mb-3">
+                                    <label class="form-label jumia-label">Add New Sizes</label>
+                                    <div id="newSizesContainer">
+                                        @if (Model.NewSizes != null && Model.NewSizes.Any())
+                                        {
+                                            for (int i = 0; i < Model.NewSizes.Count; i++)
+                                            {
+                                                <div class="input-group mb-2 jumia-size-input-group">
+                                                    <input type="text" name="NewSizes[@i]" value="@Model.NewSizes[i]"
+                                                           class="form-control jumia-input" placeholder="Size label (e.g., XL, 42, etc.)" />
+                                                    <button type="button" class="btn jumia-btn-danger remove-size-btn" @(i == 0 ? "disabled" : "")>
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="input-group mb-2 jumia-size-input-group">
+                                                <input type="text" name="NewSizes[0]"
+                                                       class="form-control jumia-input" placeholder="Size label (e.g., XL, 42, etc.)" />
+                                                <button type="button" class="btn jumia-btn-danger remove-size-btn" disabled>
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                    <button type="button" id="addSizeBtn" class="btn jumia-btn-outline mt-2">
+                                        <i class="bi bi-plus-circle"></i> Add Another Size
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions mt-4">
+                        <button type="submit" class="btn jumia-btn-primary me-2">
+                            <i class="bi bi-save"></i> @(Model.CategoryId == 0 ? "Create Category" : "Update Changes")
+                        </button>
+                        <a asp-action="Index" asp-controller="Admin" asp-route-sectionName="Categories" class="btn jumia-btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Categories
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for multi-select with improved configuration
+            $('.size-select').select2({
+                width: '100%',
+                theme: 'bootstrap-5',
+                placeholder: "Select sizes (type to search)",
+                closeOnSelect: false,
+                allowClear: true,
+                selectionCssClass: 'jumia-multiselect-selection',
+                dropdownCssClass: 'jumia-multiselect-dropdown',
+                tags: true, // Allow adding new tags
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newTag: true
+                    };
+                },
+                templateResult: function (data) {
+                    var $result = $("<span></span>");
+                    $result.text(data.text);
+                    if (data.newTag) {
+                        $result.append(" <em>(new)</em>");
+                    }
+                    return $result;
+                }
+            });
+
+            // Toggle sizes section
+            $('#hasSizesToggle').change(function() {
+                $('#sizesSection').toggleClass('d-none');
+            });
+
+                    // Replace the existing image upload handler with this:
+        $('#imageUpload').change(function() {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+            // Dynamic size fields
+            let sizeIndex = @(Model.NewSizes?.Count ?? 1);
+            $('#addSizeBtn').click(function() {
+                const newSizeField = `
+                    <div class="input-group mb-2 jumia-size-input-group">
+                        <input type="text" name="NewSizes[${sizeIndex}]"
+                               class="form-control jumia-input" placeholder="Size label (e.g., XL, 42, etc.)" />
+                        <button type="button" class="btn jumia-btn-danger remove-size-btn">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                $('#newSizesContainer').append(newSizeField);
+                sizeIndex++;
+
+                // Enable remove button on first field if we now have multiple
+                if (sizeIndex > 1) {
+                    $('#newSizesContainer .remove-size-btn').first().prop('disabled', false);
+                }
+            });
+
+            // Remove size field
+            $(document).on('click', '.remove-size-btn', function() {
+                if ($('#newSizesContainer .jumia-size-input-group').length > 1) {
+                    $(this).closest('.jumia-size-input-group').remove();
+
+                    // Reindex remaining fields
+                    $('#newSizesContainer .jumia-size-input-group').each(function(index) {
+                        $(this).find('input').attr('name', `NewSizes[${index}]`);
+                    });
+                    sizeIndex = $('#newSizesContainer .jumia-size-input-group').length;
+
+                    // Disable remove button if only one field left
+                    if (sizeIndex === 1) {
+                        $('#newSizesContainer .remove-size-btn').first().prop('disabled', true);
+                    }
+                }
+            });
+
+            // Form submission handling
+            $('#categoryForm').submit(function() {
+                // Disable buttons to prevent double submission
+                $(this).find('button[type="submit"]').prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...'
+                );
+            });
+        });
+    </script>
+</body>
+</html>

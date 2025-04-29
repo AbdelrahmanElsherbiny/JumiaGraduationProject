@@ -1,0 +1,530 @@
+﻿@model List<Category>
+
+<style>
+    /* Premium Categories Dashboard Styles */
+    .categories-dashboard {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid #eaeaea;
+        transition: all 0.3s ease;
+    }
+
+        .categories-dashboard:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+    .categories-header {
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 1.25rem;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .categories-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        letter-spacing: -0.5px;
+        margin: 0;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .categories-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: #f68b1e;
+            border-radius: 2px;
+        }
+
+        .categories-title i {
+            color: #f68b1e;
+            font-size: 1.5rem;
+        }
+
+    .btn-add-category {
+        background-color: #f68b1e;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-add-category:hover {
+            background-color: #e07d1a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(246, 139, 30, 0.4);
+        }
+
+    .categories-search-container {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+        margin-bottom: 2rem;
+    }
+
+        .categories-search-container i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+    #CategoriesSearch {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        border-radius: 8px;
+        border: 1px solid #eaeaea;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        background-color: #f9f9f9;
+    }
+
+        #CategoriesSearch:focus {
+            border-color: #f68b1e;
+            box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.2);
+            background-color: white;
+            outline: none;
+        }
+
+    .categories-table-container {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+    }
+
+    .categories-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+
+        .categories-table thead th {
+            background-color: #f68b1e;
+            color: white;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+            border: none;
+            position: relative;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            .categories-table thead th:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 60%;
+                width: 1px;
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+        .categories-table tbody tr {
+            transition: all 0.25s ease;
+        }
+
+            .categories-table tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+
+            .categories-table tbody tr:hover {
+                background-color: #fff3e8;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+
+        .categories-table td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+            color: #2a2a2a;
+            font-size: 0.95rem;
+        }
+
+    .category-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #eee;
+    }
+
+    /* Status badges */
+    .badge-home-category {
+        padding: 0.5em 1em;
+        font-weight: 600;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .badge-home-yes {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+    }
+
+    .badge-home-no {
+        background-color: rgba(108, 117, 125, 0.15);
+        color: #6c757d;
+    }
+
+    /* No results message */
+    .no-results-container {
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .no-results-icon {
+        font-size: 3.5rem;
+        color: #f68b1e;
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+    }
+
+    .no-results-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-results-subtitle {
+        color: #777;
+        font-size: 1rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    /* Pagination */
+    .categories-pagination {
+        margin-top: 2.5rem;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+        .categories-pagination .page-item {
+            margin: 0;
+        }
+
+        .categories-pagination .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px !important;
+            color: #2a2a2a;
+            border: 1px solid #eaeaea;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+            .categories-pagination .page-link:hover {
+                background-color: #fff3e8;
+                color: #f68b1e;
+                border-color: #fff3e8;
+                transform: translateY(-2px);
+            }
+
+        .categories-pagination .page-item.active .page-link {
+            background-color: #f68b1e;
+            border-color: #f68b1e;
+            color: white;
+            box-shadow: 0 4px 8px rgba(246, 139, 30, 0.3);
+        }
+
+    /* Responsive adjustments */
+    @@media (max-width: 992px) {
+        .categories-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .categories-search-container {
+            max-width: 100%;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .categories-dashboard {
+            padding: 1.5rem;
+        }
+
+        .categories-title {
+            font-size: 1.5rem;
+        }
+
+        .categories-table thead {
+            display: none;
+        }
+
+        .categories-table tbody tr {
+            display: block;
+            margin-bottom: 1.5rem;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+
+            .categories-table tbody tr:hover {
+                transform: none;
+            }
+
+        .categories-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+            .categories-table td:last-child {
+                border-bottom: none;
+            }
+
+            .categories-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #2a2a2a;
+                margin-right: 1rem;
+                flex: 1;
+            }
+
+            .categories-table td > *:last-child {
+                flex: 2;
+                text-align: right;
+            }
+
+        .category-img {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .categories-dashboard {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .categories-title {
+            font-size: 1.3rem;
+        }
+
+        .no-results-icon {
+            font-size: 2.5rem;
+        }
+
+        .no-results-title {
+            font-size: 1.2rem;
+        }
+
+        .categories-pagination .page-link {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
+        }
+
+        .jumia-orange-icon {
+            color: #f68b1e; /* Jumia's brand orange */
+        }
+        /* Clickable Badge Styles */
+        .badge-toggle-btn {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .badge-toggle-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+
+            .badge-toggle-btn:active {
+                transform: translateY(0);
+                opacity: 0.9;
+            }
+
+            .badge-toggle-btn:focus-visible {
+                box-shadow: 0 0 0 3px rgba(246, 139, 30, 0.3);
+            }
+        /* Keep your existing badge colors */
+        .badge-home-yes {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .badge-home-no {
+            background-color: rgba(108, 117, 125, 0.15);
+            color: #6c757d;
+        }
+
+    }
+</style>
+
+<div class="categories-dashboard">
+    <div class="categories-header">
+        <h2 class="categories-title">
+            <i class="bi bi-tags jumia-orange-icon"></i> Categories Management
+        </h2>
+        <a asp-action="AddCategory" asp-controller="Admin" class="btn-add-category text-decoration-none">
+            <i class="bi bi-plus-lg"></i> Add New Category
+        </a>
+    </div>
+
+    <!-- Search Section -->
+    <div class="categories-search-container">
+        <i class="bi bi-search"></i>
+        <input type="text" id="CategoriesSearch" class="form-control"
+               placeholder="Search categories by name..."
+               value="@ViewBag.SearchTerm"
+               onkeyup="handleSearch('Categories')">
+    </div>
+
+    <!-- Categories Table -->
+    <div class="categories-table-container">
+        <table class="categories-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category Name</th>
+                    <th>Parent Category</th>
+                    <th>Home Category</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTable">
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (var category in Model)
+                    {
+                        <tr>
+                            <td data-label="ID">#@category.CategoryId</td>
+                            <td data-label="Category Name">
+                                <div class="fw-semibold">@category.CategoryName</div>
+                            </td>
+                            <td data-label="Parent Category">@(category.ParentCategory?.CategoryName ?? "None")</td>
+                            <td data-label="Home Category">
+                                <form asp-action="ToggleHomeCategory" asp-controller="Admin" asp-route-pageNum="@ViewBag.currentPage" method="post" class="d-inline">
+                                    <input type="hidden" name="categoryId" value="@category.CategoryId" />
+                                    <input type="hidden" name="currentPage" value="@ViewBag.CurrentPage" />
+                                    <button type="submit" class="badge-home-category @(category.IsHomeCategory.GetValueOrDefault() ? "badge-home-yes" : "badge-home-no") badge-toggle-btn">
+                                        <i class="bi @(category.IsHomeCategory.GetValueOrDefault() ? "bi-check-circle" : "bi-dash-circle")"></i>
+                                        @(category.IsHomeCategory.GetValueOrDefault() ? "Yes" : "No")
+                                    </button>
+                                </form>
+                            </td>
+                            <td data-label="Image">
+                                <img src="@Url.Content(category.ImageUrl)"
+                                     alt="Category Image"
+                                     class="category-img">
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="no-results-container">
+                                <div class="no-results-icon">
+                                    <i class="bi bi-collection"></i>
+                                </div>
+                                <h5 class="no-results-title">No Categories Found</h5>
+                                <p class="no-results-subtitle">
+                                    We couldn't find any categories matching your criteria. Try adjusting your search or add a new category.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="categories-pagination">
+            <nav aria-label="Categories pagination">
+                <ul class="pagination justify-content-center">
+                    @for (int i = 1; i <= ViewBag.TotalPagesCount; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="javascript:void(0);"
+                               onclick="loadContent('Categories', @i, '@ViewBag.SearchTerm')">
+                                @i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<script>
+        // Handle badge toggle animations
+    document.querySelectorAll('.badge-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Add temporary click animation
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+        });
+    });
+    // Add interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add data-labels for responsive table
+        const cells = document.querySelectorAll('#categoryTable td');
+        const headers = document.querySelectorAll('.categories-table thead th');
+
+        cells.forEach((cell, index) => {
+            const headerIndex = index % headers.length;
+            if (headers[headerIndex]) {
+                cell.setAttribute('data-label', headers[headerIndex].textContent);
+            }
+        });
+
+    });
+</script>

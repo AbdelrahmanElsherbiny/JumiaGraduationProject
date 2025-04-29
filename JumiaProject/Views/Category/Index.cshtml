@@ -1,0 +1,237 @@
+﻿@model CategoryProductsFilterVM
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="parentItem m-auto bg-white  rounded mb-3 p-2">
+    <img src="~/images/mainophotoCategory.jpg" class="rounded category-photo w-100" />
+
+</div>
+<div id="alertMessageStockLimit" class="alert alert-warning d-none" role="alert">
+    Cannot add more items. Stock limit reached.
+</div>
+<div id="alertMessageFailToAdd" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-xmark text-white mx-2"></i>  Fail to add Something went wrong
+</div>
+<div id="alertMessageFailUpdate" class=" my-alertfail text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-xmark text-white mx-2"></i> Fail to update Something went wrong
+</div>
+<div id="alertMessageAddtoCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to cart successfully
+</div>
+<div id="alertMessageUpdateCart" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Cart updated successfully
+</div>
+<div id="alertMessageAddtoWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product added to wishlist successfully
+</div>
+<div id="alertMessageRemoveWishlist" class=" my-alert text-white d-none  fixed-top top-0 end-0 start-0 text-center" role="alert">
+    <i class="fas fa-check text-white mx-2"></i>  Product removed from wishlist successfully
+</div>
+
+
+<input type="hidden" id="CategoryId" value="@Model.CategoryId" />
+
+<div class="parentItem m-auto rounded d-flex mb-2">
+    <div class="cart-summary bg-white rounded">
+        <div class="bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 mt-0">
+            <div class="filteration">
+                <Header class="filter-name">BRAND</Header>
+                @foreach (var brand in @Model.Brands)
+                {
+                    <div class="chech-box-div">
+                        <input type="checkbox" class="check" name="brandIds" id="brand-@brand.BrandId" value="@brand.BrandId" />
+                        <label for="@brand.BrandId">@brand.BrandName</label>
+                    </div>
+                }
+            </div>
+            <hr class="line" />
+            <div class="filteration">
+                <Header class="filter-name">DISCOUNT</Header>
+
+                @foreach (var discount in Model.Discounts)
+                {
+                    <div class="chech-box-div">
+                        <input type="checkbox" class="check"
+                               id="@discount"
+                               name="discountList"
+                               value="@discount.ToString("0.##")" />
+                        <label for="@discount">@((discount * 100).ToString("N0"))%</label>
+                    </div>
+                }
+            </div>
+            @if (Model.Sizes.Count != 0)
+            {
+                <hr class="line" />
+                <div class="filteration">
+                    @if (Model.Sizes.All(s => s != null))
+                    {
+                        <header class="filter-name">SIZE</header>
+                        @foreach (var size in Model.Sizes)
+                        {
+                            <div class="chech-box-div">
+                                <input type="checkbox" class="check"
+                                       name="sizeIds"
+                                       id="@size.SizeId"
+                                       value="@size.SizeId" />
+                                <label for="@size.SizeId">@size.SizeLabel</label>
+                            </div>
+                        }
+                    }
+
+
+                </div>
+            }
+
+            <hr class="line" />
+            <div class="filteration">
+                <div class="price d-flex">
+                    <header class="filter-name">PRICE</header>
+                    <button class="apply" id="applyPriceBtn">Apply</button>
+                </div>
+                <div id="price-slider"></div>
+                <div class="price-num d-flex">
+                    <input type="number" class="price-input" id="minPriceInput" value="@Model.MinPrice" />
+                    <input type="number" class="price-input" id="maxPriceInput" value="@Model.MaxPrice" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="cartitemcat-container  bg-white ms-4 rounded" >
+        <div class="cartitemcat-container  p-2 pb-3 d-flex rounded  flex-wrap bg-white" id="our-container">
+        @Html.Partial("_FilteredProductsPartial", new CategoryProductsFilterVM { Products = Model.Products, CartItems = Model.CartItems ,WishlistItems=Model.WishlistItems})
+        </div>
+    </div>
+</div>
+
+
+<!--This is the popup for variant sizes Roma-->
+<div class="modal fade" id="variantModal" tabindex="-1" aria-labelledby="variantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-2">
+
+            <div class="modal-header border border-0">
+                <h6 class="modal-title dark-color">Please select a variation</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body border border-0">
+                <div id="variantOptions" class="d-flex flex-column gap-2">
+                </div>
+            </div>
+
+            <div class="modal-footer border border-0 d-flex justify-content-between">
+                <button class="continue-btn  rounded text-decoration-none text-center fs-6 py-2 " data-bs-dismiss="modal">Continue Shopping</button>
+                <a class="checkout-btn rounded text-decoration-none  text-center fs-6 py-2" asp-action="Index" asp-controller="Cart">Go to Cart</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+    <script src="~/js/wishlist.js"></script>
+    <script>
+
+                       $(document).ready(function () {
+            // Function to collect all filter values and call AJAX
+            function applyFilters() {
+                var selectedSizes = $("input[name='sizeIds']:checked").map(function () {
+                    return $(this).val();
+                }).get();
+
+                var selectedBrands = $("input[name='brandIds']:checked").map(function () {
+                    return $(this).val();
+                }).get();
+
+                var selectedDiscounts = $("input[name='discountList']:checked").map(function () {
+                    return $(this).val();
+                }).get();
+
+                var minPrice = $("#minPriceInput").val();
+                var maxPrice = $("#maxPriceInput").val();
+                var categoryId = $("#CategoryId").val();
+        // console.log("Sizes: ", selectedSizes);
+        // console.log("Brands: ", selectedBrands);
+        // console.log("Discounts: ", selectedDiscounts);
+        // console.log("categoryId",categoryId);
+        // console.log("minPrice",minPrice)
+        //  console.log("maxPrice",maxPrice)
+                $.ajax({
+                    url: '/Category/FilterProducts',
+                    type: 'POST',
+                    data: {
+                        id: categoryId,
+                        sizeIds: selectedSizes,
+                        brandIds: selectedBrands,
+                        discountList: selectedDiscounts,
+                        minPrice: minPrice,
+                        maxPrice: maxPrice
+                    },
+                    success: function (response) {
+                        $('#our-container').html(response);
+
+                    },
+                    error: function (error) {
+                        alert(error.document);
+                    }
+                });
+            }
+
+            $("input[name='sizeIds'], input[name='brandIds'], input[name='discountList']").on('change', function () {
+                applyFilters();
+            });
+
+            $('#applyPriceBtn').on('click', function () {
+                applyFilters();
+            });
+
+            var priceSlider = document.getElementById('price-slider');
+
+            noUiSlider.create(priceSlider, {
+             start: [@(@Model.MinPrice ?? @Model.MinAvailablePrice), @(@Model.MaxPrice ?? @Model.MaxAvailablePrice)],
+
+                connect: true,
+                range: {
+                    'min': @Model.MinAvailablePrice,
+                    'max': @Model.MaxAvailablePrice
+                },
+                tooltips: [true, true],
+                   format: {
+            to: function (value) {
+                return value.toFixed(2);
+            },
+            from: function (value) {
+                return parseFloat(value);
+            }
+        }
+            });
+
+            var minInput = document.getElementById('minPriceInput');
+            var maxInput = document.getElementById('maxPriceInput');
+
+            priceSlider.noUiSlider.on('update', function (values, handle) {
+                if (handle === 0) {
+                    minInput.value = values[0];
+                } else {
+                    maxInput.value = values[1];
+                }
+            });
+
+            minInput.addEventListener('change', function () {
+                priceSlider.noUiSlider.set([this.value, null]);
+            });
+
+            maxInput.addEventListener('change', function () {
+                priceSlider.noUiSlider.set([null, this.value]);
+            });
+        });
+    </script>
+}
+
+

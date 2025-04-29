@@ -1,0 +1,248 @@
+﻿body {
+    font-family: sans-serif;
+    background-color: white;
+}
+
+.all-container {
+    width: 432px;
+    height: 450px;
+}
+
+.terms {
+    color: #f8982d;
+}
+
+.my-btn {
+    color: white;
+    height: 48px;
+    box-shadow: 0px 0.5px 1px 1px rgba(0,0,0,.2);
+}
+
+.mynew-btn {
+    color: white;
+    height: 48px;
+    border-color: #f8982d;
+}
+
+.continue-btn {
+    background-color: #f8982d;
+}
+
+.continue1-btn {
+    background-color: #f8982d;
+}
+
+.facebook-btn {
+    background-color: #1877f2;
+}
+
+    .continue-btn:hover, .facebook-btn:hover {
+        box-shadow: 0px 1px 6px 3px rgba(0,0,0,.2);
+    }
+
+.welcome {
+    font-size: 20px;
+}
+
+.my-input {
+    /*    border-color: #f8982d;
+    caret-color: #f8982d;*/
+    caret-color: #f8982d;
+}
+
+.my-input:focus {
+        border-color: #f8982d;
+        outline: none !important;
+       box-shadow:none !important;
+       caret-color:#f8982d;
+}
+option:hover
+{
+    background-color:red;
+}
+label, a, .registerText {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.confirm-msg {
+    font-size: 12px;
+}
+
+.new-code {
+    font-size: 20px;
+    color: #f8982d;
+}
+
+.my-color {
+    color: #f8982d;
+}
+
+.request-new {
+    background-color: white;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.check-btn {
+    color: #f8982d;
+    cursor: pointer;
+}
+
+.account-type {
+    display: flex;
+    gap: 20px;
+}
+
+.option {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.3s, background-color 0.3s;
+    position: relative;
+    user-select: none;
+}
+
+    .option input {
+        display: none; /* Hide default radio */
+    }
+
+    .option .icon {
+        font-size: 24px;
+    }
+
+    .option .text {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .option input:checked + .icon,
+    .option input:checked + .icon + .text {
+        color: orange;
+    }
+
+    .option input:checked ~ .text {
+        color: orange;
+    }
+
+    .option input:checked ~ .icon {
+        color: orange;
+    }
+
+    .option:has(input:checked) {
+        border-color: orange;
+        background-color: #fff7eb;
+    }
+
+.address-lable {
+    position: relative;
+    bottom: -20px;
+    left: -180px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.password-lable {
+    position: relative;
+    bottom: -20px;
+    left: -170px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.cpassword-lable {
+    position: relative;
+    bottom: -20px;
+    left: -150px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.email-lable {
+    position: relative;
+    bottom: -20px;
+    left: -140px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.code-lable {
+    position: relative;
+    bottom: -20px;
+    left: -160px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.confirmp-lable {
+    position: relative;
+    bottom: -20px;
+    left: -130px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.about-lable {
+    position: relative;
+    bottom: -20px;
+    left: -165px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.login-lable {
+    position: relative;
+    bottom: -10px;
+    left: -170px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}
+.loginemail-lable {
+    position: relative;
+    bottom: -10px;
+    left: -180px;
+    background: white;
+    font-size: 12px;
+    color: #666;
+    line-height: .5;
+    pointer-events: none;
+    z-index: 1;
+    padding: 0 4px;
+}

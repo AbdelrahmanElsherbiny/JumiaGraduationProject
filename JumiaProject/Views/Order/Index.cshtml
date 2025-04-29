@@ -1,0 +1,472 @@
+﻿@model List<CartItem>
+@{
+    Layout = null;
+    var addresses = ViewBag.addresses as List<Address>;
+	string userId = ViewBag.userId;
+    decimal? itemsTotal = 0;
+    decimal delivary = 50;
+    int numOfItems = 0;
+    foreach(var item in Model.Where(i=>i.Quantity>0 && i.Product.Stock > 0))
+    {
+        decimal? discount = item.Product.Discount;
+        itemsTotal += (item.Quantity * (item.Product.Price * (1 - discount)));
+        numOfItems += item.Quantity;
+    }
+    decimal? taxes = 0.14m * itemsTotal;
+    decimal? total = itemsTotal + delivary + taxes;
+    string delivaryWithin = "3-5 business days";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Jumia</title>
+    <link href="~/css/Checkout.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a class="logo-section" asp-action="Index" asp-controller="Home">
+                <div class="site-logo"><span class="orange-dot"><img class="image" src="~/images/home/logo.png" alt="Alternate Text" /></span></div>
+            </a>
+            <div class="page-title">Place your order</div>
+            <div class="header-actions">
+                <a asp-action="" asp-controller="" class="header-link">
+                    <i class="fas fa-question-circle icon"></i>
+                    <span>Need Help?<br><span class="subtext">Contact us</span></span>
+                </a>
+                <div class="header-link">
+                    <i class="fas fa-exchange-alt icon"></i>
+                    <span>Easy<br>Returns</span>
+                </div>
+                <div class="header-link">
+                    <i class="fas fa-lock icon"></i>
+                    <span>Secure<br>Payments</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <form asp-action="Checkout" asp-controller="Order" method="post">
+        <main class="container">
+            <div class="checkout-main">
+                <!-- Customer Address -->
+                <div class="checkout-section" id="address-section">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="step-icon">✓</span>
+                            1. CUSTOMER ADDRESS
+                        </div>
+                        <a href="#" class="change-link" onclick="toggleSection('address-section'); return false;">Change</a>
+                    </div>
+                    <div class="section-content">
+                        @for (var i = 0; i < addresses.Count; i++)
+                        {
+                            <div class="address-book-title">ADDRESS BOOK (@(i + 1))</div>
+
+                            <label class="address-item">
+                                <input type="radio" name="addressId" value="@addresses[i].AddressId" @(i == 0 ? "checked" : "")>
+                                <span class="radio-circle"></span>
+                                <div class="address-details">
+                                    <div class="customer-name">@addresses[i].User.UserName</div>
+                                    <div class="customer-address">
+                                        @addresses[i].Country | @addresses[i].City - @addresses[i].Street - @addresses[i].ZipCode
+                                    </div>
+                                    <div class="customer-phone">+20 @addresses[i].User.PhoneNumber</div>
+                                    @if (i == 0)
+                                    {
+                                        <div class="default-address">DEFAULT ADDRESS</div>
+                                    }
+                                </div>
+                                <a asp-action="EditAddress" asp-controller="Order" asp-route-id="@addresses[i].AddressId" class="edit-button">
+                                    Edit <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            </label>
+
+                        }
+                        <a asp-action="AddAddress" asp-controller="Order" class="add-address-button ms-3 mb-3">
+                            <i class="fas fa-plus-circle"></i>
+                            Add address
+                        </a>
+                    </div>
+                </div>
+                <input type="hidden" name="userId" value="@userId" />
+                <!-- Delivery Details -->
+                <div class="checkout-section" id="delivery-section">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="step-icon">✓</span>
+                            2. DELIVERY DETAILS
+                        </div>
+                        <a href="#" class="change-link" onclick="toggleSection('delivery-section'); return false;">Change</a>
+                    </div>
+                    <div class="section-content">
+                        <div class="delivery-method">
+                            Door Delivery
+                            <span class="delivery-icon">🚚</span>
+                        </div>
+                        <div class="delivery-date">Delivery within @delivaryWithin</div>
+                        <div class="form-group shipping-methods">
+                            <label>Choose Shipping Method:</label>
+                            <div class="choices">
+                                <div class="form-check">
+                                    <label class="shipping-option">
+                                        <input class="form-check-input" type="radio" name="shippingMethodId" value="1" checked />
+                                        <span class="shipping-card">
+                                            <span class="shipping-icon"><i class="fas fa-truck"></i></span>
+                                            <span class="shipping-details">
+                                                <span class="shipping-name">Standard Shipping</span>
+                                                <span class="shipping-time">3-5 business days</span>
+                                            </span>
+                                            <span class="shipping-price">EGP 50.00</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="shipping-option">
+                                        <input class="form-check-input" type="radio" name="shippingMethodId" value="2" />
+                                        <span class="shipping-card">
+                                            <span class="shipping-icon"><i class="fas fa-bolt"></i></span>
+                                            <span class="shipping-details">
+                                                <span class="shipping-name">Express Shipping</span>
+                                                <span class="shipping-time">1-2 business days</span>
+                                            </span>
+                                            <span class="shipping-price">EGP 80.00</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="shipping-option">
+                                        <input class="form-check-input" type="radio" name="shippingMethodId" value="3" />
+                                        <span class="shipping-card">
+                                            <span class="shipping-icon"><i class="fas fa-rocket"></i></span>
+                                            <span class="shipping-details">
+                                                <span class="shipping-name">Next Day Delivery</span>
+                                                <span class="shipping-time">1 business day</span>
+                                            </span>
+                                            <span class="shipping-price">EGP 100.00</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @for (var i = 0; i < Model.Count; i++)
+                            {
+                                @if (Model[i].Quantity > 0 && Model[i].Product.Stock > 0)
+                                {
+                                    <div class="col-12 col-sm-6 col-md-6 mb-3">
+                                        <div class="shipment-item border rounded p-3 h-100">
+                                            <div class="shipment-header mb-2">
+                                                <div class="shipment-title fw-bold">Shipment @(i + 1)/@Model.Count</div>
+                                                <div class="shipment-vendor text-muted small">Fulfilled by @Model[i].Product.Seller.StoreName</div>
+                                            </div>
+                                            <div class="product-item d-flex align-items-center">
+                                                <img src="@Url.Content(@Model[i].Product?.ProductImages?.FirstOrDefault(p => p.IsPrimary == true)?.ImageUrl)" alt="Product" class="product-image img-thumbnail me-2" style="width: 80px; height: 80px;">
+                                                <div class="product-info">
+                                                    <div class="product-name fw-semibold">@Model[i].Product.Name</div>
+                                                    <div class="product-qty text-muted small">QTY: @Model[i].Quantity</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="modify-cart">
+                        <a asp-action="Index" asp-controller="Cart">Modify cart</a>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="checkout-section" id="payment-section">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <span class="step-icon completed">✓</span>
+                            3. PAYMENT METHOD
+                        </div>
+                        <a href="#" class="change-link" onclick="toggleSection('payment-section'); return false;">Change</a>
+                    </div>
+                    <div class="section-content">
+                        <!-- Payment on delivery -->
+                        <div class="payment-group">
+                            <h3 class="payment-category">Payment on delivery</h3>
+
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="CashOnDelivery" checked class="payment-radio-input">
+                                <div class="payment-radio-custom"></div>
+                                <div class="payment-info">
+                                    <span class="payment-title">Cash on Delivery (Bank Card - E-wallet - Cash)</span>
+                                </div>
+                                <div class="payment-icon cod-icon">
+                                    <i class="fas fa-hand-holding-usd"></i>
+                                </div>
+                            </label>
+
+                            <div class="payment-details">
+                                <div class="details-content">
+                                    <p>Only Egyptian Pounds are accepted.</p>
+                                    <p>- Please provide the exact amount to ensure the delivery representative has sufficient change</p>
+                                    <p>- You must pay for the product before opening the shipment.</p>
+                                    <p>- In case of a return, refunds are available via refund voucher, postal transfer, or bank transfer.</p>
+                                </div>
+                                <div class="acceptance-info">
+                                    <span>We accept:</span>
+                                    <img src="~/images/cheek.png" alt="Alternate Text" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pre-pay Now -->
+                        <div class="payment-group">
+                            <h3 class="payment-category">Pre-pay Now</h3>
+
+                            <!-- Credit/Debit Cards -->
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="card" class="payment-radio-input">
+                                <div class="payment-radio-custom"></div>
+                                <div class="payment-info">
+                                    <span class="payment-title">Pay By Card</span>
+                                    <span class="payment-subtitle">Visa, Mastercard, American Express</span>
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fab fa-cc-visa" style="color: #1a1f71;"></i>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Mobile & Digital Wallets -->
+                        <div class="payment-group">
+                            <h3 class="payment-category">Mobile & Digital Wallets</h3>
+
+                            <!-- Fawry -->
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="fawry" class="payment-radio-input">
+                                <div class="payment-radio-custom"></div>
+                                <div class="payment-info">
+                                    <span class="payment-title">Fawry Pay</span>
+                                </div>
+                                <div class="payment-icon">
+                                    <img src="~/images/Fawry.png" alt="Alternate Text" />
+                                </div>
+                            </label>
+
+                            <!-- Apple Pay -->
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="applePay" class="payment-radio-input">
+                                <div class="payment-radio-custom"></div>
+                                <div class="payment-info">
+                                    <span class="payment-title">Apple Pay</span>
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fab fa-apple-pay" style="color: #000;"></i>
+                                </div>
+                            </label>
+
+                            <!-- Google Pay -->
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="googlePay" class="payment-radio-input">
+                                <div class="payment-radio-custom"></div>
+                                <div class="payment-info">
+                                    <span class="payment-title">Google Pay</span>
+                                </div>
+                                <div class="payment-icon">
+                                    <i class="fab fa-google-pay" style="color: #4285f4;"></i>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <a asp-action="Index" asp-controller="Home" class="back-link">Go back & continue shopping</a>
+            </div>
+
+            <div class="checkout-sidebar">
+                <div class="order-summary">
+                    <h3 class="summary-title">Order summary</h3>
+                    <div class="summary-row">
+                        <span>Item's total (@numOfItems)</span>
+                        <span>EGP @itemsTotal?.ToString("N2")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery fees</span>
+                        <span>EGP @delivary.ToString("N2")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxes</span>
+                        <span>EGP @taxes?.ToString("N2")</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>EGP @total?.ToString("N2")</span>
+                    </div>
+                    @if (addresses.Count == 0)
+                    {
+                        <div class="alert alert-warning" style="padding: 15px;
+                                          background-color: #fff3cd;
+                                          border: 1px solid #ffeeba;
+                                          border-radius: 4px;
+                                          color: #856404;
+                                          margin: 20px 0;
+                                          font-weight: 500;">
+                            <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                            Please add an address to proceed with your order.
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="confirm-button">Confirm order</button>
+                    }
+                    <div class="terms-text">
+                        By proceeding, you are automatically accepting the <a href="#">Terms & Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </form>
+
+    <script>
+        function toggleSection(sectionId) {
+            // Get all sections
+            const sections = document.querySelectorAll('.checkout-section');
+
+            // Close all sections
+            sections.forEach(section => {
+                const content = section.querySelector('.section-content');
+                const isCurrentSection = section.id === sectionId;
+
+                if (isCurrentSection) {
+                    // Toggle current section
+                    content.classList.toggle('collapsed');
+                    section.classList.toggle('expanded');
+
+                    // Update change link text
+                    const changeLink = section.querySelector('.change-link');
+                    changeLink.textContent = content.classList.contains('collapsed') ? 'Change' : 'Done';
+                } else {
+                    // Close other sections
+                    content.classList.add('collapsed');
+                    section.classList.remove('expanded');
+
+                    // Reset change link text
+                    const changeLink = section.querySelector('.change-link');
+                    changeLink.textContent = 'Change';
+                }
+            });
+        }
+
+        // New script for handling address selection
+        document.addEventListener('DOMContentLoaded', function() {
+            const addressItems = document.querySelectorAll('.address-item');
+            addressItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const radioInput = this.querySelector('input[type="radio"]');
+                    radioInput.checked = true;
+                });
+            });
+        });
+
+        // Initially collapse all sections
+                // Initially collapse all sections EXCEPT delivery-section
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.checkout-section');
+
+            sections.forEach(section => {
+                const content = section.querySelector('.section-content');
+
+                if (section.id === 'delivery-section') {
+                    // Keep delivery-section expanded
+                    content.classList.remove('collapsed');
+                    section.classList.add('expanded');
+                } else {
+                    // Collapse all other sections
+                    content.classList.add('collapsed');
+                    section.classList.remove('expanded');
+                }
+            });
+
+            // Address selection handler (keep this as-is)
+            const addressItems = document.querySelectorAll('.address-item');
+            addressItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const radioInput = this.querySelector('input[type="radio"]');
+                    radioInput.checked = true;
+                });
+            });
+        });
+                // Add this script at the bottom of your existing scripts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Shipping method prices and delivery times
+            const shippingOptions = {
+                1: { price: 50.00, time: "3-5 business days" },  // Standard Shipping
+                2: { price: 80.00, time: "1-2 business days" },  // Express Shipping
+                3: { price: 100.00, time: "1 business day" }     // Next Day Delivery
+            };
+
+            // Function to update delivery info
+            function updateDeliveryInfo(selectedMethod) {
+                const option = shippingOptions[selectedMethod];
+
+                // Update the delivery fee display
+                document.querySelector('.summary-row:nth-child(3) span:last-child').textContent =
+                    `EGP ${option.price.toFixed(2)}`;
+
+                // Update the delivery time text
+                document.querySelector('.delivery-date').textContent =
+                    `Delivery within ${option.time}`;
+
+                // Recalculate total using original itemsTotal and taxes
+                const itemsTotal = @itemsTotal;
+                const taxes = @taxes;
+                const newTotal = itemsTotal + option.price + taxes;
+
+                document.querySelector('.summary-total span:last-child').textContent =
+                    `EGP ${newTotal.toFixed(2)}`;
+            }
+
+            // Listen for changes in shipping method selection
+            document.querySelectorAll('input[name="shippingMethodId"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    updateDeliveryInfo(this.value);
+                });
+            });
+        });
+
+               // Handle payment method selection
+                document.addEventListener('DOMContentLoaded', function() {
+            // ... all your existing DOMContentLoaded code ...
+
+            // Handle payment method selection
+            document.querySelectorAll('.payment-radio-input').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('.payment-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+
+                    // Add selected class to current option
+                    if (this.checked) {
+                        this.closest('.payment-option').classList.add('selected');
+                    }
+                });
+            });
+
+            // Initialize with default selected option
+                    const cashOnDeliveryInput = document.querySelector('.payment-radio-input[value="CashOnDelivery"]');
+        if (cashOnDeliveryInput) {
+            cashOnDeliveryInput.checked = true;
+            const cashOnDeliveryOption = cashOnDeliveryInput.closest('.payment-option');
+            if (cashOnDeliveryOption) {
+                cashOnDeliveryOption.classList.add('selected');
+            }
+        }
+        });
+    </script>
+</body>
+</html>

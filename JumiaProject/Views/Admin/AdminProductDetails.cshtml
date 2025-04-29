@@ -1,0 +1,196 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="~/css/AdminProductDetails.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0" style="position: relative; display: inline-block;">
+                <i class="bi bi-box-seam"></i> Product Details
+                <span style="position: absolute; bottom: -8px; left: 0; width: 60px; height: 4px; background: var(--jumia-orange); border-radius: 2px;"></span>
+            </h2>
+            <a asp-action="Index" asp-controller="Admin" asp-route-sectionName="Products" asp-route-pageNum="@ViewBag.currentPage" class="btn-back text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Back to Products
+            </a>
+        </div>
+
+        <div class="product-container">
+            <!-- Header with external status badge -->
+            <div class="product-header">
+                <div>
+                    <h3 class="product-title">@Model.Name</h3>
+                    <div class="text-white small">ID: @Model.ProductId</div>
+                </div>
+                <div class="status-container">
+                    <span class="status-badge
+                          @(Model.IsApprovedFromAdmin == "Pending" ? "status-pending" :
+                            Model.IsApprovedFromAdmin == "Approved" ? "status-approved" : "status-rejected")">
+                        <i class="bi
+                          @(Model.IsApprovedFromAdmin == "Pending" ? "bi-hourglass-split" :
+                            Model.IsApprovedFromAdmin == "Approved" ? "bi-check-circle" : "bi-x-circle")"></i>
+                        @Model.IsApprovedFromAdmin
+                    </span>
+                </div>
+            </div>
+
+            <div class="row p-4">
+                <!-- Left Column - Product Info -->
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="section-card h-100">
+                                <h5 class="section-title">
+                                    <i class="bi bi-info-circle"></i> Basic Information
+                                </h5>
+                                <table class="info-table">
+                                    <tr>
+                                        <td class="info-label">SKU</td>
+                                        <td class="info-value">@(Model.SKU ?? "N/A")</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Product Code</td>
+                                        <td class="info-value">@Model.Code</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Brand</td>
+                                        <td class="info-value">@Model.Brand.BrandName</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Category</td>
+                                        <td class="info-value">@Model.Category.CategoryName</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Main Material</td>
+                                        <td class="info-value">@(Model.MainMaterial ?? "N/A")</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="section-card h-100">
+                                <h5 class="section-title">
+                                    <i class="bi bi-graph-up"></i> Inventory & Pricing
+                                </h5>
+                                <table class="info-table">
+                                    <tr>
+                                        <td class="info-label">Price</td>
+                                        <td class="info-value">EGP @Model.Price.ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Discount</td>
+                                        <td class="info-value">
+                                            @(Model.Discount > 0 ? (Model.Discount * 100) + " %" : "N/A")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Stock</td>
+                                        <td class="info-value">@Model.Stock</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Sold</td>
+                                        <td class="info-value">@Model.SoldNumber</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="info-label">Availability</td>
+                                        <td class="info-value @(Model.Stock > 0 ? "text-success" : "text-danger")">
+                                            @(Model.Stock > 0 ? "In Stock" : "Out of Stock")
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card mb-4">
+                        <h5 class="section-title">
+                            <i class="bi bi-card-text"></i> Description
+                        </h5>
+                        <div class="p-3">
+                            @Model.Description
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h5 class="section-title">
+                            <i class="bi bi-images"></i> Product Images
+                        </h5>
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach (var image in Model.ProductImages)
+                            {
+                                <img src="@Url.Content(image.ImageUrl)"
+                                     class="product-img"
+                                     alt="Product image">
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Admin Actions -->
+                <div class="col-md-4">
+                    <div class="action-card">
+                        <h5 class="section-title">
+                            <i class="bi bi-gear"></i> Admin Actions
+                        </h5>
+                        <div class="d-grid">
+                            @if (Model.IsApprovedFromAdmin == "Pending")
+                            {
+                                <a asp-action="VerifyProduct" asp-controller="Admin" asp-route-id="@Model.ProductId" asp-route-currentPage="@ViewBag.CurrentPage"
+                                   class="btn-action btn-approve text-decoration-none">
+                                    <i class="bi bi-check-circle "></i> Approve Product
+                                </a>
+                                <a asp-action="UnVerifyProduct" asp-controller="Admin" asp-route-id="@Model.ProductId" asp-route-currentPage="@ViewBag.CurrentPage"
+                                   class="btn-action btn-reject text-decoration-none">
+                                    <i class="bi bi-x-circle"></i> Reject Product
+                                </a>
+                            }
+                            else if (Model.IsApprovedFromAdmin == "Approved")
+                            {
+                                <form asp-action="DeleteProduct" asp-controller="Admin" asp-route-currentPage="@ViewBag.CurrentPage" asp-route-id="@Model.ProductId"
+                                      method="post" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    <button type="submit" class="btn-action btn-delete">
+                                        <i class="bi bi-trash"></i> Delete Product
+                                    </button>
+                                </form>
+                            }
+                        </div>
+
+                        <div class="section-card mb-4">
+                            <h5 class="section-title">
+                                <i class="bi bi-shop"></i> Seller Information
+                            </h5>
+                            <div>
+                                <p class="mb-2"><strong>Store:</strong> @Model.Seller.StoreName</p>
+                                <p class="mb-2"><strong>Seller ID:</strong> @Model.SellerId</p>
+                                <p class="mb-0"><strong>Products:</strong> @Model.Seller.Products.Count</p>
+                            </div>
+                        </div>
+
+                        <div class="section-card">
+                            <h5 class="section-title">
+                                <i class="bi bi-clock-history"></i> Audit Information
+                            </h5>
+                            <div class="small">
+                                <p class="mb-2"><strong>Created:</strong> @Model.CreatedAt?.ToString("MMM dd, yyyy HH:mm")</p>
+                                <p class="mb-0"><strong>Admin Status:</strong> @Model.IsApprovedFromAdmin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

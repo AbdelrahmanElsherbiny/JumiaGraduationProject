@@ -1,0 +1,103 @@
+﻿<style>
+    html {
+        font-size: 14px;
+    }
+    .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    }
+
+    html {
+        position: relative;
+        min-height: 100%;
+    }
+
+    /* body { */
+    /*     margin-bottom: 60px; */
+    /* } */
+
+    .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+        color: var(--bs-secondary-color);
+        text-align: end;
+    }
+
+    .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+        text-align: start;
+    }
+
+    .send-btn {
+        background-color: #f68b1e;
+        padding: 14px 30px;
+      
+        color: white;
+    }
+
+    .hotpink {
+        background-color: #f68b1e;
+        color: white
+    }
+</style>
+@{
+
+}
+<div class="container d-flex justify-content-center align-items-center">
+    <div class="chat-container w-75 shadow p-4 rounded-2 bg-light">
+       
+     
+        <div id="chat-box" class="messages-container p-3 bg-white rounded overflow-auto  text-white" style="height: 400px;">
+            <div class="message bg-light text-black p-3 rounded-2 mb-2 w-50">Hello! How can I help you?</div>
+        </div>
+
+        
+        <div class="d-flex mt-3">
+            <input type="text" id="message-input" class="form-control p-3 rounded-start" placeholder="Type a message..." />
+            <button id="send-btn" class=" search">Send</button>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#send-btn").click(function () {
+            sendMessage();
+        });
+
+        $("#message-input").keypress(function (e) {
+            if (e.which === 13) { 
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            var message = $("#message-input").val().trim();
+            if (message === "") return;
+
+           
+            $("#chat-box").append('<div class="message hotpink text-white  p-3 rounded mb-2 w-50 ms-auto text-end">' + message + '</div>');
+            $("#message-input").val(""); 
+
+            $.ajax({
+                url: "/api/chat/send",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ message: message }),
+                success: function (response) {
+                    
+                    $("#chat-box").append('<div class="message bg-light text-black p-3 rounded mb-2 w-50">' + response.reply + '</div>');
+
+                   
+                    $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+                },
+                   error: function (xhr) {
+        var errorMessage = "Error sending message.";
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+            errorMessage += " " + xhr.responseJSON.error;
+        }
+        $("#chat-box").append('<div class="message bg-danger text-white p-3 rounded mb-2 w-50">' + errorMessage + '</div>');
+    }});
+        }
+    });
+</script>
+

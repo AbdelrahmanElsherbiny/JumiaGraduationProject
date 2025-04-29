@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] Jumia</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/fontawesome-free-6.7.2-web/css/all.min.css" />
+    <link href="~/lib/nouislider/nouislider.min.css" rel="stylesheet" />
+    <script src="~/lib/nouislider/nouislider.min.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="shortcut icon" href="~/images/star.png" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/owl.theme.default.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/footer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sideBar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Cart.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/JumiaProject.styles.css" asp-append-version="true" />
+    <link href="~/lib/nouislider/nouislider.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/filteration.css" asp-append-version="true" />
+
+
+</head>
+<body>
+    <header>
+        @await Html.PartialAsync("_HeaderPartial")
+    </header>
+    <div class="container main-component">
+        <main role="main" class="pb-3 col-12">
+            @RenderBody()
+        </main>
+    </div>
+
+    @* <footer class="border-top footer"> *@
+        @await Html.PartialAsync("_FooterPartial")
+    @* </footer> *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/fontawesome-free-6.7.2-web/js/all.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/nouislider/nouislider.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

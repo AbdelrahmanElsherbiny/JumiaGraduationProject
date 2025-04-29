@@ -1,0 +1,125 @@
+﻿@model ApplicationUser
+
+<style>
+    /* Jumia-inspired Static Profile */
+    .static-profile {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        border: 1px solid #eaeaea;
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .profile-title {
+        color: #2a2a2a;
+        font-weight: 700;
+        font-size: 1.75rem;
+        display: inline-block;
+    }
+
+        .profile-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: #f68b1e;
+            border-radius: 2px;
+        }
+
+    .profile-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-group {
+        display: flex;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #2a2a2a;
+        width: 150px;
+    }
+
+    .info-value {
+        color: #555;
+        flex: 1;
+    }
+
+    .profile-icon {
+        color: #f68b1e;
+        margin-right: 0.5rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    @@media (max-width: 768px) {
+        .static-profile {
+            padding: 1.5rem;
+        }
+
+        .profile-title {
+            font-size: 1.5rem;
+        }
+
+        .info-group {
+            flex-direction: column;
+        }
+
+        .info-label {
+            width: 100%;
+            margin-bottom: 0.25rem;
+        }
+    }
+</style>
+
+<div class="static-profile">
+    <div class="profile-header">
+        <h2 class="profile-title">
+            <i class="bi bi-person-gear"></i> Admin Profile
+        </h2>
+    </div>
+
+    <div class="profile-info">
+        <div class="info-group">
+            <div class="info-label">
+                <i class="bi bi-person profile-icon"></i>Username
+            </div>
+            <div class="info-value">@Model.UserName</div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">
+                <i class="bi bi-envelope profile-icon"></i>Email
+            </div>
+            <div class="info-value">@Model.Email</div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">
+                <i class="bi bi-telephone profile-icon"></i>Phone
+            </div>
+            <div class="info-value">@(Model.PhoneNumber ?? "Not provided")</div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">
+                <i class="bi bi-shield-lock profile-icon"></i>Account Type
+            </div>
+            <div class="info-value">Admin</div>
+        </div>
+    </div>
+</div>

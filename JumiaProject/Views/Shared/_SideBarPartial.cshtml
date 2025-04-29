@@ -1,0 +1,75 @@
+﻿<link href="~/css/sideBar.css" rel="stylesheet" />
+<div class="side-bar">
+	<div class="side-line myaccount-sidebar">
+		<i class="side-bar-icon fa-regular fa-user"></i>
+		<a asp-controller="Profile" asp-action="MyAccount" class="side-bar-link myaccount-sidebar">My Jumia Account</a>
+	</div>
+	<div class="side-line order-sidebar">
+		<i class="side-bar-icon fa-solid fa-box"></i>
+		<a asp-action="UserOrders" asp-controller="Profile" class="side-bar-link order-sidebar">Order</a>
+	</div>
+	<div class="side-line">
+		<i class="side-bar-icon side-bar-icon fa-regular fa-envelope"></i>
+		<a asp-action="Inbox" asp-controller="Profile" class="side-bar-link">InBox</a>
+	</div>
+	<div class="side-line">
+		<i class="side-bar-icon fa-regular fa-message"></i>
+		<a asp-action="Reviews" asp-controller="Profile" class="side-bar-link">pending Reviews</a>
+	</div>
+	<div class="side-line">
+		<i class="side-bar-icon fa-solid fa-ticket"></i>
+		<a href="" class="side-bar-link">vouchers</a>
+	</div>
+	<div class="side-line wishlist-sidebar">
+		<i class="side-bar-icon fa-regular fa-heart"></i>
+		<a asp-action="UserWishlist" asp-controller="Profile" class="side-bar-link wishlist-sidebar">Wishlist</a>
+	</div>
+	<div class="side-line">
+
+		<a asp-action="FollowSeller" asp-controller="Profile" class="side-bar-link">Followed Seller</a>
+	</div>
+	<div class="side-line">
+		<i class="side-bar-icon fa-solid fa-clock-rotate-left"></i>
+		<a asp-action="RecentlyViewed" asp-controller="Product" class="side-bar-link">Recently Viewed</a>
+	</div>
+	<br />
+	<div class="side-line">
+		<a asp-controller="Profile" asp-action="DeleteAccount" class="side-bar-link">Close Account</a>
+	</div>
+	<div class="side-line">
+		<a asp-controller="Profile" asp-action="Address" class="side-bar-link">Address Book</a>
+	</div>
+	<div class="side-line">
+		<a href="" class="side-bar-link">Newsletter Preferences</a>
+	</div>
+	<div class="side">
+		<a asp-controller="Profile" asp-action="LogOut" >
+		     <button class="side-bar-button">Logout</button>
+		</a>
+	</div>
+</div>
+
+
+
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+		const currentPath = window.location.pathname;
+		const links = document.querySelectorAll('.side-line a');
+
+		links.forEach(link => {
+			if (link.getAttribute('href') === currentPath) {
+				link.parentElement.classList.add('active');
+				link.parentElement.style.pointerEvents = 'none';
+			}
+			link.addEventListener('click', function(e) {
+				document.querySelectorAll('.side-line').forEach(el => {
+					el.classList.remove('active');
+					el.style.pointerEvents = 'auto';
+				});
+				this.parentElement.classList.add('active');
+				this.parentElement.style.pointerEvents = 'none';
+			});
+		});
+	});
+		</script>

@@ -1,0 +1,242 @@
+﻿@model HomeVM
+<style>
+	body{
+		background-color:#f8f9fa !important;
+	}
+</style>
+<div class="slider-container h-100 d-flex justify-content-between mt-3 col-12">
+
+	<div class="category-names col-2">
+		<ul class="list-group">
+			@foreach (CategoryVM category in Model.Categories)
+			{
+				
+					<a class="d-block text-dark  border border-0 text-decoration-none " href="@Url.Action("Index", "Category", new { id = category.CategoryId })">
+				<li class="list-group-item border border-0 hover-orange">
+					@category.CategoryName
+				    </li>
+					</a>
+				
+			}
+		</ul>
+	</div>
+
+
+	<div class="slider-section h-100 col-8">
+		<div id="carouselExampleAutoplaying" class="carousel slide h-100" data-bs-ride="carousel">
+			<div class="carousel-inner h-100">
+				@foreach (var item in Model.SliderItems)
+				{
+					<div class="carousel-item h-100 @((item == Model.SliderItems.First()) ? "active" : "")">
+						<img src="@Url.Content(item.ImgURL)" class="d-block w-100 h-100">
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+
+	<div class="category-sidebar col-2 shadow-sm d-flex">
+		<div class="bg-white col-12 join-container">
+			<div class="sidebar-section mb-3">
+				<div class="d-flex">
+					<img src="/images/home/1.png" class="sid-bar-img p-1" />
+					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Join Jumia</a>
+				</div>
+				<p class="small text-muted">as a Sales Consultant</p>
+			</div>
+
+			<div class="sidebar-section mb-3">
+				<div class="d-flex">
+					<img src="/images/home/2.png" class="sid-bar-img p-1" />
+					<a asp-controller="SellerAccount" asp-action="selectcountry" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Sell on jumia</a>
+				</div>
+				<p class="small text-muted">And Grow Your Business</p>
+			</div>
+
+			<div class="sidebar-section mb-3">
+				<div class="d-flex">
+					<img src="/images/home/2.png" class="sid-bar-img p-1" />
+					<a href="" class="d-block text-dark text-decoration-none fs-5 fw-normal mb-1 hover-orange">Warranty</a>
+                </div>
+				<p class="small text-muted">On Your Purchases</p>
+			</div>
+		</div>
+		<div class="sidebar-section mb-3 pt-2">
+			<img src="/images/home/buy-now.png" class="col-12" style="height:13.5em; margin-top: 1em;" />
+		</div>
+	</div>
+</div>
+
+
+<div class="main_category rounded">
+	<div id="categoryScroll" class="col-12">
+		@foreach (var category in Model.Categories)
+		{
+			<div class="card col-2">
+				<a asp-action="Index" asp-controller="Category" asp-route-id="@category.CategoryId" class="text-decoration-none">
+				<img src="@Url.Content(category.ImageUrl)" height="150px" class="card-img-top" alt="@category.CategoryName">
+				<div class="card-body">
+					<span class="card-text dark-color">@category.CategoryName</span>
+				</div>
+				</a>
+			</div>
+		}
+	</div>
+</div>
+
+
+
+
+<div class="product-by-category">
+	<div class="mt-5">
+		<div class="d-flex flex-column">
+			@foreach(var category in Model.Categories.Where(c=>c.IsHomeCategory == true))
+			{
+				<div class="card-product text-center" style="min-width: 250px;">
+					<div class="card-body-product d-flex  justify-content-between">
+						<div>
+							<span class="card-title ">@category.CategoryName</span>
+						</div>
+						<div>
+							<a class="see-all text-decoration-none me-2 fw-medium" asp-controller="Category" asp-action="Index" asp-route-id="@category.CategoryId">See All <i class="fa-solid small12 fa-chevron-right"></i></a>
+						</div>
+					</div> 
+					<div class="d-flex justify-content-evenly p-3 bg-white">
+						@{
+							// Create a dictionary to track products we've already displayed for this category
+							var displayedProducts = new Dictionary<int, bool>();
+						}
+						
+						@foreach (ProductVM product in Model.Products)
+						{
+							if (category.CategoryId == product.CategoryId && !displayedProducts.ContainsKey(product.ProductId))
+							{
+								// Mark this product as displayed for this category
+								displayedProducts[product.ProductId] = true;
+								
+								<a asp-action="productdetails" asp-controller="Product" asp-route-id="@product.ProductId" class="text-decoration-none">
+									<div class="col-2">
+										<div class="card text-start product-card" style="height: 17.5em;">
+											<img src="@Url.Content(product.Images[0].ImageUrl)" width="100%" height="150px" class="col-12 w-100" style="14.5em" />
+											<h6 class="card-title m-0 px-1">@product.Name</h6>
+											<p class="card-text text-muted px-1">@product.Description</p>
+											<p class="px-1" style="font-weight: 500;">EGP @product.Price</p>
+										</div>
+									</div>
+								</a>
+							}
+						}
+					</div>
+				</div>
+				<br />
+				<br />
+			}
+		</div>
+	</div>
+</div>
+@{
+	var recentlyViewed = ViewBag.recentlyViewed as List<Product>;
+}
+@if (User.Identity.IsAuthenticated && recentlyViewed != null && recentlyViewed.Count > 0)
+{
+	<div class="card-product m-auto rounded bg-white mb-4">
+		<div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+			<h4 class="dark-color m-0">Recently Viewed</h4>
+			<a class="my-color text-decoration-none me-2 fw-medium" asp-action="RecentlyViewed" asp-controller="product">
+				See All <i class="fa-solid small12 fa-chevron-right my-color"></i>
+			</a>
+		</div>
+		<div class="cart-items-container p-2 pb-3 d-flex justify-content-evenly" style="margin:8px;">
+			@foreach (var product in recentlyViewed)
+			{
+				<a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+					<div class="col-2">
+						<div class="cartitem rounded text-start product-card" style="height: 17.5em;">
+							<img src="@Url.Content(product.ProductImages.ToList()[0].ImageUrl)" alt="" class="">
+							<p class="m-0 p-0 small14 text-black">@product.Name</p>
+							<p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+							@if (product.Discount != 0)
+							{
+								<p class="disable-color text-decoration-line-through m-0 p-0 small14">
+									EGP @(@product.Price - (@product.Price * @product.Discount))
+								</p>
+								<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">
+									-@((product.Discount * 100)?.ToString("N0"))%
+								</span>
+							}
+						</div>
+					</div>
+				</a>
+			}
+		</div>
+	</div>
+}
+
+<div class="card-product m-auto rounded bg-white mb-4">
+	<div class=" bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+		<h4 class="dark-color m-0">Best Sellers</h4>
+		<a class="my-color text-decoration-none me-2 fw-medium" asp-controller="product" asp-action="getbestseller">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
+	</div>
+	<div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
+		@foreach (Product product in ViewBag.BestSeller)
+		{
+			<a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+
+				<div class="cartitem bg-white p-2 rounded position-relative">
+					<img src="@Url.Content(product.ProductImages.ToList()[0].ImageUrl)" alt="" class="">
+					<p class="m-0 p-0 small14 text-black">@product.Name</p>
+					<p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+					@if (product.Discount != 0)
+					{
+						<p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
+						<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">-@((product.Discount * 100)?.ToString("N0"))%</span>
+					}
+
+				</div>
+			</a>
+		}
+	</div>
+</div>
+
+<div class="card-product  m-auto rounded bg-white mt-4">
+	<div class="bg-white d-flex justify-content-between py-1 mb-0 px-3 align-items-center ">
+		<h4 class="dark-color m-0">Exclusive Offers | Up to 70% off</h4>
+		<a class="my-color text-decoration-none me-2 fw-medium" asp-action="GetMostDiscount" asp-controller="product">See All <i class="fa-solid small12 fa-chevron-right my-color"></i></a>
+	</div>
+	<div class="cart-items-container p-2 pb-3 d-flex justify-content-around">
+		<div class="owl-carousel owl-theme bg-white myOwlCarousel">
+			@foreach (Product product in ViewBag.MostDiscount)
+			{
+				<a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
+
+					<div class="cartitem bg-white p-2 rounded position-relative">
+						<img src="@Url.Content(product.ProductImages.ToList()[0].ImageUrl)" alt="" class="">
+						<p class="m-0 p-0 small14 text-black">@product.Name</p>
+						<p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
+						@if (product.Discount != 0)
+						{
+							<p class="disable-color text-decoration-line-through m-0 p-0 small14">EGP @((@product.Price - (@product.Price * @product.Discount))?.ToString("N2"))</p>
+							<span class="item-sale rounded item-position position-absolute mt-1 me-1 top-0 end-0">-@((product.Discount * 100)?.ToString("N0"))%</span>
+						}
+
+					</div>
+				</a>
+			}
+		</div>
+	</div>
+</div>
+
+
+<button class="scroll-to-top" id="scroll-to-top"><i class="fa-solid fa-chevron-up" style="height:15px; width:15px; font-weight:500;"></i></button>
+
+@section Scripts {
+	<script src="~/js/cart.js"></script>
+	<script src="~/js/home.js"></script>
+}
+
+
+
+
+
+

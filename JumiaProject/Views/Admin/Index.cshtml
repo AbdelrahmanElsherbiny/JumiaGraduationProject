@@ -1,0 +1,175 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Admin | Jumia</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link href="~/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Hamburger Button -->
+    <button id="hamburgerBtn" aria-label="Toggle menu">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+            <i class="bi bi-x"></i>
+        </button>
+
+        <div class="navbar-logo">
+            <img src="~/images/jumia.jpeg" alt="Jumia">
+        </div>
+
+        <div class="nav-category">Main Menu</div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Dashboard')" data-section="dashboard">
+                    <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Products')" data-section="products">
+                    <i class="bi bi-box-seam"></i> <span>Products</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Orders')" data-section="orders">
+                    <i class="bi bi-bag"></i> <span>Orders</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Categories')" data-section="categories">
+                    <i class="bi bi-tags"></i> <span>Categories</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-category">Users</div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Customers')" data-section="customers">
+                    <i class="bi bi-people"></i> <span>Customers</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Sellers')" data-section="sellers">
+                    <i class="bi bi-shop"></i> <span>Sellers</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="nav-category">Admin</div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" onclick="loadContent('Profile')" data-section="profile">
+                    <i class="bi bi-person-circle"></i> <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="signOutLink" asp-action="LogoutAdmin" asp-controller="Account">
+                    <i class="bi bi-box-arrow-right"></i> <span>Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="mt-5">
+        <!-- Content will be loaded here dynamically -->
+    </main>
+
+    <script>
+                // Add this near the top of your script section
+        $(document).ready(function() {
+            // Make warmup call as soon as page starts loading
+            $.get('@Url.Action("WarmUp", "Admin")');
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with sidebar closed
+            $('#sidebar').removeClass('show');
+
+            // Load initial content
+            loadContent('@Model', @ViewBag.currentPage);
+
+            // Toggle sidebar
+            $('#hamburgerBtn').click(function() {
+                $('#sidebar').toggleClass('show');
+            });
+
+            // Close sidebar
+            $('#sidebarClose').click(function() {
+                $('#sidebar').removeClass('show');
+            });
+
+            // Highlight active nav item and close sidebar when clicked
+            $(document).on('click', '.nav-link', function() {
+                $('.nav-item').removeClass('active');
+                $(this).parent().addClass('active');
+                $('#sidebar').removeClass('show');
+            });
+        });
+
+        function loadContent(section, pageNum = 1, searchTerm = '', statusFilter = 'all') {
+            $.ajax({
+                url: '@Url.Action("LoadSection", "Admin")',
+                data: {
+                    sectionName: section,
+                    pageNum: pageNum,
+                    searchTerm: searchTerm,
+                    statusFilter: statusFilter
+                },
+                success: function(data) {
+                    $('#main-content').html(data);
+                    $('.nav-item').removeClass('active');
+                    $(`[data-section="${section.toLowerCase()}"]`).parent().addClass('active');
+                }
+            });
+        }
+
+                    let searchTimer;
+        let lastSearchValue = '';
+        const DEBOUNCE_DELAY = 300;
+
+        function handleSearch(section) {
+            const searchInput = $(`#${section}Search`);
+            const currentValue = searchInput.val();
+
+            // Skip if value hasn't changed
+            if (currentValue === lastSearchValue) return;
+
+            lastSearchValue = currentValue;
+            clearTimeout(searchTimer);
+
+            searchTimer = setTimeout(() => {
+                const statusFilter = $(`#${section}StatusFilter`).val();
+
+                loadContent(section, 1, currentValue, statusFilter);
+
+                setTimeout(() => {
+                    const input = $(`#${section}Search`)[0];
+                    if (input) {
+                        input.focus();
+                        input.setSelectionRange(input.value.length, input.value.length);
+                        // Restore cursor position for faster typists
+                        input.value = currentValue;
+                    }
+                }, 100);
+            }, DEBOUNCE_DELAY);
+        }
+
+        function handleStatusFilterChange(section) {
+            const searchTerm = $(`#${section}Search`).val();
+            const statusFilter = $(`#${section}StatusFilter`).val();
+            loadContent(section, 1, searchTerm, statusFilter);
+        }
+    </script>
+</body>
+</html>
