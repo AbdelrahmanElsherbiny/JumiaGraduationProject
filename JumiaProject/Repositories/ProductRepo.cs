@@ -20,12 +20,12 @@ namespace JumiaProject.Repositories
 
         public List<Product> GetAllProducts()
         {
-            return Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).ToList();
+            return Context.Products.Where(p => p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false).ToList();
         }
         public List<Product> GetProductsPaginated(int pageNumber)
         {
             int pageSize = 10;
-            return Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.IsApprovedFromAdmin).ThenBy(p => p.ProductId).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return Context.Products.Where(p => p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false).OrderByDescending(p => p.IsApprovedFromAdmin).ThenBy(p => p.ProductId).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
         public (List<Product> Products, int TotalCount) GetProductsPaginated(int page, int pageSize, string search, string filters)
         {
@@ -66,7 +66,7 @@ namespace JumiaProject.Repositories
 
         public Product GetProductById(int id)
         {
-            return Context.Products.Where(p => p.IsDeleted == false).FirstOrDefault(p => p.ProductId == id);
+            return Context.Products.Where(p => p.IsDeleted == false && p.IsApprovedFromAdmin != "Not Approved").FirstOrDefault(p => p.ProductId == id);
         }
         public void DeleteProduct(int id)
         {
@@ -152,11 +152,11 @@ namespace JumiaProject.Repositories
             if (category.ParentCategoryId==null)
             {
                 var subcategories = Context.Categories.Where(c => c.ParentCategoryId == id).Select(c => c.CategoryId).ToList();
-                return Context.Products.Where(p => subcategories.Contains(p.CategoryId)).ToList();
+                return Context.Products.Where(p => subcategories.Contains(p.CategoryId) && p.IsDeleted == false && p.IsApprovedFromAdmin == "Approved").ToList();
             }
             else 
             {
-                return Context.Products.Where(p => p.Category.CategoryId == id).ToList();
+                return Context.Products.Where(p => p.Category.CategoryId == id && p.IsDeleted == false && p.IsApprovedFromAdmin == "Approved").ToList();
             }
         }
         public List<Product> GetProductsByBrand(int id, int pageIndex = 1, int pageSize = 10)
@@ -224,40 +224,40 @@ namespace JumiaProject.Repositories
         }
         public  List<Product> Get6BestSeller()
         {
-            var bestseller = Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Take(6).ToList();
+            var bestseller = Context.Products.Where(p => p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Take(6).ToList();
             return bestseller;
         }
         public List<Product> GetBestSeller(int pageIndex = 1, int pageSize = 10)
         {
-            var bestseller = Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            var bestseller = Context.Products.Where(p => p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false && p.SoldNumber>100).OrderByDescending(p => p.SoldNumber).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             return bestseller;
         }
         public int GetBestSellerCount()
         {
-            var bestsellerCount = Context.Products.Where(p => p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.SoldNumber).Count();
+            var bestsellerCount = Context.Products.Where(p => p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false && p.SoldNumber > 100).OrderByDescending(p => p.SoldNumber).Count();
             return bestsellerCount;
         }
         public int GetMostDiscountCount()
         {
-            var mostDiscounCount = Context.Products.Where(p => p.Discount != 0&& p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.Discount).Count();
+            var mostDiscounCount = Context.Products.Where(p => p.Discount != 0&& p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false).OrderByDescending(p => p.Discount).Count();
             return mostDiscounCount;
         }
         public int GetProductsByBrandCount(int id)
         {
-            var productByBrandCount = Context.Products.Where(b => b.BrandId == id&& b.IsApprovedFromAdmin != "Not Approved" && b.IsDeleted == false).Count();
+            var productByBrandCount = Context.Products.Where(b => b.BrandId == id&& b.IsApprovedFromAdmin == "Approved" && b.IsDeleted == false).Count();
             return productByBrandCount;
         }
 
         public List<Product> GetMostDiscount(int pageIndex = 1, int pageSize = 10)
         {
-            var bestseller = Context.Products.Where(p=>p.Discount!=0&& p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).OrderByDescending(p => p.Discount).Skip((pageIndex - 1) * pageSize)
+            var bestseller = Context.Products.Where(p=>p.Discount!=0&& p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false).OrderByDescending(p => p.Discount).Skip((pageIndex - 1) * pageSize)
                                     .Take(pageSize)
                                     .ToList();
             return bestseller;
         }
         public List<Product> SearchProducts(string query)
         {
-            var results = Context.Products.Where(p => p.Name.Contains(query)&& p.IsApprovedFromAdmin != "Not Approved" && p.IsDeleted == false).ToList();
+            var results = Context.Products.Where(p => p.Name.Contains(query)&& p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false).ToList();
             return results;
         }
         public int IsExistBrand(string brand)
@@ -422,9 +422,6 @@ namespace JumiaProject.Repositories
                 .OrderByDescending(x => x.Value)
                 .Take(8)
                 .ToDictionary(x => x.Key, x => x.Value);
-        }
-
-    }
         }
 
 

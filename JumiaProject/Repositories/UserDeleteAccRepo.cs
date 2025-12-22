@@ -51,7 +51,7 @@ namespace JumiaProject.Repositories
 
             if (user == null)
             {
-                return; 
+                return;
             }
             var wishlistItems = await Context.Wishlists.Where(w => w.UserId == user.Id).ToListAsync();
             Context.Wishlists.RemoveRange(wishlistItems);

@@ -64,24 +64,15 @@ namespace JumiaProject.Repositories
             {
                 new Slider
                 {
-                    ImgURL="~/images/slider/1.jpg",
-                    Link=""
-                },
-                 new Slider
-                {
-                    ImgURL="/images/slider/3.jpg",
+                    ImgURL="~/images/slider/4.png",
                     Link=""
                 }, new Slider
                 {
-                    ImgURL="~/images/slider/4.jpg",
+                    ImgURL="~/images/slider/5.png",
                     Link=""
                 }, new Slider
                 {
-                    ImgURL="~/images/slider/5.jpg",
-                    Link=""
-                }, new Slider
-                {
-                    ImgURL="~/images/slider/6.jpg",
+                    ImgURL="~/images/slider/6.png",
                     Link=""
                 }, new Slider
                 {
@@ -102,7 +93,8 @@ namespace JumiaProject.Repositories
                 {
                     CategoryId = category.CategoryId,
                     CategoryName = category.CategoryName,
-                    ImageUrl = category.ImageUrl
+                    ImageUrl = category.ImageUrl,
+                    IsHomeCategory = category.IsHomeCategory
                 };
                 categoriesVM.Add(categoryVM);
             }
@@ -116,7 +108,7 @@ namespace JumiaProject.Repositories
             List<ProductVM> productVMs = new List<ProductVM>();
             foreach (CategoryVM categoryVM in categories)
             {
-                products = product.GetProductsByCategory(categoryVM.CategoryId).Take<Product>(6).ToList();
+                products = product.GetProductsByCategory(categoryVM.CategoryId).Where(p=>p.IsDeleted == false && p.IsApprovedFromAdmin == "Approved").Take(6).ToList();
                 foreach (Product product in products)
                 {
                     ProductVM productVM = new ProductVM
@@ -127,7 +119,9 @@ namespace JumiaProject.Repositories
                         Price = product.Price,
                         Stock = product.Stock,
                         CategoryId = product.CategoryId,
-                        Discount = product.Discount
+                        Discount = product.Discount,
+                        Images = product.ProductImages.ToList()
+
                     };
                     productVMs.Add(productVM);
                 }
@@ -138,3 +132,4 @@ namespace JumiaProject.Repositories
 
     }
 }
+

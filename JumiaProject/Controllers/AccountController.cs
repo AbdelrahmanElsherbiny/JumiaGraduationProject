@@ -39,14 +39,15 @@ namespace JumiaProject.Controllers
                     loginVM.Email = model.Email;
                     return RedirectToAction("Password");
                 }
-                ApplicationUser? userModel = await userManager.FindByEmailAsync(model.Email); ;
+                //ApplicationUser userModel = await userManager.FindByEmailAsync(model.Email);
+                ApplicationUser? userModel = userManager.Users.FirstOrDefault(u => u.Email == model.Email && u.IsDeleted == false);
                 if (userModel != null && userModel.IsDeleted!=true)
                 {
                     loginVM.Email = model.Email;
                     return RedirectToAction("Password");
                 }
-                // string verificationCode = GenerateVerificationCode();   //justfor now roma
-                string verificationCode = "1234";
+                string verificationCode = GenerateVerificationCode();   //justfor now roma
+                //string verificationCode = "1234";
 
                 loginVM.Email = model.Email;
                 loginVM.VerificationCode = verificationCode;
@@ -96,8 +97,8 @@ namespace JumiaProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser userModel = await userManager.FindByEmailAsync(loginVM.Email);
-
+                //ApplicationUser userModel = await userManager.FindByEmailAsync(loginVM.Email);
+                ApplicationUser? userModel = userManager.Users.FirstOrDefault(u => u.Email == loginVM.Email && u.IsDeleted == false);
                 if (userModel == null)
                 {
 
@@ -162,15 +163,15 @@ namespace JumiaProject.Controllers
             };
 
 
-          //  smtp.Send(fromEmail, toEmail, subject, body);
+            smtp.Send(fromEmail, toEmail, subject, body);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]  
         public ActionResult ResendCode(string email)
         {
-           // string verificationCode = GenerateVerificationCode();
-            string verificationCode = "1234";  //jsust for now roma
+            string verificationCode = GenerateVerificationCode();
+            //string verificationCode = "1234";  //jsust for now roma
             loginVM.Email = email;
             loginVM.VerificationCode = verificationCode;
             loginVM.CodeSentTime = DateTime.Now;
@@ -183,8 +184,8 @@ namespace JumiaProject.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ResendCodeVerify(string email)
         {
-            // string verificationCode = GenerateVerificationCode();
-            string verificationCode = "1234";  //jsust for now roma
+            string verificationCode = GenerateVerificationCode();
+            //string verificationCode = "1234";  //jsust for now roma
             loginVM.Email = email;
             loginVM.VerificationCode = verificationCode;
             loginVM.CodeSentTime = DateTime.Now;
@@ -285,7 +286,8 @@ namespace JumiaProject.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
+                ApplicationUser? user = userManager.Users.FirstOrDefault(u => u.Email == model.Email && u.IsDeleted == false);
+             //   var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError("", "No user found with this email.");
@@ -293,10 +295,10 @@ namespace JumiaProject.Controllers
                 }
                 var code = GenerateVerificationCode();
                 loginVM.CodeSentTime = DateTime.Now;
-                loginVM.VerificationCode = "1234"; //code;   //just for now roma
+                loginVM.VerificationCode = code; //code;   //just for now roma
                 loginVM.Email = model.Email;
                 ViewBag.UserEmail = model.Email;
-                SendVerificationCode(model.Email, "1234");
+                SendVerificationCode(model.Email, code);
                 return RedirectToAction("VerifyCodeForgetPassword");
             }
             return View(model);

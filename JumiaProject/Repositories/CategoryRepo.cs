@@ -97,7 +97,7 @@ namespace JumiaProject.Repositories
         public async Task<List<Brand>> GetBrandsByCategory(int categoryId)
         {
             var brands = await Context.Products
-             .Where(p => p.CategoryId == categoryId)
+             .Where(p => (p.CategoryId == categoryId && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false) || (p.Category.ParentCategoryId == categoryId && p.Price > 0 && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false))
              .Select(p => p.Brand)
              .Distinct()
              .ToListAsync();
@@ -107,7 +107,7 @@ namespace JumiaProject.Repositories
         public async Task<List<decimal>> GetProductsByPriceRange(int categoryId)
         {
             var products = await Context.Products
-           .Where(p => p.CategoryId == categoryId && p.Price > 0)
+           .Where(p => (p.CategoryId == categoryId && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false )|| (p.Category.ParentCategoryId == categoryId && p.Price > 0 && p.IsApprovedFromAdmin == "Approved"&& p.IsDeleted == false) )
            .Select(p => p.Price)
            .Distinct()
            .OrderBy(p => p)
@@ -124,7 +124,7 @@ namespace JumiaProject.Repositories
         public async Task<List<decimal>> GetProductsByDiscount(int categoryId)
         {
             var discounts = await Context.Products
-          .Where(p => p.CategoryId == categoryId && p.Discount.HasValue)
+          .Where(p => (p.CategoryId == categoryId && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false) || (p.Category.ParentCategoryId == categoryId && p.Discount.HasValue && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false))
           .Select(p => p.Discount.Value)
           .Distinct()
           .OrderBy(d => d)
@@ -141,7 +141,7 @@ namespace JumiaProject.Repositories
             decimal? maxPrice,
             List<decimal>? selectedDiscounts)
         {
-            var query = Context.Products.Where(p => p.CategoryId == categoryId);
+            var query = Context.Products.Where(p => (p.CategoryId == categoryId && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false) || (p.Category.ParentCategoryId == categoryId && p.Price > 0 && p.IsApprovedFromAdmin == "Approved" && p.IsDeleted == false));
 
             if (sizeId != null && sizeId.Any())
             {

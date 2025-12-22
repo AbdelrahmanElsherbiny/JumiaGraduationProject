@@ -122,7 +122,7 @@
                                 <td>@(order.OrderDate.HasValue ? order.OrderDate.Value.ToString("MM/dd/yyyy") : "N/A")</td>
                                 <td>$@order.TotalAmount.ToString("0.00")</td>
                                 <td>@order.OrderStatus</td>
-                                <td>@order.ShippingMethod</td>
+                                <td>@order.ShippingMethod.ShippingMethodName</td>
                             </tr>
                         }
                     </tbody>

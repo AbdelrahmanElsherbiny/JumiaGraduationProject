@@ -62,7 +62,7 @@ namespace JumiaProject.Controllers
                 string verificationCode = GenerateVerificationCode();
                 registerVM.Email = model.Email;
                 registerVM.CodeSentTime = DateTime.Now;
-                registerVM.VerificationCode = "1234";   /////just until now Roma
+                registerVM.VerificationCode = verificationCode;   /////just until now Roma
                 ViewBag.UserEmail = model.Email;
                 SendVerificationCode(model.Email, verificationCode);
                 return RedirectToAction("VerifyCode");
@@ -96,7 +96,7 @@ namespace JumiaProject.Controllers
             };
 
 
-          //  smtp.Send(fromEmail, toEmail, subject, body);    ////just for now roma
+            smtp.Send(fromEmail, toEmail, subject, body);    ////just for now roma
         }
 
         [HttpGet]
@@ -134,7 +134,7 @@ namespace JumiaProject.Controllers
             string verificationCode = GenerateVerificationCode();
             registerVM.Email = email;
             //registerVM.VerificationCode = verificationCode;
-            registerVM.VerificationCode = "1234";  //just for now roma
+            registerVM.VerificationCode = verificationCode;  //just for now roma
             registerVM.CodeSentTime = DateTime.Now;
             SendVerificationCode(email, verificationCode);
             ViewBag.UserEmail = email;
@@ -197,7 +197,7 @@ namespace JumiaProject.Controllers
                     {
                         await userManager.AddToRoleAsync(userModel, "Seller");
                         await signInManager.SignInAsync(userModel, isPersistent: false);
-                        return RedirectToAction("Index", "Home");    // just for now until seller dashboard
+                        return RedirectToAction("ProductsList", "Seller");    // just for now until seller dashboard
                     }
                     foreach (var error in result.Errors)
                     {
@@ -234,7 +234,7 @@ namespace JumiaProject.Controllers
                 if (found)
                 {
                     await signInManager.SignInAsync(userModel, seller.RememberMe);
-                    return RedirectToAction("Index", "Home");   ////just for now Roma until seller panel
+                    return RedirectToAction("ProductsList", "Seller"); ////just for now Roma until seller panel
                 }
                 else
                 {
@@ -268,10 +268,10 @@ namespace JumiaProject.Controllers
                 }
                 var code = GenerateVerificationCode();
                 registerVM.CodeSentTime = DateTime.Now;
-                registerVM.VerificationCode = "1234"; //code;   //just for now roma
+                registerVM.VerificationCode = code; //code;   //just for now roma
                 registerVM.Email = model.Email;
                 ViewBag.UserEmail = model.Email;
-                SendVerificationCode(model.Email, "1234");
+                SendVerificationCode(model.Email, code);
                 return RedirectToAction("VerifyCodeForgetPassword");
             }
             return View(model);

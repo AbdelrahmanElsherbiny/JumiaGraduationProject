@@ -9,5 +9,6 @@ namespace JumiaProject.ViewModels
         public string CategoryName { get; set; } = null!;
 
         public string? ImageUrl { get; set; }
+        public bool? IsHomeCategory { get; set; }
     }
 }

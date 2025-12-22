@@ -61,7 +61,7 @@
                                 {
                                     <p>
                                         <span class="product-original-price"><del>EGP @wishlistItem.Product.Price.ToString("N2")</del></span>
-                                        <span class="discount">-@(wishlistItem.Product.Discount*100)%</span>
+                                        <span class="discount">-@((wishlistItem.Product.Discount*100)?.ToString("N0"))%</span>
                                     </p>
                                 }
                             </div>

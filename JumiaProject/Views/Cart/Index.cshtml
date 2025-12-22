@@ -45,8 +45,8 @@ else
                     <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@item.ProductId">
                         <div class="item-container bg-white d-flex justify-content-between">
                             <div class="d-flex">
-                                <div class="item-img">
-                                    <img src="~/images/productcart.jpg" alt="">
+                                <div class="item-img me-2">
+                                    <img src="@Url.Content(item.Product.ProductImages.ToList()[0].ImageUrl)" alt="">
                                 </div>
                                 <div class="main-content">
                                     <h3 class=" m-0 h5 dark-color">@item.Product.Name</h3>
@@ -73,7 +73,7 @@ else
                                 <h2 class="h4 dark-color">EGP @((@item.Product.Price - (@item.Product.Price * @item.Product.Discount))?.ToString("N2"))</h2>
                                 @if(item.Product.Discount!=0){
 
-                                    <p><span class="disable-color text-decoration-line-through">EGP @item.Product.Price.ToString("N2")</span><span class="item-sale p-1 rounded ms-1">-@item.Product.Discount%</span></p>
+                                    <p><span class="disable-color text-decoration-line-through">EGP @item.Product.Price.ToString("N2")</span><span class="item-sale p-1 rounded ms-1">-@((item.Product.Discount*100)?.ToString("N0"))%</span></p>
                                 }else
                                 {
                                     <h2 class="h4 dark-color"></h2>
@@ -153,7 +153,7 @@ else
       <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
       
             <div class="cartitem bg-white p-2 rounded position-relative">
-                <img src="~/images/best.jpg" alt="" class="">
+                    <img src="@Url.Content(product.ProductImages.ToList()[0].ImageUrl)" alt="" class="">
                 <p class="m-0 p-0 small14 text-black">@product.Name</p>
                     <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                 @if(product.Discount!=0){
@@ -179,7 +179,7 @@ else
                 <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
 
                     <div class="cartitem bg-white p-2 rounded position-relative">
-                        <img src="~/images/best.jpg" alt="" class="">
+                        <img src="@Url.Content(product.ProductImages.ToList()[0].ImageUrl)" alt="" class="">
                         <p class="m-0 p-0 small14 text-black">@product.Name</p>
                         <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price.ToString("N2")</p>
                         @if (product.Discount != 0)

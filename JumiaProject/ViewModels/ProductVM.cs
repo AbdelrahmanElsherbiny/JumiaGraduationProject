@@ -16,5 +16,6 @@ namespace JumiaProject.ViewModels
 
         public int CategoryId { get; set; }
         public Decimal? Discount { get; set; }
+        public List<ProductImage>? Images { get; set; }
     }
 }

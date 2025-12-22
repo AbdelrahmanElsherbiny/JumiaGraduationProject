@@ -3,12 +3,14 @@ using JumiaProject.Context;
 using JumiaProject.Interfaces;
 using JumiaProject.Models;
 using JumiaProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace JumiaProject.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         IProduct Product;
@@ -165,9 +167,9 @@ namespace JumiaProject.Controllers
             ViewBag.currentPage = pageNum;
             return View("AdminOrderDetails", order1);
         }
-        public IActionResult CustomerDetails(string id, int pageNum)
+        public async Task<IActionResult> CustomerDetails(string id, int pageNum)
         {
-            var user1 = User.GetUserById(id);
+            var user1 = await User.GetUserById(id);
             if (user1 == null)
             {
                 return NotFound();

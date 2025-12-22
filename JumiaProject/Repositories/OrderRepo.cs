@@ -150,19 +150,19 @@ namespace JumiaProject.Repositories
         public List<Order> GetOrdersForSeller(string sellerId)
         {
             // Fetch orders that include products from the specified seller
-            var orders = Context.Orders
-                .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
-                .Where(o => o.OrderItems.Any(oi => oi.Product.SellerId == sellerId))
-                .ToList();
+            var orders = Context.Orders.Where(o => o.OrderItems.Any(oi => oi.Product.SellerId == sellerId)).ToList();
+                //.Include(o => o.OrderItems)
+                //.ThenInclude(oi => oi.Product)
+                //.Where(o => o.OrderItems.Any(oi => oi.Product.SellerId == sellerId))
+                //.ToList();
 
             // Filter the order items to include only the products of the specified seller
-            foreach (var order in orders)
-            {
-                order.OrderItems = order.OrderItems
-                    .Where(oi => oi.Product.SellerId == sellerId)
-                    .ToList();
-            }
+            //foreach (var order in orders)
+            //{
+            //    order.OrderItems = order.OrderItems
+            //        .Where(oi => oi.Product.SellerId == sellerId)
+            //        .ToList();
+            //}
 
             return orders;
         }

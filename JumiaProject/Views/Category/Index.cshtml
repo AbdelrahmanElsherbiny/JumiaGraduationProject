@@ -35,63 +35,69 @@
 <input type="hidden" id="CategoryId" value="@Model.CategoryId" />
 
 <div class="parentItem m-auto rounded d-flex mb-2">
-    <div class="cart-summary bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 mt-0">
-
-        <div class="filteration">
-            <Header class="filter-name">BRAND</Header>
-            @foreach (var brand in @Model.Brands)
-            {
-                <div class="chech-box-div">
-                    <input type="checkbox" class="check" name="brandIds" id="brand-@brand.BrandId" value="@brand.BrandId" />
-                    <label for="@brand.BrandId">@brand.BrandName</label>
-                </div>
-            }
-        </div>
-        <hr class="line" />
-        <div class="filteration">
-            <Header class="filter-name">DISCOUNT</Header>
-
-            @foreach (var discount in Model.Discounts)
-            {
-                <div class="chech-box-div">
-                    <input type="checkbox" class="check"
-                           id="@discount"
-                           name="discountList"
-                           value="@discount.ToString("0.##")" />
-                    <label for="@discount">@discount%</label>
-                </div>
-            }
-        </div>
-        @if(Model.Sizes.Count != 0){
-        <hr class="line" />
-        <div class="filteration">
-            <header class="filter-name">SIZE</header>
-            @foreach (var size in Model.Sizes)
-            {
-                <div class="chech-box-div">
-                    <input type="checkbox" class="check"
-                           name="sizeIds"
-                           id="@size.SizeId"
-                           value="@size.SizeId" />
-                    <label for="@size.SizeId">@size.SizeLabel</label>
-                </div>
-            }
-
-        </div>
-        }
-
-        <hr class="line" />
-        <div class="filteration">
-            <div class="price d-flex">
-                <header class="filter-name">PRICE</header>
-                <button class="apply" id="applyPriceBtn">Apply</button>
+    <div class="cart-summary bg-white rounded">
+        <div class="bg-white rounded d-flex justify-content-between flex-column py-1 mb-0 px-3 mt-0">
+            <div class="filteration">
+                <Header class="filter-name">BRAND</Header>
+                @foreach (var brand in @Model.Brands)
+                {
+                    <div class="chech-box-div">
+                        <input type="checkbox" class="check" name="brandIds" id="brand-@brand.BrandId" value="@brand.BrandId" />
+                        <label for="@brand.BrandId">@brand.BrandName</label>
+                    </div>
+                }
             </div>
-            <div id="price-slider"></div>
-            <div class="price-num d-flex">
-                <input type="number" class="price-input" id="minPriceInput" value="@Model.MinPrice" />
-                <input type="number" class="price-input" id="maxPriceInput" value="@Model.MaxPrice" />
-            </div>
+            <hr class="line" />
+            <div class="filteration">
+                <Header class="filter-name">DISCOUNT</Header>
 
+                @foreach (var discount in Model.Discounts)
+                {
+                    <div class="chech-box-div">
+                        <input type="checkbox" class="check"
+                               id="@discount"
+                               name="discountList"
+                               value="@discount.ToString("0.##")" />
+                        <label for="@discount">@((discount * 100).ToString("N0"))%</label>
+                    </div>
+                }
+            </div>
+            @if (Model.Sizes.Count != 0)
+            {
+                <hr class="line" />
+                <div class="filteration">
+                    @if (Model.Sizes.All(s => s != null))
+                    {
+                        <header class="filter-name">SIZE</header>
+                        @foreach (var size in Model.Sizes)
+                        {
+                            <div class="chech-box-div">
+                                <input type="checkbox" class="check"
+                                       name="sizeIds"
+                                       id="@size.SizeId"
+                                       value="@size.SizeId" />
+                                <label for="@size.SizeId">@size.SizeLabel</label>
+                            </div>
+                        }
+                    }
+
+
+                </div>
+            }
+
+            <hr class="line" />
+            <div class="filteration">
+                <div class="price d-flex">
+                    <header class="filter-name">PRICE</header>
+                    <button class="apply" id="applyPriceBtn">Apply</button>
+                </div>
+                <div id="price-slider"></div>
+                <div class="price-num d-flex">
+                    <input type="number" class="price-input" id="minPriceInput" value="@Model.MinPrice" />
+                    <input type="number" class="price-input" id="maxPriceInput" value="@Model.MaxPrice" />
+                </div>
+
+            </div>
         </div>
     </div>
     <div class="cartitemcat-container  bg-white ms-4 rounded" >

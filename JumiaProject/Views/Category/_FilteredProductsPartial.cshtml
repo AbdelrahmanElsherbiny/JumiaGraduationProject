@@ -33,7 +33,7 @@
         }
         }
         <a class="text-decoration-none" asp-action="Productdetails" asp-controller="product" asp-route-id="@product.ProductId">
-            <img src="~/images/best.jpg" alt="" class="">
+            <img src="@Url.Content(product.ProductImages.ToList()[0].ImageUrl)" alt="" class="">
             <p class="m-0 p-0 small14 text-black">@product.Name</p>
             <p class="m-0 p-0 small16 fw-medium dark-color">EGP @product.Price</p>
             @if (product.Discount != 0)

@@ -383,7 +383,7 @@
                                 <td>
                                     @if (product.ProductImages.Any(i => i.IsPrimary == true))
                                     {
-                                        <img src="@product.ProductImages.First(i => i.IsPrimary == true).ImageUrl" 
+                                        <img src="@Url.Content(product.ProductImages.First(i => i.IsPrimary == true).ImageUrl)"
                                              alt="@product.Name" class="product-thumbnail">
                                     }
                                     else
