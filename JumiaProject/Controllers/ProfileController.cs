@@ -191,7 +191,7 @@ namespace JumiaProject.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            await Delete.RemoveUserDataByEmail(user.Email);
+            //await Delete.RemoveUserDataByEmail(user.Email);
             var deleteSuccess = await Delete.DeleteAccount(user.Email);
             Console.WriteLine($"Delete Success: {deleteSuccess}");
             if (deleteSuccess)

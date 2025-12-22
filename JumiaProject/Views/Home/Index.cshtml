@@ -6,7 +6,7 @@
 </style>
 <div class="slider-container h-100 d-flex justify-content-between mt-3 col-12">
 
-	<div class="category-names col-2">
+	<div class="category-names col-2" style="margin-right:0 !important;">
 		<ul class="list-group">
 			@foreach (CategoryVM category in Model.Categories)
 			{
@@ -28,7 +28,7 @@
 				@foreach (var item in Model.SliderItems)
 				{
 					<div class="carousel-item h-100 @((item == Model.SliderItems.First()) ? "active" : "")">
-						<img src="@Url.Content(item.ImgURL)" class="d-block w-100 h-100">
+						<img src="@Url.Content(item.ImgURL)" class="d-block w-100 h-100" style="height:480px !important">
 					</div>
 				}
 			</div>

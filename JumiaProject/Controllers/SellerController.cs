@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace JumiaProject.Controllers
 {
-    //[Authorize(Roles = "Seller")]
+    [Authorize(Roles = "Seller")]
     public class SellerController : Controller
     {
         private readonly ISeller Seller;
@@ -29,6 +29,7 @@ namespace JumiaProject.Controllers
         private readonly IWebHostEnvironment WebHostEnvironment;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ILogger<SellerController> _logger;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public SellerController(
             ISeller _seller,
@@ -38,7 +39,8 @@ namespace JumiaProject.Controllers
             BrandRepo _brandRepo,
             IWebHostEnvironment _webHostEnvironment,
             SignInManager<ApplicationUser> _signInManager,
-            ILogger<SellerController> logger)  // ✅ Injected
+            ILogger<SellerController> logger,
+            UserManager<ApplicationUser> _userManager)  // ✅ Injected
         {
             Seller = _seller;
             ProductRepo = _productRepo;
@@ -48,6 +50,8 @@ namespace JumiaProject.Controllers
             WebHostEnvironment = _webHostEnvironment;
             signInManager = _signInManager;  // ✅ Assigned
             _logger = logger;
+            userManager = _userManager;
+
         }
 
         public IActionResult Index()
@@ -64,7 +68,8 @@ namespace JumiaProject.Controllers
 
         public IActionResult Orders()
         {
-            var orders = OrderRepo.GetOrdersForSeller(User.Identity.Name);
+            var sellerId = userManager.GetUserId(User);
+            var orders = OrderRepo.GetOrdersForSeller(sellerId);
             return View(orders);
         }
 
